@@ -1,7 +1,6 @@
 pipeline {
     agent { dockerfile {args "-u root -v /var/run/docker.sock:/var/run/docker.sock"}}
-    environment {XML_CATALOG_FILES = "${WORKSPACE}/tests/resources/opus4-catalog.xml"}
-
+    
     stages {
 
         stage('prepare') {
