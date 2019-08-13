@@ -4,11 +4,7 @@ FROM ubuntu:16.04
 RUN apt-get update
 
 # Install System-Packages
-RUN apt-get install -y composer\
-    git\
-    wget\
-    unzip\
-    curl
+RUN apt-get install -y composer curl
 
 # Install PHP with necessary packages for Opus4
 RUN apt-get install -y php\
