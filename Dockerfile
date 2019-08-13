@@ -1,10 +1,17 @@
 FROM ubuntu:16.04
 
-# Install PHP, Apache, Git, Composer and all other necessary packages -> extension if necessary
-RUN apt-get update \
-    && apt-get install -y apt-utils\
-    openjdk-8-jdk\
-    php\
+# First update Ubuntu
+RUN apt-get update
+
+# Install System-Packages
+RUN apt-get install -y composer\
+    git\
+    wget\
+    unzip\
+    curl
+
+# Install PHP with necessary packages for Opus4
+RUN apt-get install -y php\
     php-cli\
     php-common\
     php-curl\
@@ -20,13 +27,4 @@ RUN apt-get update \
     php-zip\
     libapache2-mod-php7.0\
     libxml2-utils\
-    composer\
-    git\
-    wget\
-    unzip\
-    ant\
-    curl\
-    sudo\
-    docker-compose\
-    apache2\
     php-xdebug
