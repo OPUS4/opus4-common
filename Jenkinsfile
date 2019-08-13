@@ -1,16 +1,8 @@
-#!groovy
-
 pipeline {
-    agent any
+    agent { dockerfile {args "-u root -v /var/run/docker.sock:/var/run/docker.sock"}}
+    environment {XML_CATALOG_FILES = "${WORKSPACE}/tests/resources/opus4-catalog.xml"}
 
     stages {
-        stage('clean') {
-            steps {
-                sh 'rm -rf build/'
-                sh 'mkdir build/'
-                sh 'mkdir build/coverage/'
-            }
-        }
 
         stage('prepare') {
             steps {
@@ -22,6 +14,7 @@ pipeline {
         stage('test') {
             steps {
                 sh 'composer check-full'
+                sh 'ls -la build/coverage'
             }
         }
 
@@ -37,7 +30,7 @@ pipeline {
                 ])
                 step([
                     $class: 'CloverPublisher',
-                    cloverReportDir: 'build/coverage',
+                    cloverReportDir: 'build/coverage/',
                     cloverReportFileName: 'clover.xml'
                 ])
             }
