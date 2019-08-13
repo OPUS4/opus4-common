@@ -1,6 +1,5 @@
 pipeline {
     agent { dockerfile {args "-u root -v /var/run/docker.sock:/var/run/docker.sock"}}
-    environment {XML_CATALOG_FILES = "${WORKSPACE}/tests/resources/opus4-catalog.xml"}
 
     stages {
 
@@ -14,7 +13,6 @@ pipeline {
         stage('test') {
             steps {
                 sh 'composer check-full'
-                sh 'ls -la build/coverage'
             }
         }
 
