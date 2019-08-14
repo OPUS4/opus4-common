@@ -31,6 +31,7 @@ pipeline {
                     cloverReportDir: 'build/coverage/',
                     cloverReportFileName: 'clover.xml'
                 ])
+                step([$class: 'WsCleanup'])
             }
         }
     }
