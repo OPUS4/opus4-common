@@ -7,7 +7,6 @@ pipeline {
             steps {
                 sh 'composer install'
                 sh 'composer update'
-                sh 'echo'
             }
         }
 
