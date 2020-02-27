@@ -14,7 +14,8 @@
     "phpunit/phpunit": "4.8.24",
     "zendframework/zend-coding-standard": "~1.0.0",
     "phpmd/phpmd": "@stable",
-    "phploc/phploc": "@stable"
+    "phploc/phploc": "@stable",
+    "sebastian/phpcpd": "*"
   },
   "autoload": {
     "psr-4": {
@@ -27,24 +28,13 @@
     }
   },
   "scripts": {
-    "check": [
-      "Composer\\Config::disableProcessTimeout",
-      "@prepare",
-      "@cs-check",
-      "@test"
-    ],
     "check-full": [
       "Composer\\Config::disableProcessTimeout",
       "@prepare",
       "@cs-report",
       "@phpmd",
+      "@phpcpd",
       "@test-coverage"
-    ],
-    "analyse": [
-      "@prepare",
-      "Composer\\Config::disableProcessTimeout",
-      "@cs-report",
-      "@phpmd"
     ],
     "prepare": "mkdir -p build",
     "test": "phpunit --colors=always --log-junit build/phpunit.xml",
@@ -53,6 +43,7 @@
     "cs-report": "phpcs -n --report=checkstyle --report-file=build/checkstyle.xml",
     "cs-fix": "phpcbf",
     "phpmd": "phpmd src xml cleancode,unusedcode,design,naming --reportfile build/phpmd.xml --ignore-violations-on-exit",
+    "phpcpd": "phpcpd . --min-lines 3 --min-tokens 30 --log-pmd build/pmd-cpd.xml --progress || true",
     "phploc": "phploc --log-xml build/phploc.xml src"
   }
 }
