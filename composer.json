@@ -28,6 +28,12 @@
     }
   },
   "scripts": {
+    "check": [
+      "Composer\\Config::disableProcessTimeout",
+      "@prepare",
+      "@cs-check",
+      "@test"
+    ],
     "check-full": [
       "Composer\\Config::disableProcessTimeout",
       "@prepare",
