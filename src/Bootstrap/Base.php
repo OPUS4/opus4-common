@@ -41,6 +41,9 @@ namespace Opus\Bootstrap;
  * @package     Opus_Bootstrap
  *
  */
+
+use Opus/Log/LogService;
+
 class Base extends \Zend_Application_Bootstrap_Bootstrap
 {
 
@@ -125,6 +128,9 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
      *
      * @throws Exception If logging file couldn't be opened.
      * @return void
+     * 
+     * Use LogService API for calling different logs with their names
+     * e.g., getLog('opus')
      *
      */
     protected function _initLogging()
@@ -133,77 +139,80 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
 
         $config = $this->getResource('Configuration');
 
+        $logService = LogService::getInstance($config);
+        $logger = $logService->getDefaultLog();
+
         // Detect if running in CGI environment.
-        if (isset($config->log->filename)) {
-            $logFilename = $config->log->filename;
-        } else {
-            $logFilename = 'opus.log';
-            if (! array_key_exists('SERVER_PROTOCOL', $_SERVER)
-                and ! array_key_exists('REQUEST_METHOD', $_SERVER)) {
-                $logFilename = "opus-console.log";
-            }
-        }
+        // if (isset($config->log->filename)) {
+        //     $logFilename = $config->log->filename;
+        // } else {
+        //     $logFilename = 'opus.log';
+        //     if (! array_key_exists('SERVER_PROTOCOL', $_SERVER)
+        //         and ! array_key_exists('REQUEST_METHOD', $_SERVER)) {
+        //         $logFilename = "opus-console.log";
+        //     }
+        // }
 
-        $logfilePath = $config->workspacePath . '/log/' . $logFilename;
+        // $logfilePath = $config->workspacePath . '/log/' . $logFilename;
 
-        $logfile = @fopen($logfilePath, 'a', false);
+        // $logfile = @fopen($logfilePath, 'a', false);
 
-        if ($logfile === false) {
-            $path = dirname($logfilePath);
+        // if ($logfile === false) {
+        //     $path = dirname($logfilePath);
 
-            if (! is_dir($path)) {
-                throw new Exception('Directory for logging does not exist');
-            } else {
-                throw new Exception('Failed to open logging file:' . $logfilePath);
-            }
-        }
+        //     if (! is_dir($path)) {
+        //         throw new Exception('Directory for logging does not exist');
+        //     } else {
+        //         throw new Exception('Failed to open logging file:' . $logfilePath);
+        //     }
+        // }
 
-        $GLOBALS['id_string'] = uniqid(); // Write ID string to global variables, so we can identify/match individual runs.
+        // $GLOBALS['id_string'] = uniqid(); // Write ID string to global variables, so we can identify/match individual runs.
 
-        $format = '%timestamp% %priorityName% (%priority%, ID '.$GLOBALS['id_string'].'): %message%' . PHP_EOL;
-        $formatter = new \Zend_Log_Formatter_Simple($format);
+        // $format = '%timestamp% %priorityName% (%priority%, ID '.$GLOBALS['id_string'].'): %message%' . PHP_EOL;
+        // $formatter = new \Zend_Log_Formatter_Simple($format);
 
-        $writer = new \Zend_Log_Writer_Stream($logfile);
-        $writer->setFormatter($formatter);
+        // $writer = new \Zend_Log_Writer_Stream($logfile);
+        // $writer->setFormatter($formatter);
 
-        $logger = new \Zend_Log($writer);
-        $logLevelName = 'INFO';
-        $logLevelNotConfigured = false;
+        // $logger = new \Zend_Log($writer);
+        // $logLevelName = 'INFO';
+        // $logLevelNotConfigured = false;
 
-        if (isset($config->log->level)) {
-            $logLevelName = strtoupper($config->log->level);
-        } else {
-            $logLevelNotConfigured = true;
-        }
+        // if (isset($config->log->level)) {
+        //     $logLevelName = strtoupper($config->log->level);
+        // } else {
+        //     $logLevelNotConfigured = true;
+        // }
 
-        $zendLogRefl = new \ReflectionClass('Zend_Log');
+        // $zendLogRefl = new \ReflectionClass('Zend_Log');
 
-        $invalidLogLevel = false;
+        // $invalidLogLevel = false;
 
-        $logLevel = $zendLogRefl->getConstant($logLevelName);
+        // $logLevel = $zendLogRefl->getConstant($logLevelName);
 
-        if (empty($logLevel)) {
-            $logLevel = Zend_Log::INFO;
-            $invalidLogLevel = true;
-        }
+        // if (empty($logLevel)) {
+        //     $logLevel = Zend_Log::INFO;
+        //     $invalidLogLevel = true;
+        // }
 
-        // filter log output
-        $priorityFilter = new \Zend_Log_Filter_Priority($logLevel);
-        \Zend_Registry::set('LOG_LEVEL', $logLevel);
-        $logger->addFilter($priorityFilter);
+        // // filter log output
+        // $priorityFilter = new \Zend_Log_Filter_Priority($logLevel);
+        // \Zend_Registry::set('LOG_LEVEL', $logLevel);
+        // $logger->addFilter($priorityFilter);
 
-        if ($logLevelNotConfigured) {
-            $logger->warn('Log level not configured, using default \'' . $logLevelName . '\'.');
-        }
+        // if ($logLevelNotConfigured) {
+        //     $logger->warn('Log level not configured, using default \'' . $logLevelName . '\'.');
+        // }
 
-        if ($invalidLogLevel) {
-            $logger->err('Invalid log level \'' . $logLevelName .
-                    '\' configured.');
-        }
+        // if ($invalidLogLevel) {
+        //     $logger->err('Invalid log level \'' . $logLevelName .
+        //             '\' configured.');
+        // }
 
-        \Zend_Registry::set('Zend_Log', $logger);
+        // \Zend_Registry::set('Zend_Log', $logger);
 
-        $logger->debug('Logging initialized');
+        // $logger->debug('Logging initialized');
 
         return $logger;
     }
