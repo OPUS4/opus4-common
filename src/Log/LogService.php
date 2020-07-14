@@ -33,7 +33,7 @@
 
 namespace Opus\Log;
 
-class logService
+class LogService
 {	
 
 	private $logFile;

@@ -31,12 +31,12 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest;
+namespace Opus\Log;
 
 
 use Opus\Log\LogService;
 
-class LogTest extends \PHPUnit_Framework_TestCase
+class LogServiceTest extends \PHPUnit_Framework_TestCase
 {
     private $logInstance;
     private $logger;    
