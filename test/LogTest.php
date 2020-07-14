@@ -26,8 +26,8 @@
  *
  * @category    Test
  * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @author      Kaustabh Barman <barman@zib.de>
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
@@ -39,23 +39,38 @@ use Opus\Log\LogService;
 class LogTest extends \PHPUnit_Framework_TestCase
 {
     private $logInstance;
-    private $config;
-    private  $logger;
+    private $logger;    
 
     public function setUp(){
-        $registry = \Zend_Registry::getInstance();
-        $this->config = $registry->get('Zend_Config');
-        $this->logInstance = LogService::getInstance('INFO');
+        $this->logInstance = LogService::getInstance();
+        $this->logInstance->setPath('opus.log');        //may also mention new path as a second parametre
+        $this->logInstance->openLog('Zend_Config');
+
+        $this->logger = $thisLogInstance->setLog();    //how to get comparable log        
     }
 
     public function testSetLog(){
-        $this->logger = $this->logInstance->setLog('INFO');
-        $this->doesNotPerformAssertions();
+        $log = $this->logInstance->setLog();
+        $this->assertSame($log, $this->logger);
     }
 
-    public function testGetLog(){       //not sure what exactly to assert
-        $log = $this->logInstance->getLog();
+    public function testGetLog(){       
+        $log = $this->logInstance->getLog('opus.log');
         $this->assertSame($log, $this->logger);
+    }
+
+    public function testSetDefaultLog(){
+        $log = $this->logInstance->setDefaultLog('opus.log');
+        $this->assertSame($log, $this->logger);
+    }
+
+    public function testGetDefaultLog(){
+        $log = $this->logInstance->getDefaultLog('opus.log');
+        $this->assertSame($log, $this->logger);
+    }
+
+    public function testGetTranslationDefaultLog(){
+
     }
 
 }

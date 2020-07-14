@@ -150,9 +150,14 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
              }
          }
 
-         $logService = LogService::getInstance($logFilename);
-         $logger = $logService->setLog('INFO');       //may also specify log format
-         $logger = $logService->getLog();
+        $logService = LogService::getInstance();
+        //        $logger = $logService->setDefaultLog($logFilename);
+
+        $logService->openLog('Zend_Config', $logFilename);
+        $logger = $logService->setLog();
+        \Zend_Registry::set('Zend_Log', $logger);     
+        $logger->debug('Logging initialized');     
+        // $logger = $logService->getLog();
 
         return $logger;
     }
