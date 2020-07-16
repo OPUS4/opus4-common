@@ -128,7 +128,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
      *
      * @throws Exception If logging file couldn't be opened.
      * @return void
-     * 
+     *
      * Use LogService API for calling different logs with their names
      * e.g., getLog('opus')
      *
@@ -140,23 +140,23 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         $config = $this->getResource('Configuration');
 
         // Detect if running in CGI environment.
-         if (isset($config->log->filename)) {
-             $logFilename = $config->log->filename;
-         } else {
-             $logFilename = 'opus.log';
-             if (! array_key_exists('SERVER_PROTOCOL', $_SERVER)
-                 and ! array_key_exists('REQUEST_METHOD', $_SERVER)) {
-                 $logFilename = "opus-console.log";
-             }
-         }
+        if (isset($config->log->filename)) {
+            $logFilename = $config->log->filename;
+        } else {
+            $logFilename = 'opus.log';
+            if (! array_key_exists('SERVER_PROTOCOL', $_SERVER)
+               and ! array_key_exists('REQUEST_METHOD', $_SERVER)) {
+                $logFilename = "opus-console.log";
+            }
+        }
 
         $logService = LogService::getInstance();
         //        $logger = $logService->setDefaultLog($logFilename);
 
-        $logService->openLog('Zend_Config', $logFilename);
-        $logger = $logService->setLog();
-        \Zend_Registry::set('Zend_Log', $logger);     
-        $logger->debug('Logging initialized');     
+        $logService->openLog($logFilename);
+        $logger = $logService->addLog();
+        \Zend_Registry::set('Zend_Log', $logger);
+        $logger->debug('Logging initialized');
         // $logger = $logService->getLog();
 
         return $logger;

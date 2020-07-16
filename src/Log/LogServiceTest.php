@@ -33,44 +33,55 @@
 
 namespace Opus\Log;
 
-
 use Opus\Log\LogService;
 
 class LogServiceTest extends \PHPUnit_Framework_TestCase
 {
     private $logInstance;
-    private $logger;    
+    private $logger;
 
-    public function setUp(){
+    public function setUp()
+    {
         $this->logInstance = LogService::getInstance();
         $this->logInstance->setPath('opus.log');        //may also mention new path as a second parametre
         $this->logInstance->openLog('Zend_Config');
 
-        $this->logger = $thisLogInstance->setLog();    //how to get comparable log        
+        $this->logger = $thisLogInstance->setLog();    //how to get comparable log
     }
 
-    public function testSetLog(){
+    public function testGetInstance()
+    {
+        $logInstance = new LogService();
+        $this->assertSame($this->logInstance, $logInstance);
+    }
+
+    public function testSetLog()
+    {
         $log = $this->logInstance->setLog();
         $this->assertSame($log, $this->logger);
     }
 
-    public function testGetLog(){       
-        $log = $this->logInstance->getLog('opus.log');
+    public function testGetLog()
+    {
+        $log = $this->logInstance->getLog('opus.log');      //should pass only log name, not filename
         $this->assertSame($log, $this->logger);
     }
 
-    public function testSetDefaultLog(){
+    public function testSetDefaultLog()
+    {
         $log = $this->logInstance->setDefaultLog('opus.log');
         $this->assertSame($log, $this->logger);
     }
 
-    public function testGetDefaultLog(){
+    public function testGetDefaultLog()
+    {
         $log = $this->logInstance->getDefaultLog('opus.log');
         $this->assertSame($log, $this->logger);
     }
 
-    public function testGetTranslationDefaultLog(){
-
+    public function testGetTranslationDefaultLog()
+    {
+        $this->markTestIncomplete();
     }
 
 }
