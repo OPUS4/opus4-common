@@ -24,8 +24,8 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category opus4-common
- * @Package Opus\Log
+ * @category    opus4-common
+ * @Package     Opus\Log
  * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
@@ -38,9 +38,24 @@ namespace Opus\Log;
  *
  * @package     Opus\Log
  *
+ * TODO NOTE I think TODO tags are good, but they should be written like they are meant for other developers.
+ *
+ * TODO if addLog returns loggers even if they are unknown it behaves a lot like createLog;
+ *      addLog should use createLog if a logger is unknown
+ *
+ * TODO maybe we should distinguish between 'log level' (int) and 'log level name' (string);
+ *      if would be nice to write something like $logService->setDefaultLevel(\Zend_Log::ERR);
+ *
+ * TODO we should configure the default options the same way like for other logger
+ *      logging.log.default.format instead of 'log.format', but I would leave a decision until the end
  */
 class LogService
 {
+
+    const DEFAULT_FORMAT = '%timestamp% %priorityName% (%priority%, ID %runId%): %message%';
+
+    const DEFAULT_LOG_LEVEL = 'INFO';
+
     /** @var Opus\Log\LogService Singleton instance of LogService. */
     private static $instance;
 
@@ -60,11 +75,12 @@ class LogService
 
     /**
      * @var string name of the default log name.
+     * TODO probably not needed as variable, maybe convert into constant
      */
     private $defaultLogName = 'default';
 
-    /** @var string default log level. */
-    private $defaultLogLevel = 'INFO';
+    /** @var string Default log level. */
+    private $defaultLogLevel;
 
     protected function __construct()
     {
@@ -105,9 +121,9 @@ class LogService
             $path = dirname($logFilePath);
 
             if (! is_dir($path)) {
-                throw new Exception('Directory for logging does not exist');
+                throw new \Exception('Directory for logging does not exist');
             } else {
-                throw new Exception('Failed to open logging file:' . $logFilePath);
+                throw new \Exception('Failed to open logging file:' . $logFilePath);
             }
         }
 
@@ -132,14 +148,25 @@ class LogService
     }
 
     /**
-     * Gets the configuration of logs
-     *
+     * Returns configuration.
      * @throws \Zend_Exception
+     * @return null|\Zend_Config
      */
     public function getConfig()
     {
-        $this->config = \Zend_Registry::get('Zend_Config');
+        if (is_null($this->config)) {
+            $this->config = \Zend_Registry::get('Zend_Config');
+        }
         return $this->config;
+    }
+
+    /**
+     * Sets configuration.
+     * @param $config \Zend_Config
+     */
+    public function setConfig($config)
+    {
+        $this->config = $config;
     }
 
     /**
@@ -151,7 +178,7 @@ class LogService
     {
         if ($this->logPath == null) {
             $config = $this->getConfig();
-            $this->setpath($config->workspacePath . '/log/');
+            $this->setpath($config->workspacePath . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR);
         }
 
         return $this->logPath;
@@ -187,6 +214,8 @@ class LogService
      * @param $defaultLogName String
      * @param $defaultLogFileName String
      * @return \Zend_Log
+     *
+     * TODO probably not needed
      */
     public function createDefaultLog($defaultLogName, $defaultLogFileName)
     {
@@ -261,6 +290,8 @@ class LogService
      *
      * @param $logLevelName String
      *
+     * TODO maybe set/getDefaultLevel instead of DefaultLogLevel is enough?
+     * TODO maybe we should use 'priority' instead of 'level'
      */
     public function setDefaultLogLevel($logLevelName)
     {
@@ -361,8 +392,13 @@ class LogService
     /**
      * Write ID string to global variables, so we can identify/match individual runs.
      *
+     * TODO do not store ID in $GLOBALS (usage of GLOBALS is something the old code does,
+     *      but it is not something that should be used in this way), use a class variable
+     * TODO 'set' functions basically always have parameter, if not it is more a 'init' function;
+     *      We do want a 'set' function here.
+     *
      */
-    private function setUniqueId()
+    public function setUniqueId()
     {
         $GLOBALS['id_string'] = uniqid();
     }
@@ -371,6 +407,9 @@ class LogService
      * Get the global variable ID string or set it if it doesn't exist
      *
      * @return mixed
+     *
+     * TODO see TODO for setUniqueId
+     * TODO maybe calling these functions something like getRunId/setRunId would be easier to understand
      */
     public function getUniqueId()
     {
@@ -381,5 +420,5 @@ class LogService
         return $GLOBALS['id_string'];
     }
 
-    /** TODO write generic functions for testing. */
+    /** TODO write generic functions for testing. NOTE not just for testing */
 }
