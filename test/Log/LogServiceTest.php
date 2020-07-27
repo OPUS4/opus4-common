@@ -111,7 +111,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = LogService::getInstance();
         $logService->setPath(__DIR__);
-        $this->assertEquals(__DIR__ , $logService->getPath());
+        $this->assertEquals(__DIR__, $logService->getPath());
     }
 
     /**
@@ -477,8 +477,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
     protected function removeFolder($path)
     {
-        if (! is_null($path) && file_exists($path))
-        {
+        if (! is_null($path) && file_exists($path)) {
             if (is_dir($path)) {
                 $iterator = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
                 foreach ($iterator as $file) {
