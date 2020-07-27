@@ -41,13 +41,11 @@ namespace Opus\Log;
  */
 class LogService
 {
-	/** @var Opus\Log\LogService Singleton instance of LogService. */
+    /** @var Opus\Log\LogService Singleton instance of LogService. */
     private static $instance;
 
     /** @var \Zend_Log[] all log objects with lognames as keys. */
     private $loggers = [];
-
-    private $logFile;       //file pointer resource to the logfile.
 
     /** @var string Format of log output. */
     private $defaultFormat;
@@ -57,8 +55,8 @@ class LogService
     /** @var null path to the folder for log files. */
     private $logPath = null;
 
-    /** @var string name of the log file. */		
-    private $logFileName;		//make it map of the log files associated with loggers
+    /** @var string name of the log file. */
+    private $logFileName;       //make it map of the log files associated with loggers
 
     /**
      * @var string name of the default log name.
@@ -81,16 +79,16 @@ class LogService
     }
 
     /**
+     *
+     * Creates a new logger and returns it.
+     *
      * @param $logName string name of the log.
      * @param null $logFileName string optional name of the log file.
+     *
+     * @return \Zend_Log
      */
-    public function createLog($logName, $logFileName = null)		//should return logger
+    public function createLog($logName, $logFileName = null)
     {
-
-        $config = \Zend_Registry::get('Zend_Config');
-
-        $logFilePath = $this->getPath();
-
         if ($logFileName == null) {
             if ($logName == 'default') {
                 $this->logFileName = 'opus.log';
@@ -102,8 +100,8 @@ class LogService
         }
 
         $logFilePath = $this->getPath().$this->logFileName;
-        $this->logFile = @fopen($logFilePath, 'a', false);
-        if ($this->logFile === false) {
+        $logFile = @fopen($logFilePath, 'a', false);
+        if ($logFile === false) {
             $path = dirname($logFilePath);
 
             if (! is_dir($path)) {
@@ -112,28 +110,30 @@ class LogService
                 throw new Exception('Failed to open logging file:' . $logFilePath);
             }
         }
-    }
 
-    /**
-     * @param null $logger \Zend_Log
-     * @return \Zend_Log
-     *
-     * To add log from external modules.
-     */
-    public function addLog($logger = null)		//should include addLog($name, $logger) -- REFACTOR
-    {
-        if ($logger == null) {
-            $logger = $this->createLogger($this->logFile);
-        	fclose($this->logFile);
-        }
+        $logger = $this->createLogger($logFile);
+        fclose($logFile);
 
         $this->applyLogLevel($logger);
-
-        $this->loggers[$this->logFileName] = $logger;
+        $this->addLog($logger);
         return $logger;
     }
 
     /**
+     * To add log from external modules to loggers array.
+     *
+     * @param $logName String name of log
+     * @param null $logger \Zend_Log
+     *
+     */
+    public function addLog($logger)     //should include addLog($name, $logger)
+    {
+        $this->loggers[$this->logFileName] = $logger;
+    }
+
+    /**
+     * Gets the configuration of logs
+     *
      * @throws \Zend_Exception
      */
     public function getConfig()
@@ -143,26 +143,24 @@ class LogService
     }
 
     /**
-     * get path to the log folder.
+     * Get path to the log folder.
      *
      * @return string path to the log folder.
      */
     public function getPath()
     {
         if ($this->logPath == null) {
-        	$config = $this->getConfig();
-        	$this->setpath($config->workspacePath . '/log/');
-        }	
+            $config = $this->getConfig();
+            $this->setpath($config->workspacePath . '/log/');
+        }
 
-        return $this->logPath;	
+        return $this->logPath;
     }
 
     /**
-     * set path to the log file.
+     * Set the path to the log folder.
      *
-     * @param $logPath String optional to set the path.
-     *
-     * @return null path
+     * @param $logPath String
      */
     public function setPath($logPath)
     {
@@ -170,7 +168,7 @@ class LogService
     }
 
     /**
-     * Returns the default log
+     * Returns the default log or creates new default log if one doesn't exist already.
      *
      * @return mixed|Zend_Log
      */
@@ -184,99 +182,97 @@ class LogService
     }
 
     /**
+     * To set the default log.
+     *
      * @param $defaultLogName String
      * @param $defaultLogFileName String
      * @return \Zend_Log
-     *
-     *
-     * To set the default log
      */
     public function createDefaultLog($defaultLogName, $defaultLogFileName)
     {
         $this->defaultLogName = $defaultLogName;
-        $this->createLog($defaultLogName, $defaultLogFileName);
-        return $this->addLog();
+        return $this->createLog($defaultLogName, $defaultLogFileName);
     }
 
     /**
+     * TODO - get the log configurations.
+     *
      * @param $logName String
      * @return null
-     *
-     * TODO
      */
     public function getLogConfig($logName)
     {
-    	return null;		
+        return null;
     }
 
     /**
+     * Apply the log level to the logger.
      *
      * @param $logger \Zend_Log object
      * @throws \Zend_Exception
-     * @throws \Zend_Log_Exception
-     *
-     * Gets log level constants from Zend_Log and apply log levels.
      */
     public function applyLogLevel($logger)
     {
-    	$config = $this->getConfig();
+        $logLevel = $this->getLogLevel($logger);
 
-    	if (isset($config->logging->log->level)) {
-    		$logLevelName = $config->logging->log->level;
-    	} else {
-    		$logLevelName = $this->getDefaultLogLevel($logger);
-    	}
+        $priorityFilter = $this->createLogLevelFilter($logLevel);
+        $logger->addFilter($priorityFilter);
+        \Zend_Registry::set('LOG_LEVEL', $logLevel);
+    }
+
+    /**
+     * Returns the log level.
+     *
+     * Gets either the log level name from configuration or the default log level name and
+     *
+     * @param $logger \Zend_Log object
+     * @return string
+     *
+     *
+     * TODO - $logger should not be defined yet.
+     * May be make class variable flag and check where the function is called to write the warning and error messages.
+     */
+    public function getLogLevel($logger)
+    {
+        $config = $this->getConfig();
+
+        if (isset($config->logging->log->level)) {
+            $logLevelName = $config->logging->log->level;
+        } else {
+            $logLevelName = $this->defaultLogLevel;
+            $logger->warn("Log level not configured, using '" . $this->defaultLogLevel . "'.");
+        }
 
         $zendLogRefl = new \ReflectionClass('Zend_Log');
-
-        $invalidLogLevel = false;
 
         $logLevel = $zendLogRefl->getConstant($logLevelName);
 
         if (empty($logLevel)) {
             $logLevel = Zend_Log::INFO;
-            $invalidLogLevel = true;
-        }
-
-        $priorityFilter = $this->createLogLevelFilter($logLevel);
-        $this->addFilterToLogger($priorityFilter, $logger);
-
-        if ($invalidLogLevel) {
             $logger->err("Invalid log level '" . $logLevelName .
                 "' configured.");
         }
 
-        \Zend_Registry::set('LOG_LEVEL', $logLevel);
+        return $logLevel;
     }
 
     /**
-     * @param $logger \Zend_Log object
-     * @return string
+     * Sets the default log level.
      *
-     * returns the default log level.
-     */
-    public function getDefaultLogLevel($logger)
-    {
-        $logger->warn("Log level not configured, using '" . $this->defaultLogLevel . "'.");
-    	return $this->defaultLogLevel;
-    }
-
-    /**
      * @param $logLevelName String
      *
-     * sets the default log level.
      */
     public function setDefaultLogLevel($logLevelName)
     {
-    	$this->defaultLogLevel = $logLevelName;
+        $this->defaultLogLevel = $logLevelName;
     }
 
     /**
+     * Creates the log level filter object and returns it.
+     *
      * @param $logLevel
      * @return \Zend_Log_Filter_Priority
      * @throws \Zend_Log_Exception
-     *
-     * Creates the log level filter object and returns it..
      */
     protected function createLogLevelFilter($logLevel)
     {
@@ -284,20 +280,10 @@ class LogService
     }
 
     /**
-     * @param $filter \Zend_Log_Filter_Priority
-     * @param $logger \Zend_Log object
+     * Get a log or create one if not already exists.
      *
-     * add the filter object to logger object.
-     */
-    protected function addFilterToLogger($filter, $logger){
-    	$logger->addFilter($filter);
-    }
-
-    /**
      * @param $logName String name of log
      * @return mixed|\Zend_Log
-     *
-     * To get a log and create one if not already exists.
      */
     public function getLog($logName)
     {
@@ -308,8 +294,7 @@ class LogService
             return $logger = $this->loggers[$logName.'.log'];
         } else {
             try {
-                $this->createLog($logName);
-                return $this->addLog();
+                return $this->createLog($logName);
             } catch (Exception $e) {
                 throw new Exception('Unknown logger: '.$logName, 1);
             }
@@ -317,17 +302,17 @@ class LogService
     }
 
     /**
+     * Create a new Zend_Log object.
+     *
      * @param $logFile
      * @return \Zend_Log
      * @throws \Zend_Exception
      * @throws \Zend_Log_Exception
-     *
-     * TO create a new Zend_Log object.
      */
     protected function createLogger($logFile)
     {
-    	$config = $this->getConfig();
-    	
+        $config = $this->getConfig();
+
         if (isset($config->logging->log->translation->file->format)) {
             $format = $config->logging->log->translation->file->format;
         } elseif ($this->defaultFormat == null) {
@@ -340,29 +325,61 @@ class LogService
         $writer = new \Zend_Log_Writer_Stream($logFile);
         $writer->setFormatter($formatter);
 
-        $logger = new \Zend_Log($writer);
-        return $logger;
+        return new \Zend_Log($writer);
     }
 
     /**
-     * @param null|string $defaultFormat Format of logging
-     * @return string|null
+     * Set the default format.
+     *
+     * @param null|string $format Format of logging
      */
-    public function setDefaultFormat($format)		//should be setDefaultFormat and use variable in getdefaultFormat()
+    public function setDefaultFormat($format)
     {
         $this->defaultFormat = $format;
-        return $this->defaultFormat;
     }
 
     /**
+     * Return the format from configuration or the default format.
+     *
      * @return string
      */
-    public function getDefaultFormat()		//use placeholder for the ID string
+    public function getDefaultFormat()      //use placeholder for the ID string
     {
-        $GLOBALS['id_string'] = uniqid(); // Write ID string to global variables, so we can identify/match individual runs.
-
-        return '%timestamp% %priorityName% (%priority%, ID '.$GLOBALS['id_string'].'): %message%' . PHP_EOL;
+        $format = $this->defaultFormat;
+        if ($this->defaultFormat == null) {
+            $config = $this->getConfig();
+            if (isset($config->log->format)) {
+                $format = $config->log->format;
+            } else {
+                $uniqueId = $this->getUniqueId();
+                $format = '%timestamp% %priorityName% (%priority%, ID '.$uniqueId.'): %message%' . PHP_EOL;
+            }
+        }
+        return $format;
     }
 
-    //write generic functions for testing
+    /**
+     * Write ID string to global variables, so we can identify/match individual runs.
+     *
+     */
+    private function setUniqueId()
+    {
+        $GLOBALS['id_string'] = uniqid();
+    }
+
+    /**
+     * Get the global variable ID string or set it if it doesn't exist
+     *
+     * @return mixed
+     */
+    public function getUniqueId()
+    {
+        if (! isset($GLOBALS['id_string'])) {
+            $this->setUniqueId();
+        }
+
+        return $GLOBALS['id_string'];
+    }
+
+    /** TODO write generic functions for testing. */
 }

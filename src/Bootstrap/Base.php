@@ -27,7 +27,7 @@
  * @category    Framework
  * @package     Opus_Bootstrap
  * @author      Ralf Claussnitzer (ralf.claussnitzer@slub-dresden.de)
- * @author      Jens Schwidder <schwidder@zib.de>
+ * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2008-2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -152,8 +152,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
 
         $logService = LogService::getInstance();
 
-        $logService->createLog('default', $logFilename);
-        $logger = $logService->addLog();
+        $logger = $logService->createLog('default', $logFilename);
         \Zend_Registry::set('Zend_Log', $logger);
         $logger->debug('Logging initialized');
 
