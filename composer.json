@@ -30,8 +30,8 @@
     "check": [
       "Composer\\Config::disableProcessTimeout",
       "@prepare",
-      "@cs-check",
-      "@test"
+      "@test",
+      "@cs-check"
     ],
     "check-full": [
       "Composer\\Config::disableProcessTimeout",
@@ -46,9 +46,12 @@
       "@cs-report",
       "@phpmd"
     ],
-    "prepare": "mkdir -p build",
-    "test": "phpunit --colors=always --log-junit build/phpunit.xml",
+    "test": [
+      "@prepare",
+      "phpunit --colors=always --log-junit build/phpunit.xml"
+    ],
     "test-coverage": "phpunit --log-junit build/phpunit.xml --colors=always --coverage-html build/ --coverage-clover build/clover.xml",
+    "prepare": "mkdir -p build",
     "cs-check": "phpcs -n",
     "cs-report": "phpcs -n --report=checkstyle --report-file=build/checkstyle.xml",
     "cs-fix": "phpcbf",
