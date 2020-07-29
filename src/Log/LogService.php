@@ -75,14 +75,14 @@ class LogService
     /** @var string name of the log file. */
     private $logFileName;       //make it map of the log files associated with loggers
 
-	/** @var string */
-	private $runID;
+    /** @var string */
+    private $runID;
 
     /**
      * @var string name of the default log name.
-     * TODO probably not needed as variable, maybe convert into constant 		//DONE
+     * TODO probably not needed as variable, maybe convert into constant        //DONE
      */
-    // private $defaultLogName = 'default';			
+    // private $defaultLogName = 'default';
 
     /** @var string Default log priority. */
     private $defaultPriority;
