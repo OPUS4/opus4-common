@@ -56,6 +56,8 @@ class LogService
 
     const DEFAULT_LOG_LEVEL = 'INFO';
 
+    const DEFAULT_LOG_NAME = 'default';
+
     /** @var Opus\Log\LogService Singleton instance of LogService. */
     private static $instance;
 
@@ -73,14 +75,17 @@ class LogService
     /** @var string name of the log file. */
     private $logFileName;       //make it map of the log files associated with loggers
 
+	/** @var string */
+	private $runID;
+
     /**
      * @var string name of the default log name.
-     * TODO probably not needed as variable, maybe convert into constant
+     * TODO probably not needed as variable, maybe convert into constant 		//DONE
      */
-    private $defaultLogName = 'default';
+    // private $defaultLogName = 'default';			
 
-    /** @var string Default log level. */
-    private $defaultLogLevel;
+    /** @var string Default log priority. */
+    private $defaultPriority;
 
     protected function __construct()
     {
@@ -201,26 +206,11 @@ class LogService
      */
     public function getDefaultLog()
     {
-        if (array_key_exists($this->defaultLogName.'.log', $this->loggers)) {
-            return $logger = $this->loggers[$this->defaultLogName.'.log'];
+        if (array_key_exists(DEFAULT_LOG_NAME.'.log', $this->loggers)) {
+            return $logger = $this->loggers[DEFAULT_LOG_NAME.'.log'];
         } else {
-            return $this->createDefaultLog('default', 'opus.log');
+            return $this->createLog(DEFAULT_LOG_NAME, 'opus.log');
         }
-    }
-
-    /**
-     * To set the default log.
-     *
-     * @param $defaultLogName String
-     * @param $defaultLogFileName String
-     * @return \Zend_Log
-     *
-     * TODO probably not needed
-     */
-    public function createDefaultLog($defaultLogName, $defaultLogFileName)
-    {
-        $this->defaultLogName = $defaultLogName;
-        return $this->createLog($defaultLogName, $defaultLogFileName);
     }
 
     /**
@@ -266,19 +256,19 @@ class LogService
         $config = $this->getConfig();
 
         if (isset($config->logging->log->level)) {
-            $logLevelName = $config->logging->log->level;
+            $logPriority = $config->logging->log->level;
         } else {
-            $logLevelName = $this->defaultLogLevel;
-            $logger->warn("Log level not configured, using '" . $this->defaultLogLevel . "'.");
+            $logPriority = $this->defaultPriority;
+            $logger->warn("Log level not configured, using '" . $this->defaultPriority . "'.");
         }
 
         $zendLogRefl = new \ReflectionClass('Zend_Log');
 
-        $logLevel = $zendLogRefl->getConstant($logLevelName);
+        $logLevel = $zendLogRefl->getConstant($logPriority);
 
         if (empty($logLevel)) {
             $logLevel = Zend_Log::INFO;
-            $logger->err("Invalid log level '" . $logLevelName .
+            $logger->err("Invalid log level '" . $logPriority .
                 "' configured.");
         }
 
@@ -288,14 +278,12 @@ class LogService
     /**
      * Sets the default log level.
      *
-     * @param $logLevelName String
+     * @param $logPriority String
      *
-     * TODO maybe set/getDefaultLevel instead of DefaultLogLevel is enough?
-     * TODO maybe we should use 'priority' instead of 'level'
      */
-    public function setDefaultLogLevel($logLevelName)
+    public function setDefaultPriority($logPriority)
     {
-        $this->defaultLogLevel = $logLevelName;
+        $this->defaultPriority = $logPriority;
     }
 
     /**
@@ -382,8 +370,8 @@ class LogService
             if (isset($config->log->format)) {
                 $format = $config->log->format;
             } else {
-                $uniqueId = $this->getUniqueId();
-                $format = '%timestamp% %priorityName% (%priority%, ID '.$uniqueId.'): %message%' . PHP_EOL;
+                $runId = $this->getRunId();
+                $format = '%timestamp% %priorityName% (%priority%, ID '.$runId.'): %message%' . PHP_EOL;
             }
         }
         return $format;
@@ -392,32 +380,24 @@ class LogService
     /**
      * Write ID string to global variables, so we can identify/match individual runs.
      *
-     * TODO do not store ID in $GLOBALS (usage of GLOBALS is something the old code does,
-     *      but it is not something that should be used in this way), use a class variable
-     * TODO 'set' functions basically always have parameter, if not it is more a 'init' function;
-     *      We do want a 'set' function here.
-     *
      */
-    public function setUniqueId()
+    public function setRunId($runId)
     {
-        $GLOBALS['id_string'] = uniqid();
+        $this->runId = $runId;
     }
 
     /**
      * Get the global variable ID string or set it if it doesn't exist
      *
      * @return mixed
-     *
-     * TODO see TODO for setUniqueId
-     * TODO maybe calling these functions something like getRunId/setRunId would be easier to understand
      */
-    public function getUniqueId()
+    public function getRunId()
     {
-        if (! isset($GLOBALS['id_string'])) {
-            $this->setUniqueId();
+        if ($this->runId == null) {
+            $this->setRunId(uniqid());
         }
 
-        return $GLOBALS['id_string'];
+        return $this->runId;
     }
 
     /** TODO write generic functions for testing. NOTE not just for testing */
