@@ -76,7 +76,7 @@ class LogService
     private $logFileName;       //make it map of the log files associated with loggers
 
     /** @var string */
-    private $runID;
+    private $runId;
 
     /**
      * @var string name of the default log name.
@@ -100,7 +100,6 @@ class LogService
     }
 
     /**
-     *
      * Creates a new logger and returns it.
      *
      * @param $logName string name of the log.
@@ -387,14 +386,14 @@ class LogService
     }
 
     /**
-     * Get the global variable ID string or set it if it doesn't exist
+     * Get the global variable ID string or set it if it doesn't exist.
      *
-     * @return mixed
+     * @return string
      */
     public function getRunId()
     {
         if ($this->runId == null) {
-            $this->setRunId(uniqid());
+            $this->runId = uniqid();
         }
 
         return $this->runId;
