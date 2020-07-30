@@ -45,28 +45,29 @@ namespace Opus\Log;
  *
  * TODO we should configure the default options the same way like for other logger
  *      logging.log.default.format instead of 'log.format', but I would leave a decision until the end
+ *
+ * TODO Do we actually need the PHP_EOL at the end of the log format?
  */
 class LogService
 {
 
     const DEFAULT_FORMAT = '%timestamp% %priorityName% (%priority%, ID %runId%): %message%';
 
-    const DEFAULT_LOG_PRIORITY = 'INFO';
-
-    const DEFAULT_LOG_NAME = 'default';
+    const DEFAULT_PRIORITY = 'INFO';
 
     const DEFAULT_LOG = 'default';
 
     /** @var Opus\Log\LogService Singleton instance of LogService. */
     private static $instance;
 
-    /** @var \Zend_Log[] all log objects with lognames as keys. */
+    /** @var \Zend_Log[] All log objects with log names as keys. */
     private $loggers = [];
 
     /** @var string Format of log output. */
     private $defaultFormat;
 
-    private $config;    //Zend_Config
+    /** @var \Zend_Config Global configuration. */
+    private $config;
 
     /** @var null path to the folder for log files. */
     private $logPath = null;
@@ -80,19 +81,23 @@ class LogService
     /** @var string Default log priority. */
     private $defaultPriority;
 
-    /** @var int Default log level. */
-    private $logLevel;
-
-    protected function __construct()
+    /**
+     * Private constructor, since LogService is supposed to be a singleton.
+     */
+    private function __construct()
     {
     }
 
+    /**
+     * Creates singleton instance of LogService.
+     * @return Opus\Log\LogService
+     */
     public static function getInstance()
     {
-        if (null === static::$instance) {
-            static::$instance = new static();
+        if (null === self::$instance) {
+            self::$instance = new LogService();
         }
-        return static::$instance;
+        return self::$instance;
     }
 
     /**
@@ -115,7 +120,7 @@ class LogService
             $this->logFileName = $logFileName;
         }
 
-        $logFilePath = $this->getPath().$this->logFileName;
+        $logFilePath = $this->getPath() . $this->logFileName;
         $logFile = @fopen($logFilePath, 'a', false);
         if ($logFile === false) {
             $path = dirname($logFilePath);
@@ -131,7 +136,7 @@ class LogService
         fclose($logFile);
 
         $this->applyLogLevel($logger);
-        $this->addLog($logger);
+        $this->addLog($logName, $logger);
         return $logger;
     }
 
@@ -142,9 +147,12 @@ class LogService
      * @param null $logger \Zend_Log
      *
      */
-    public function addLog($logger)     //should include addLog($name, $logger)
+    public function addLog($name, $logger)
     {
-        $this->loggers[$this->logFileName] = $logger;
+        if (! $logger instanceof \Zend_Log) {
+            // TODO throw exception
+        }
+        $this->loggers[$name] = $logger;
     }
 
     /**
@@ -201,10 +209,10 @@ class LogService
      */
     public function getDefaultLog()
     {
-        if (array_key_exists(self::DEFAULT_LOG_NAME.'.log', $this->loggers)) {
-            return $logger = $this->loggers[self::DEFAULT_LOG_NAME.'.log'];
+        if (array_key_exists(self::DEFAULT_LOG.'.log', $this->loggers)) {
+            return $logger = $this->loggers[self::DEFAULT_LOG.'.log'];
         } else {
-            return $this->createLog(self::DEFAULT_LOG_NAME, 'opus.log');
+            return $this->createLog(self::DEFAULT_LOG, 'opus.log');
         }
     }
 
@@ -262,7 +270,7 @@ class LogService
         $logLevel = $zendLogRefl->getConstant($logPriority);
 
         if (empty($logLevel)) {
-            $logLevel = Zend_Log::INFO;
+            $logLevel = \Zend_Log::INFO;
             // $logger->err("Invalid log level '" . $logPriority .
             //     "' configured.");
         }
@@ -296,20 +304,23 @@ class LogService
      * Return the default log priority.
      *
      * @return String
-     *
      */
     public function getDefaultPriority()
     {
-        $priority = $this->defaultPriority;
-        if ($priority == null) {
-            if (isset($config->log->priority)) {
-                $priority = $config->log->priority;
-            } else {
-                $priority = self::DEFAULT_LOG_PRIORITY;
+        if ($this->defaultPriority == null) {
+            $priority = self::DEFAULT_PRIORITY;
+
+            $config = $this->getConfig();
+
+            if (isset($config->log->level)) {
+                $priority = $config->log->level;
+                // TODO verify it is a valid priority string (in a separate function)
             }
+
+            $this->defaultPriority = $priority;
         }
 
-        return $priority;
+        return $this->defaultPriority;
     }
 
     /**
@@ -393,17 +404,21 @@ class LogService
      */
     public function getDefaultFormat()      //use placeholder for the ID string
     {
-        $format = $this->defaultFormat;
         if ($this->defaultFormat == null) {
             $config = $this->getConfig();
+
+            $format = self::DEFAULT_FORMAT;
+
             if (isset($config->log->format)) {
                 $format = $config->log->format;
-            } else {
-                $runId = $this->getRunId();
-                $format = '%timestamp% %priorityName% (%priority%, ID '.$runId.'): %message%' . PHP_EOL;
             }
+
+            $this->defaultFormat = $format;
         }
-        return $format;
+
+        $runId = $this->getRunId();
+
+        return preg_replace('/%runId%/', $runId, $this->defaultFormat) . PHP_EOL;
     }
 
     /**

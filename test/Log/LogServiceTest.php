@@ -72,6 +72,14 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
+        // reset singleton, because otherwise settings will carry over to next test
+        $singleton = LogService::getInstance();
+        $reflection = new \ReflectionClass($singleton);
+        $instance = $reflection->getProperty('instance');
+        $instance->setAccessible(true);
+        $instance->setValue(null, null);
+        $instance->setAccessible(false);
+
         $this->removeFolder($this->tempFolder);
 
         parent::tearDown();
@@ -133,9 +141,13 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
+        $logService->getConfig()->merge(new \Zend_Config([
+            'log' => ['level' => null]
+        ]));
+
         $priority = $logService->getDefaultPriority();
 
-        $this->assertEquals(LogService::DEFAULT_LOG_PRIORITY, $priority);
+        $this->assertEquals(LogService::DEFAULT_PRIORITY, $priority);
     }
 
     /**
@@ -159,7 +171,10 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $format = $logService->getDefaultFormat();
 
-        $this->assertEquals(self::DEFAULT_FORMAT, $format);
+        $expected = preg_replace('/%runId%/', $logService->getRunId(), self::DEFAULT_FORMAT);
+        $expected .= PHP_EOL;
+
+        $this->assertEquals($expected, $format);
     }
 
     /**
@@ -175,7 +190,10 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $format = $logService->getDefaultFormat();
 
-        $this->assertEquals(LogService::DEFAULT_FORMAT, $format);
+        $expected = preg_replace('/%runId%/', $logService->getRunId(), LogService::DEFAULT_FORMAT);
+        $expected .= PHP_EOL;
+
+        $this->assertEquals($expected, $format);
     }
 
     /**
@@ -201,7 +219,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $logService->setDefaultFormat('%message%');
 
-        $this->assertEquals('%message%', $logService->getDefaultFormat());
+        $this->assertEquals('%message%' . PHP_EOL, $logService->getDefaultFormat());
     }
 
     /**
@@ -211,7 +229,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        $logService->setDefaultFormat('ID %runId: %message%');
+        $logService->setDefaultFormat('ID %runId%: %message%');
         $runId = $logService->getRunId();
 
         $format = $logService->getDefaultFormat();
@@ -463,7 +481,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Opus\Log\Opus\Log\LogService
+     * @return \Opus\Log\LogService
      */
     protected function getLogService()
     {
