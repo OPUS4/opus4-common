@@ -54,7 +54,7 @@ class LogService
 
     const DEFAULT_FORMAT = '%timestamp% %priorityName% (%priority%, ID %runId%): %message%';
 
-    const DEFAULT_LOG_LEVEL = 'INFO';
+    const DEFAULT_LOG_PRIORITY = 'WARN';
 
     const DEFAULT_LOG_NAME = 'default';
 
@@ -78,14 +78,11 @@ class LogService
     /** @var string */
     private $runId;
 
-    /**
-     * @var string name of the default log name.
-     * TODO probably not needed as variable, maybe convert into constant        //DONE
-     */
-    // private $defaultLogName = 'default';
-
     /** @var string Default log priority. */
     private $defaultPriority;
+
+    /** @var int Default log level. */
+    private $logLevel;
 
     protected function __construct()
     {
@@ -244,7 +241,7 @@ class LogService
      * Gets either the log level name from configuration or the default log level name and
      *
      * @param $logger \Zend_Log object
-     * @return string
+     * @return int
      *
      *
      * TODO - $logger should not be defined yet.
@@ -277,12 +274,43 @@ class LogService
     /**
      * Sets the default log level.
      *
+     * @param $level int
+     *
+     */
+    public function setDefaultLevel($level)
+    {
+        $this->logLevel = $level;
+    }
+
+    /**
+     * Sets the default log priority.
+     *
      * @param $logPriority String
      *
      */
     public function setDefaultPriority($logPriority)
     {
         $this->defaultPriority = $logPriority;
+    }
+
+    /**
+     * Return the default log priority.
+     *
+     * @return String
+     *
+     */
+    public function getDefaultPriority()
+    {
+        $priority = $this->defaultPriority;
+        if ($priority == null) {
+            if (isset($config->log->priority)) {
+                $priority = $config->log->priority;
+            } else {
+                $priority = DEFAULT_LOG_PRIORITY;
+            }
+        }
+
+        return $priority;
     }
 
     /**

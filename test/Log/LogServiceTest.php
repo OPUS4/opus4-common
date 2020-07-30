@@ -65,7 +65,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
             'workspacePath' => $tempFolder,
             'log' => [
                 'format' => self::DEFAULT_FORMAT,
-                'level' => 'WARN'
+                'priority' => 'WARN'
             ]
         ], true));
     }
@@ -115,39 +115,39 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test getting configured default log level.
+     * Test getting configured default log priority.
      */
-    public function testGetDefaultLogLevel()
+    public function testGetDefaultLogPriority()
     {
         $logService = $this->getLogService();
 
-        $level = $logService->getDefaultLevel();
+        $level = $logService->getDefaultPriority();
 
         $this->assertEquals('WARN', $level);
     }
 
     /**
-     * Test getting default log level if not in configuration.
+     * Test getting default log priority if not in configuration.
      */
-    public function testGetDefaultLogLevelNotConfigured()
+    public function testGetDefaultLogPriorityNotConfigured()
     {
         $logService = $this->getLogService();
 
-        $level = $logService->getDefaultLevel();
+        $priority = $logService->getDefaultPriority();
 
-        $this->assertEquals(LogService::DEFAULT_LOG_LEVEL, $level);
+        $this->assertEquals(LogService::DEFAULT_LOG_PRIORITY, $priority);
     }
 
     /**
-     * Test setting custom default log level.
+     * Test setting custom default log priority.
      */
-    public function testSetDefaultLogLevel()
+    public function testSetDefaultLogPriority()
     {
         $logService = $this->getLogService();
 
-        $logService->setDefaultLevel('DEBUG');
+        $logService->setDefaultPriority('DEBUG');
 
-        $this->assertEquals('DEBUG', $logService->getDefaultLevel());
+        $this->assertEquals('DEBUG', $logService->getDefaultPriority());
     }
 
     /**
