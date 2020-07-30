@@ -43,9 +43,6 @@ namespace Opus\Log;
  * TODO if addLog returns loggers even if they are unknown it behaves a lot like createLog;
  *      addLog should use createLog if a logger is unknown
  *
- * TODO maybe we should distinguish between 'log level' (int) and 'log level name' (string);
- *      if would be nice to write something like $logService->setDefaultLevel(\Zend_Log::ERR);
- *
  * TODO we should configure the default options the same way like for other logger
  *      logging.log.default.format instead of 'log.format', but I would leave a decision until the end
  */
