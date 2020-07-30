@@ -54,7 +54,7 @@ class LogService
 
     const DEFAULT_FORMAT = '%timestamp% %priorityName% (%priority%, ID %runId%): %message%';
 
-    const DEFAULT_LOG_PRIORITY = 'WARN';
+    const DEFAULT_LOG_PRIORITY = 'INFO';
 
     const DEFAULT_LOG_NAME = 'default';
 
