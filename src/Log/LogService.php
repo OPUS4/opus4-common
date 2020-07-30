@@ -55,6 +55,8 @@ class LogService
 
     const DEFAULT_LOG_NAME = 'default';
 
+    const DEFAULT_LOG = 'default';
+
     /** @var Opus\Log\LogService Singleton instance of LogService. */
     private static $instance;
 
@@ -199,10 +201,10 @@ class LogService
      */
     public function getDefaultLog()
     {
-        if (array_key_exists(DEFAULT_LOG_NAME.'.log', $this->loggers)) {
-            return $logger = $this->loggers[DEFAULT_LOG_NAME.'.log'];
+        if (array_key_exists(self::DEFAULT_LOG_NAME.'.log', $this->loggers)) {
+            return $logger = $this->loggers[self::DEFAULT_LOG_NAME.'.log'];
         } else {
-            return $this->createLog(DEFAULT_LOG_NAME, 'opus.log');
+            return $this->createLog(self::DEFAULT_LOG_NAME, 'opus.log');
         }
     }
 
@@ -225,7 +227,7 @@ class LogService
      */
     public function applyLogLevel($logger)
     {
-        $logLevel = $this->getLogLevel($logger);
+        $logLevel = $this->getDefaultLevel();
 
         $priorityFilter = $this->createLogLevelFilter($logLevel);
         $logger->addFilter($priorityFilter);
@@ -244,7 +246,7 @@ class LogService
      * TODO - $logger should not be defined yet.
      * May be make class variable flag and check where the function is called to write the warning and error messages.
      */
-    public function getLogLevel($logger)
+    public function getDefaultLevel()
     {
         $config = $this->getConfig();
 
@@ -252,7 +254,7 @@ class LogService
             $logPriority = $config->logging->log->level;
         } else {
             $logPriority = $this->defaultPriority;
-            $logger->warn("Log level not configured, using '" . $this->defaultPriority . "'.");
+            // $logger->warn("Log level not configured, using '" . $this->defaultPriority . "'.");
         }
 
         $zendLogRefl = new \ReflectionClass('Zend_Log');
@@ -261,8 +263,8 @@ class LogService
 
         if (empty($logLevel)) {
             $logLevel = Zend_Log::INFO;
-            $logger->err("Invalid log level '" . $logPriority .
-                "' configured.");
+            // $logger->err("Invalid log level '" . $logPriority .
+            //     "' configured.");
         }
 
         return $logLevel;
@@ -303,7 +305,7 @@ class LogService
             if (isset($config->log->priority)) {
                 $priority = $config->log->priority;
             } else {
-                $priority = DEFAULT_LOG_PRIORITY;
+                $priority = self::DEFAULT_LOG_PRIORITY;
             }
         }
 
@@ -328,8 +330,11 @@ class LogService
      * @param $logName String name of log
      * @return mixed|\Zend_Log
      */
-    public function getLog($logName)
+    public function getLog($logName = null)
     {
+        if ($logName = null) {
+            return getDefaultLog();
+        }
         if ($logName == 'default') {
             return $this->getDefaultLog();
         }
