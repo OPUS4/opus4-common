@@ -356,7 +356,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        $doiLogConfig = [
+        $doiLogConfig = (object)[
             'format' => '%timestamp% %message%',
             'file' => 'doi.log',
             'level' => 'warn'
