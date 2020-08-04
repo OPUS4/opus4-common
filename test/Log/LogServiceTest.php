@@ -35,7 +35,6 @@
 namespace OpusTest\Log;
 
 use Opus\Log\LogService;
-use Opus\Log\UnknownLogException;
 
 /**
  * Class LogServiceTest
@@ -270,11 +269,11 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        // $logger = $logService->getDefaultLog();
+        $logger = $logService->getDefaultLog();
 
-        // $this->assertNotNull($logger);
-        // $this->assertInstanceOf(\Zend_Log::class, $logger);
-        // $this->assertSame($logger, $logService->getDefaultLog());
+        $this->assertNotNull($logger);
+        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertSame($logger, $logService->getDefaultLog());
     }
 
     public function testGetLogGettingDefaultLogger()
@@ -305,22 +304,22 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
             ]]
         ]));
 
-        // $logger = $logService->getLog('translation');
+        $logger = $logService->getLog('translation');
 
-        // $this->assertNotNull($logger);
+        $this->assertNotNull($logger);
 
-        // $debugMessage = 'debug level message';
-        // $logger->debug($debugMessage);
+        $debugMessage = 'debug level message';
+        $logger->debug($debugMessage);
 
-        // $this->assertNotContains($debugMessage, $this->readLogFile('translation.log'));
+        $this->assertNotContains($debugMessage, $this->readLogFile('translation.log'));
 
-        // $infoMessage = 'info level message';
-        // $logger->info($infoMessage);
+        $infoMessage = 'info level message';
+        $logger->info($infoMessage);
 
-        // $content = $this->readLogFile('translation.log');
+        $content = $this->readLogFile('translation.log');
 
-        // $this->assertContains($infoMessage, $content);
-        // $this->assertEquals($infoMessage, trim($content));
+        $this->assertContains($infoMessage, $content);
+        $this->assertEquals($infoMessage, trim($content));
     }
 
     /**
@@ -333,9 +332,9 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        // $this->setExpectedException(UnknownLogException::class);
+        $this->setExpectedException(UnknownLogException::class);
 
-        // $logService->getLog('unknownLogger');
+        $logService->getLog('unknownLogger');
     }
 
     /**
@@ -410,17 +409,17 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        // $logger = $logService->createLog('translation');
+        $logger = $logService->createLog('translation');
 
-        // $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertInstanceOf(\Zend_Log::class, $logger);
 
-        // $message = 'TRANSLATION LOG TEST MESSAGE';
+        $message = 'TRANSLATION LOG TEST MESSAGE';
 
-        // $logger->info($message);
+        $logger->info($message);
 
-        // $content = $this->readLogFile('translation.log');
+        $content = $this->readLogFile('translation.log');
 
-        // $this->assertContains($message, $content);
+        $this->assertContains($message, $content);
     }
 
     /**
@@ -433,17 +432,17 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        // $logger = $logService->createLog('error', 'opus-error.log', 'ERR', 'ERROR %message%');
+        $logger = $logService->createLog('error', 'opus-error.log', 'ERR', 'ERROR %message%');
 
-        // $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertInstanceOf(\Zend_Log::class, $logger);
 
-        // $message = 'error test message';
+        $message = 'error test message';
 
-        // $logger->warn($message);
-        // $this->assertNotContains($message, $this->readLogFile('opus-error.log'));
+        $logger->warn($message);
+        $this->assertNotContains($message, $this->readLogFile('opus-error.log'));
 
-        // $logger->err($message);
-        // $this->assertContains("ERROR $message", $this->readLogFile('opus-error.log'));
+        $logger->err($message);
+        $this->assertContains("ERROR $message", $this->readLogFile('opus-error.log'));
     }
 
     /**
@@ -453,17 +452,17 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        // $logger = $logService->createLog(LogService::DEFAULT_LOG, 'opus-console.log');
+        $logger = $logService->createLog(LogService::DEFAULT_LOG, 'opus-console.log');
 
-        // $message = 'custom default log file test';
+        $message = 'custom default log file test';
 
-        // $logger->info($message);
+        $logger->info($message);
 
-        // $content = $this->readLogFile('opus-console.log');
+        $content = $this->readLogFile('opus-console.log');
 
-        // $this->assertContains($message, $content);
+        $this->assertContains($message, $content);
 
-        // $this->assertSame($logger, $logService->getDefaultLog());
+        $this->assertSame($logger, $logService->getDefaultLog());
     }
 
     /**
@@ -475,9 +474,9 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $logger = new \Zend_Log();
 
-        // $logService->addLog('mylog', $logger);
+        $logService->addLog('mylog', $logger);
 
-        // $this->assertSame($logger, $logService->getLog('mylog'));
+        $this->assertSame($logger, $logService->getLog('mylog'));
     }
 
     /**

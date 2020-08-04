@@ -69,11 +69,11 @@ class LogService
     /** @var \Zend_Config Global configuration. */
     private $config;
 
-    /** @var null path to the folder for log files. */
+    /** @var string Path to the folder for log files. */
     private $logPath = null;
 
     /** @var string name of the log file. */
-    private $logFileName;       //make it map of the log files associated with loggers
+    private $logFileName;       // TODO make it map of the log files associated with loggers
 
     /** @var string */
     private $runId;
@@ -186,6 +186,7 @@ class LogService
     {
         if ($this->logPath == null) {
             $config = $this->getConfig();
+            // TODO check workspacePath
             $this->setpath($config->workspacePath . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR);
         }
 
