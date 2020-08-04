@@ -225,32 +225,16 @@ class LogService
      */
     public function getLogConfig($logName)
     {
-    	// $this->setConfig(new \Zend_Config([
-     //        'workspacePath' => $this->getPath(),
-     //        'log' => [
-     //            'format' => $this->getDefaultFormat(),
-     //            'level' => $this->getDefaultPriority()
-     //        ]
-     //    ], true));
+    	$config = $this->getConfig();
+    	$logConfig = $config->logging->log->$logName;
 
-        $config = $this->getConfig();
+    	$defaultConfig = new \Zend_Config([
+    		'format' => $this->getDefaultFormat(),
+    		'file' => $logName . '.log',
+    		'level' => $this->getDefaultLevel()
+    	], true);
 
-        return $config->logging->log->$logName;
-
-      //   if (isset($config->logging->log->$logName)) {
-    		// return $config->logging->log->$logName;
-      //   }else{
-      //   	$config->merge(new \Zend_Config([
-      //       	'logging' => ['log' => [
-      //           	$logName => [
-      //           		'format' => '%timestamp% %message%',
-      //       			'file' => $logName . '.log',
-      //       			'level' => $this->getDefaultPriority()
-      //       		]]]
-      //   	]));
-
-      //   	return $config->logging->log->$logName;
-      //   }
+    	return $defaultConfig->merge($logConfig);
     }
 
     /**
