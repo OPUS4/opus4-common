@@ -370,7 +370,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $config = $logService->getLogConfig('doi');
 
-        $this->assertEquals($doiLogConfig, $config);
+        $this->assertEquals($doiLogConfig, $config->toArray());
     }
 
     /**
@@ -394,7 +394,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
             'format' => $logService->getDefaultFormat(),
             'level' => $logService->getDefaultLevel(),
             'file' => 'error.log'
-        ], $logConfig);
+        ], $logConfig->toArray());
     }
 
     public function testGetLogConfigForUnknownLog()

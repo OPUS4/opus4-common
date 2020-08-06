@@ -225,7 +225,16 @@ class LogService
      */
     public function getLogConfig($logName)
     {
-        return null;
+    	$config = $this->getConfig();
+    	$logConfig = $config->logging->log->$logName;
+
+    	$defaultConfig = new \Zend_Config([
+    		'format' => $this->getDefaultFormat(),
+    		'file' => $logName . '.log',
+    		'level' => $this->getDefaultLevel()
+    	], true);
+
+    	return $defaultConfig->merge($logConfig);
     }
 
     /**
