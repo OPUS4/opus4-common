@@ -227,7 +227,7 @@ class LogService
     {
         $config = $this->getConfig();
 
-        if (isset($config->logging->log->$logName)) {
+        try {
             $logConfig = $config->logging->log->$logName;
 
             $defaultConfig = new \Zend_Config([
@@ -237,8 +237,8 @@ class LogService
             ], true);
 
             return $defaultConfig->merge($logConfig);
-        } else {
-            throw new \Exception($logName . ".log not configured in global configuration");
+        } catch (exception $e) {
+            throw $e;
         }
     }
 
