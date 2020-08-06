@@ -227,24 +227,18 @@ class LogService
     {
         $config = $this->getConfig();
 
-        if (! isset($config->logging->log->$logName)) {
-            $config->merge(new \Zend_Config([
-            'logging' => ['log' => [
-                $logName => ['format' => '%timestamp% %message%',
-                        'file' => $logName . '.log',
-                        'level' => 'warn'
-                ]]]
-            ]));
-        }
-            $logConfig = $config->logging->log->$logName;
-
-            $defaultConfig = new \Zend_Config([
+        $defaultConfig = new \Zend_Config([
             'format' => $this->getDefaultFormat(),
             'file' => $logName . '.log',
             'level' => $this->getDefaultLevel()
             ], true);
 
+        if (isset($config->logging->log)) {
+            $logConfig = $config->logging->log->$logName;
             return $defaultConfig->merge($logConfig);
+        } else {
+            return $defaultConfig;
+        }
     }
 
     /**

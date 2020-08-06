@@ -397,6 +397,24 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         ], $logConfig->toArray());
     }
 
+    /**
+     * Check if default configuration is returned if logging.log does not exist
+     */
+    public function testGetLogConfigLoggingConfigurationMissing()
+    {
+        $logService = $this->getLogService();
+
+        $doiLogConfig = [
+            'format' => $logService->getDefaultFormat(),
+            'file' => 'doi.log',
+            'level' => $logService->getDefaultLevel()
+        ];
+
+        $config = $logService->getLogConfig('doi');
+
+        $this->assertEquals($doiLogConfig, $config->toArray());
+    }
+
     public function testGetLogConfigForUnknownLog()
     {
         // TODO if we allow unknown log (I think we should), this should return array with default options
