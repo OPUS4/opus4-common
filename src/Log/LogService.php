@@ -225,16 +225,21 @@ class LogService
      */
     public function getLogConfig($logName)
     {
-    	$config = $this->getConfig();
-    	$logConfig = $config->logging->log->$logName;
+        $config = $this->getConfig();
 
-    	$defaultConfig = new \Zend_Config([
-    		'format' => $this->getDefaultFormat(),
-    		'file' => $logName . '.log',
-    		'level' => $this->getDefaultLevel()
-    	], true);
+        if (isset($config->logging->log->$logName)) {
+            $logConfig = $config->logging->log->$logName;
 
-    	return $defaultConfig->merge($logConfig);
+            $defaultConfig = new \Zend_Config([
+            'format' => $this->getDefaultFormat(),
+            'file' => $logName . '.log',
+            'level' => $this->getDefaultLevel()
+            ], true);
+
+            return $defaultConfig->merge($logConfig);
+        } else {
+            throw new \Exception($logName . ".log not configured in global configuration");
+        }
     }
 
     /**
