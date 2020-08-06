@@ -187,7 +187,7 @@ class LogService
         if ($this->logPath == null) {
             $config = $this->getConfig();
             // TODO check workspacePath
-            $this->setpath($config->workspacePath . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR);
+            $this->setPath($config->workspacePath . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR);
         }
 
         return $this->logPath;
@@ -233,7 +233,7 @@ class LogService
             'level' => $this->getDefaultLevel()
             ], true);
 
-        if (isset($config->logging->log)) {
+        if (isset($config->logging->log->$logName)) {
             $logConfig = $config->logging->log->$logName;
             return $defaultConfig->merge($logConfig);
         } else {
