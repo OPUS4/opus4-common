@@ -237,8 +237,8 @@ class LogService
             ], true);
 
             return $defaultConfig->merge($logConfig);
-        } catch (exception $e) {
-            throw $e;
+        } catch (Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 
