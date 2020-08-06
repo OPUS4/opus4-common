@@ -12,3 +12,6 @@ nbproject
 
 # Build files
 build
+
+# Other
+**/.DS_Store
