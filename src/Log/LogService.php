@@ -227,7 +227,15 @@ class LogService
     {
         $config = $this->getConfig();
 
-        try {
+        if (! isset($config->logging->log->$logName)) {
+            $config->merge(new \Zend_Config([
+            'logging' => ['log' => [
+                $logName => ['format' => '%timestamp% %message%',
+                        'file' => $logName . '.log',
+                        'level' => 'warn'
+                ]]]
+            ]));
+        }
             $logConfig = $config->logging->log->$logName;
 
             $defaultConfig = new \Zend_Config([
@@ -237,9 +245,6 @@ class LogService
             ], true);
 
             return $defaultConfig->merge($logConfig);
-        } catch (Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
     }
 
     /**
