@@ -231,7 +231,7 @@ class LogService
             'format' => $this->getDefaultFormat(),
             'file' => $logName . '.log',
             'level' => $this->getDefaultLevel()
-            ], true);
+        ], true);
 
         if (isset($config->logging->log->$logName)) {
             $logConfig = $config->logging->log->$logName;
