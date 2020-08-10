@@ -211,17 +211,17 @@ class LogService
     public function getDefaultLog()
     {
         if (array_key_exists(self::DEFAULT_LOG.'.log', $this->loggers)) {
-            return $logger = $this->loggers[self::DEFAULT_LOG.'.log'];
+            return $this->loggers[self::DEFAULT_LOG.'.log'];
         } else {
             return $this->createLog(self::DEFAULT_LOG, 'opus.log');
         }
     }
 
     /**
-     * TODO - get the log configurations.
+     * Get a log's configurations.
      *
      * @param $logName String
-     * @return null
+     * @return \Zend_Config
      */
     public function getLogConfig($logName)
     {
@@ -357,19 +357,17 @@ class LogService
      */
     public function getLog($logName = null)
     {
-        if ($logName = null) {
-            return getDefaultLog();
-        }
-        if ($logName == 'default') {
+        if ($logName = null || $logName == 'default') {
             return $this->getDefaultLog();
         }
+
         if (array_key_exists($logName.'.log', $this->loggers)) {
             return $logger = $this->loggers[$logName.'.log'];
         } else {
             try {
                 return $this->createLog($logName);
-            } catch (Exception $e) {
-                throw new Exception('Unknown logger: '.$logName, 1);
+            } catch (\Exception $e) {
+                throw new \Exception('Unknown logger: '.$logName, 1);
             }
         }
     }

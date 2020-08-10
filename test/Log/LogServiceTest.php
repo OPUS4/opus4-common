@@ -58,6 +58,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $tempFolder = $this->createTempFolder();
         $this->tempFolder = $tempFolder;
+        $this->createLogFolder();
 
         $this->logService = LogService::getInstance();
         $this->logService->setConfig(new \Zend_Config([
@@ -80,6 +81,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $instance->setAccessible(false);
 
         $this->removeFolder($this->tempFolder);
+
 
         parent::tearDown();
     }
@@ -513,6 +515,13 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         return $path;
     }
 
+    protected function createLogFolder()
+    {
+        $path = $this->tempFolder . DIRECTORY_SEPARATOR . 'log';
+        mkdir($path, 0777, true);
+        return $path;
+    }
+
     protected function removeFolder($path)
     {
         if (! is_null($path) && file_exists($path)) {
@@ -530,13 +539,20 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    protected function deleteFolder($pathName)
+    {
+        if (is_dir($pathName)) {
+            rmdir($pathName);
+        }
+    }
+
     protected function readLogFile($name)
     {
-        $path = $this->tempFolder . DIRECTORY_SEPARATOR . $name;
+        $path = $this->tempFolder . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . $name;
         if (file_exists($path)) {
             return file_get_contents($path);
         } else {
-            throw new Exception("log file '$name' not found");
+            throw new \Exception("log file '$name' not found");
         }
     }
 }
