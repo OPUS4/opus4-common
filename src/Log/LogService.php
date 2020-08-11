@@ -210,8 +210,8 @@ class LogService
      */
     public function getDefaultLog()
     {
-        if (array_key_exists(self::DEFAULT_LOG.'.log', $this->loggers)) {
-            return $this->loggers[self::DEFAULT_LOG.'.log'];
+        if (array_key_exists(self::DEFAULT_LOG, $this->loggers)) {
+            return $this->loggers[self::DEFAULT_LOG];
         } else {
             return $this->createLog(self::DEFAULT_LOG, 'opus.log');
         }
@@ -357,12 +357,12 @@ class LogService
      */
     public function getLog($logName = null)
     {
-        if ($logName = null || $logName == 'default') {
+        if ($logName == null || $logName == 'default') {
             return $this->getDefaultLog();
         }
 
-        if (array_key_exists($logName.'.log', $this->loggers)) {
-            return $logger = $this->loggers[$logName.'.log'];
+        if (array_key_exists($logName, $this->loggers)) {
+            return $logger = $this->loggers[$logName];
         } else {
             try {
                 return $this->createLog($logName);

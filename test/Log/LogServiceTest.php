@@ -58,7 +58,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $tempFolder = $this->createTempFolder();
         $this->tempFolder = $tempFolder;
-        $this->createLogFolder();
+        $this->createFolder('log');
 
         $this->logService = LogService::getInstance();
         $this->logService->setConfig(new \Zend_Config([
@@ -515,9 +515,13 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         return $path;
     }
 
-    protected function createLogFolder()
+    /**
+     * TODO Move it from here for use in other tests as well.
+     * @return String path to log folder.
+     */
+    protected function createFolder($folderName)
     {
-        $path = $this->tempFolder . DIRECTORY_SEPARATOR . 'log';
+        $path = $this->tempFolder . DIRECTORY_SEPARATOR . $folderName;
         mkdir($path, 0777, true);
         return $path;
     }
@@ -529,20 +533,13 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
                 $iterator = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
                 foreach ($iterator as $file) {
                     if ($file->isDir()) {
-                        $this->deleteFolder($file->getPathname());
+                        $this->removeFolder($file->getPathname());
                     } else {
                         unlink($file->getPathname());
                     }
                 }
                 rmdir($path);
             }
-        }
-    }
-
-    protected function deleteFolder($pathName)
-    {
-        if (is_dir($pathName)) {
-            rmdir($pathName);
         }
     }
 
