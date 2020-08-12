@@ -53,6 +53,7 @@ namespace Opus\Translate;
  *
  * TODO describe details of modules handling in API (expected behaviour)
  * TODO describe how to handle conflicts between modules
+ * TODO cleanup interface
  *
  * @package Opus\Ţranslate
  */
