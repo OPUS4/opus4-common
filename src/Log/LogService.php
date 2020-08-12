@@ -187,7 +187,7 @@ class LogService
         if ($this->logPath == null) {
             $config = $this->getConfig();
             // TODO check workspacePath
-            $this->setpath($config->workspacePath . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR);
+            $this->setPath($config->workspacePath . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR);
         }
 
         return $this->logPath;
@@ -210,31 +210,35 @@ class LogService
      */
     public function getDefaultLog()
     {
-        if (array_key_exists(self::DEFAULT_LOG.'.log', $this->loggers)) {
-            return $logger = $this->loggers[self::DEFAULT_LOG.'.log'];
+        if (array_key_exists(self::DEFAULT_LOG, $this->loggers)) {
+            return $this->loggers[self::DEFAULT_LOG];
         } else {
             return $this->createLog(self::DEFAULT_LOG, 'opus.log');
         }
     }
 
     /**
-     * TODO - get the log configurations.
+     * Get a log's configurations.
      *
      * @param $logName String
-     * @return null
+     * @return \Zend_Config
      */
     public function getLogConfig($logName)
     {
-    	$config = $this->getConfig();
-    	$logConfig = $config->logging->log->$logName;
+        $config = $this->getConfig();
 
-    	$defaultConfig = new \Zend_Config([
-    		'format' => $this->getDefaultFormat(),
-    		'file' => $logName . '.log',
-    		'level' => $this->getDefaultLevel()
-    	], true);
+        $defaultConfig = new \Zend_Config([
+            'format' => $this->getDefaultFormat(),
+            'file' => $logName . '.log',
+            'level' => $this->getDefaultLevel()
+        ], true);
 
-    	return $defaultConfig->merge($logConfig);
+        if (isset($config->logging->log->$logName)) {
+            $logConfig = $config->logging->log->$logName;
+            return $defaultConfig->merge($logConfig);
+        } else {
+            return $defaultConfig;
+        }
     }
 
     /**
@@ -353,19 +357,17 @@ class LogService
      */
     public function getLog($logName = null)
     {
-        if ($logName = null) {
-            return getDefaultLog();
-        }
-        if ($logName == 'default') {
+        if ($logName == null || $logName == 'default') {
             return $this->getDefaultLog();
         }
-        if (array_key_exists($logName.'.log', $this->loggers)) {
-            return $logger = $this->loggers[$logName.'.log'];
+
+        if (array_key_exists($logName, $this->loggers)) {
+            return $logger = $this->loggers[$logName];
         } else {
             try {
                 return $this->createLog($logName);
-            } catch (Exception $e) {
-                throw new Exception('Unknown logger: '.$logName, 1);
+            } catch (\Exception $e) {
+                throw new \Exception('Unknown logger: '.$logName, 1);
             }
         }
     }

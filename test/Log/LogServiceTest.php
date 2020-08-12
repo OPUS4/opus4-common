@@ -58,6 +58,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $tempFolder = $this->createTempFolder();
         $this->tempFolder = $tempFolder;
+        $this->createFolder('log');
 
         $this->logService = LogService::getInstance();
         $this->logService->setConfig(new \Zend_Config([
@@ -80,6 +81,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $instance->setAccessible(false);
 
         $this->removeFolder($this->tempFolder);
+
 
         parent::tearDown();
     }
@@ -397,6 +399,24 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         ], $logConfig->toArray());
     }
 
+    /**
+     * Check if default configuration is returned if logging.log does not exist
+     */
+    public function testGetLogConfigLoggingConfigurationMissing()
+    {
+        $logService = $this->getLogService();
+
+        $doiLogConfig = [
+            'format' => $logService->getDefaultFormat(),
+            'file' => 'doi.log',
+            'level' => $logService->getDefaultLevel()
+        ];
+
+        $config = $logService->getLogConfig('doi');
+
+        $this->assertEquals($doiLogConfig, $config->toArray());
+    }
+
     public function testGetLogConfigForUnknownLog()
     {
         // TODO if we allow unknown log (I think we should), this should return array with default options
@@ -495,6 +515,17 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         return $path;
     }
 
+    /**
+     * TODO Move it from here for use in other tests as well.
+     * @return String path to log folder.
+     */
+    protected function createFolder($folderName)
+    {
+        $path = $this->tempFolder . DIRECTORY_SEPARATOR . $folderName;
+        mkdir($path, 0777, true);
+        return $path;
+    }
+
     protected function removeFolder($path)
     {
         if (! is_null($path) && file_exists($path)) {
@@ -502,7 +533,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
                 $iterator = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
                 foreach ($iterator as $file) {
                     if ($file->isDir()) {
-                        $this->deleteFolder($file->getPathname());
+                        $this->removeFolder($file->getPathname());
                     } else {
                         unlink($file->getPathname());
                     }
@@ -514,11 +545,11 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
     protected function readLogFile($name)
     {
-        $path = $this->tempFolder . DIRECTORY_SEPARATOR . $name;
+        $path = $this->tempFolder . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . $name;
         if (file_exists($path)) {
             return file_get_contents($path);
         } else {
-            throw new Exception("log file '$name' not found");
+            throw new \Exception("log file '$name' not found");
         }
     }
 }
