@@ -152,10 +152,13 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
 
         $logService = LogService::getInstance();
 
-        $logger = $logService->createLog('default', $logFilename);
-        \Zend_Registry::set('Zend_Log', $logger);
+        $logger = $logService->createLog(LogService::DEFAULT_LOG, null, null, $logFilename);
 
-        // TODO set LOG_LEVEL (of default log) in Zend_Registry
+        // TODO $logLevel needs to be an int
+        $logLevel = $logService->getDefaultLevel();
+
+        \Zend_Registry::set('Zend_Log', $logger);
+        \Zend_Registry::set('LOG_LEVEL', $logLevel);
 
         $logger->debug('Logging initialized');
 
