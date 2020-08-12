@@ -508,7 +508,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * TODO Test adding an externally created log object.
      */
     public function testAddLog()
     {
@@ -519,6 +518,17 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $logService->addLog('mylog', $logger);
 
         $this->assertSame($logger, $logService->getLog('mylog'));
+    }
+
+    public function testAddLogWrongObjectType()
+    {
+        $logService = $this->getLogService();
+
+        $object = new \Zend_Config([]);
+
+        $this->setExpectedException(Exception::class, 'must be of type Zend_Log');
+
+        $logService->addLog('myLog', $object);
     }
 
     public function testConvertPriorityFromString()
@@ -552,6 +562,44 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($logService->convertPriorityToString(-1));
         $this->assertNull($logService->convertPriorityToString(99));
+    }
+
+    public function testLineBreaksInLogOutput()
+    {
+        $logService = $this->getLogService();
+
+        $logService->setDefaultPriority('INFO');
+        $logService->setDefaultFormat('%message%');
+        $logger = $logService->getLog('translation');
+
+        $logger->info('log message 1');
+        $logger->info('log message 2');
+
+        $content = $this->readLogFile('translation.log');
+
+        $this->assertEquals(
+            'log message 1' . PHP_EOL . 'log message 2' . PHP_EOL,
+            $content
+        );
+    }
+
+    public function testLineBreaksOnlyOne()
+    {
+        $logService = $this->getLogService();
+
+        $logService->setDefaultPriority('INFO');
+        $logService->setDefaultFormat('%message%' . PHP_EOL);
+        $logger = $logService->getLog('translation');
+
+        $logger->info('log message 1');
+        $logger->info('log message 2');
+
+        $content = $this->readLogFile('translation.log');
+
+        $this->assertEquals(
+            'log message 1' . PHP_EOL . 'log message 2' . PHP_EOL,
+            $content
+        );
     }
 
     /**

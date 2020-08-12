@@ -39,12 +39,7 @@ use Opus\Exception;
  * Class to manage multiple loggers
  *
  * @package     Opus\Log
- *
- * TODO NOTE I think TODO tags are good, but they should be written like they are meant for other developers.
- *
- * TODO if addLog returns loggers even if they are unknown it behaves a lot like createLog;
- *      addLog should use createLog if a logger is unknown
- *
+ **
  * TODO we should configure the default options the same way like for other logger
  *      logging.log.default.format instead of 'log.format', but I would leave a decision until the end
  *
@@ -117,10 +112,11 @@ class LogService
      * Creates a new logger and returns it.
      *
      * @param string $name Name of the log.
-     * @param null|string $filename string optional name of the log file.
+     * @param null|string $priority Name of log level.
+     * @param null|string $format Format for log output.
+     * @param null|string $filename Optional name of the log file.
      * @return \Zend_Log
      *
-     * TODO are we using configuration here?
      * TODO what if logger already exists (name, file)
      */
     public function createLog($name, $priority = null, $format = null, $filename = null)
@@ -166,13 +162,12 @@ class LogService
      * @param string $name Name of log
      * @param \Zend_Log $logger
      *
-     *
      * TODO check if logger already exists
      */
     public function addLog($name, $logger)
     {
         if (! $logger instanceof \Zend_Log) {
-            // TODO throw exception
+            throw new Exception('Logger added must be of type Zend_Log.');
         }
         $this->loggers[$name] = $logger;
     }
@@ -303,7 +298,7 @@ class LogService
     /**
      * Return the default log priority.
      *
-     * @return String
+     * @return int
      */
     public function getDefaultPriority()
     {
@@ -314,10 +309,15 @@ class LogService
 
             if (isset($config->log->level)) {
                 $priority = $config->log->level;
-                // TODO verify it is a valid priority string (in a separate function)
             }
 
-            $this->defaultPriority = $this->convertPriorityFromString($priority);
+            $priorityValue = $this->convertPriorityFromString($priority);
+
+            if ($priorityValue === null) {
+                $priorityValue = $this->convertPriorityFromString(self::DEFAULT_PRIORITY);
+            }
+
+            $this->defaultPriority = $priorityValue;
         }
 
         return $this->defaultPriority;
@@ -328,6 +328,7 @@ class LogService
      *
      * @param string $name Name of log
      * @return mixed|\Zend_Log
+     * @throws \Exception
      */
     public function getLog($name = null)
     {
@@ -349,10 +350,7 @@ class LogService
      * @param int $priority
      * @param string $logFile
      * @return \Zend_Log
-     * @throws \Zend_Exception
      * @throws \Zend_Log_Exception
-     *
-     * TODO should checks happen here or at a higher level
      */
     protected function createLogger($format, $priority, $file)
     {
@@ -400,7 +398,9 @@ class LogService
 
         $runId = $this->getRunId();
 
-        return preg_replace('/%runId%/', $runId, $this->defaultFormat) . PHP_EOL;
+        $format = rtrim(preg_replace('/%runId%/', $runId, $this->defaultFormat), PHP_EOL) . PHP_EOL;
+
+        return $format;
     }
 
     /**
