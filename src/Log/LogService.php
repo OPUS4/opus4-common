@@ -228,7 +228,7 @@ class LogService
     /**
      * Returns the default log or creates new default log if one doesn't exist already.
      *
-     * @return mixed|Zend_Log
+     * @return \Zend_Log
      */
     public function getDefaultLog()
     {
@@ -263,15 +263,9 @@ class LogService
     }
 
     /**
-     * Returns the log level.
+     * Gets the default priority constant name.
      *
-     * Gets either the log level name from configuration or the default log level name and
-     *
-     * @return int
-     *
-     *
-     * TODO - $logger could not be defined yet.
-     *      May be make class variable flag and check where the function is called to write the warning and error messages.
+     * @return string
      */
     public function getDefaultPriorityAsString()
     {
@@ -291,7 +285,7 @@ class LogService
         } else if (is_string($priority)) {
             $this->defaultPriority = $this->convertPriorityFromString($priority);
         } else {
-            throw new Exception('Setting default priority with invalid parameter.');
+            throw new \Exception('Setting default priority with invalid parameter.');
         }
     }
 
@@ -326,9 +320,8 @@ class LogService
     /**
      * Get a log or create one if not already exists.
      *
-     * @param string $name Name of log
-     * @return mixed|\Zend_Log
-     * @throws \Exception
+     * @param null|string $name Name of log
+     * @return \Zend_Log
      */
     public function getLog($name = null)
     {
@@ -337,7 +330,7 @@ class LogService
         }
 
         if (array_key_exists($name, $this->loggers)) {
-            return $logger = $this->loggers[$name];
+            return $this->loggers[$name];
         } else {
             return $this->createLog($name);
         }
@@ -346,11 +339,10 @@ class LogService
     /**
      * Creates a new, configured Zend_Log object.
      *
-     * @param string $logFile
+     * @param string $format
+     * @param string $file
      * @param int $priority
-     * @param string $logFile
      * @return \Zend_Log
-     * @throws \Zend_Log_Exception
      */
     protected function createLogger($format, $priority, $file)
     {
@@ -370,7 +362,7 @@ class LogService
     /**
      * Set the default format.
      *
-     * @param null|string $format Format of logging
+     * @param string $format
      */
     public function setDefaultFormat($format)
     {
@@ -404,8 +396,9 @@ class LogService
     }
 
     /**
-     * Write ID string to global variables, so we can identify/match individual runs.
+     * Set the run ID to identify/match individual runs.
      *
+     * @param string $runId
      */
     public function setRunId($runId)
     {
@@ -413,7 +406,7 @@ class LogService
     }
 
     /**
-     * Get the global variable ID string or set it if it doesn't exist.
+     * Get the unique run ID string or set it if it isn't set.
      *
      * @return string
      */
