@@ -24,10 +24,11 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Bootstrap
+ * @category    Common
+ * @package     Opus\Bootstrap
  * @author      Ralf Claussnitzer (ralf.claussnitzer@slub-dresden.de)
  * @author      Kaustabh Barman <barman@zib.de>
+ * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -111,9 +112,8 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
      * $config = $registry->get('Zend_Config');
      * </code>
      *
-     * @throws Exception          Exception is thrown if configuration level is invalid.
-     * @return Zend_Config
-     *
+     * @throws \Exception          Exception is thrown if configuration level is invalid.
+     * @return \Zend_Config
      */
     protected function _initConfiguration()
     {
@@ -126,7 +126,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
     /**
      * Setup Logging
      *
-     * @throws Exception If logging file couldn't be opened.
+     * @throws \Exception If logging file couldn't be opened.
      * @return void
      *
      * Use LogService API for calling different logs with their names
@@ -152,10 +152,9 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
 
         $logService = LogService::getInstance();
 
+        // TODO could make sure priority is definitely correct by setting it here
         $logger = $logService->createLog(LogService::DEFAULT_LOG, null, null, $logFilename);
-
-        // TODO $logLevel needs to be an int
-        $logLevel = $logService->getDefaultLevel();
+        $logLevel = $logService->getDefaultPriority();
 
         \Zend_Registry::set('Zend_Log', $logger);
         \Zend_Registry::set('LOG_LEVEL', $logLevel);

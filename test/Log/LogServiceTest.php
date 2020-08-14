@@ -291,9 +291,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('customId', $logService->getRunId());
     }
 
-    /**
-     * TODO Check getting default log.
-     */
     public function testGetDefaultLog()
     {
         $logService = $this->getLogService();
@@ -316,9 +313,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($logger, $logService->getDefaultLog());
     }
 
-    /**
-     * TODO Check if configured logger are returned properly configured.
-     */
     public function testGetLogConfiguredLog()
     {
         $logService = $this->getLogService();
@@ -363,7 +357,13 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($logger);
         $this->assertInstanceOf('\Zend_Log', $logger);
 
-        // TODO check logging into 'unknownLogger.log'
+        $message = 'UNKNOWN LOGGER TEST';
+
+        $logger->warn($message);
+
+        $content = $this->readLogFile('unknownLogger.log');
+
+        $this->assertContains($message, $content);
     }
 
     /**
@@ -444,9 +444,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($doiLogConfig, $config->toArray());
     }
 
-    /**
-     * TODO Test creating a new logger.
-     */
     public function testCreateLog()
     {
         $logService = $this->getLogService();
@@ -464,12 +461,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($message, $content);
     }
 
-    /**
-     * TODO Test creating log with custom options.
-     *
-     * TODO because the number of options is limited this is okay, otherwise we could use options array
-     *      with named options
-     */
     public function testCreateLogWithOptions()
     {
         $logService = $this->getLogService();
@@ -487,9 +478,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertContains("ERROR $message", $this->readLogFile('opus-error.log'));
     }
 
-    /**
-     * TODO Test customizing the log file for the default logger.
-     */
     public function testCreateDefaultLogWithCustomFilename()
     {
         $logService = $this->getLogService();
@@ -620,6 +608,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
     /**
      * TODO Move it from here for use in other tests as well.
+     * TODO fix - has a generic name, but very specific function relying on a class variable (bad feeling here)
      * @return String path to log folder.
      */
     protected function createFolder($folderName)

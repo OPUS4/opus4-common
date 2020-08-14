@@ -27,6 +27,7 @@
  * @category    opus4-common
  * @Package     Opus\Log
  * @author      Kaustabh Barman <barman@zib.de>
+ * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -36,10 +37,30 @@ namespace Opus\Log;
 use Opus\Exception;
 
 /**
- * Class to manage multiple loggers
+ * Class for managing multiple loggers.
+ *
+ * The LogService centralizes creating new logs for OPUS 4. During bootstrapping
+ * the default logger is created and can be obtained with `getDefaultLog` later.
+ *
+ * It is possible to configure loggers in the global configuration. A configured
+ * logger can be obtained using a NAME.
+ *
+ * logging.log.[NAME].format
+ * logging.log.[NAME].file
+ * logging.log.[NAME].level
+ *
+ * The default values are configured using the old parameters.
+ *
+ * log.format
+ * log.level
+ *
+ * The default file for a logger is the NAME of the logger with the extension `.log`.
+ * Normally the default log output would go into `default.log`, however the name
+ * is being customized during bootstrapping, so it becomes `opus.log` or
+ * `opus-console.log` for regular runs of OPUS 4.
  *
  * @package     Opus\Log
- **
+ *
  * TODO we should configure the default options the same way like for other loggers
  *      logging.log.default.format instead of 'log.format', but I would leave a decision until the end
  * TODO should logger names be case insensitive (?)
@@ -64,7 +85,7 @@ class LogService
      */
     const DEFAULT_LOG = 'default';
 
-    /** @var Opus\Log\LogService Singleton instance of LogService. */
+    /** @var LogService Singleton instance of LogService. */
     private static $instance;
 
     /** @var \Zend_Config Global configuration. */
@@ -94,7 +115,7 @@ class LogService
 
     /**
      * Creates singleton instance of LogService.
-     * @return Opus\Log\LogService
+     * @return LogService
      */
     public static function getInstance()
     {
@@ -223,7 +244,7 @@ class LogService
     /**
      * Returns the default log or creates new default log if one doesn't exist already.
      *
-     * @return mixed|Zend_Log
+     * @return \Zend_Log
      */
     public function getDefaultLog()
     {
@@ -235,7 +256,10 @@ class LogService
     }
 
     /**
-     * Get a log's configurations.
+     * Returns configuration for a log.
+     *
+     * If the log has not been configured specifically in the global configuration,
+     * default values are used.
      *
      * @param string $name
      * @return \Zend_Config
@@ -258,7 +282,7 @@ class LogService
     }
 
     /**
-     * Returns the name of the default log level.
+     * Returns the name of the default log priority.
      *
      * @return string
      */
@@ -318,9 +342,8 @@ class LogService
     /**
      * Get a log or create one if not already exists.
      *
-     * @param string $name Name of log
-     * @return mixed|\Zend_Log
-     * @throws \Exception
+     * @param null|string $name Name of log
+     * @return \Zend_Log
      */
     public function getLog($name = null)
     {
@@ -329,7 +352,7 @@ class LogService
         }
 
         if (array_key_exists($name, $this->loggers)) {
-            return $logger = $this->loggers[$name];
+            return $this->loggers[$name];
         } else {
             return $this->createLog($name);
         }
@@ -338,9 +361,9 @@ class LogService
     /**
      * Creates a new, configured Zend_Log object.
      *
-     * @param string $logFile
+     * @param string $format
      * @param int $priority
-     * @param string $logFile
+     * @param string $file
      * @return \Zend_Log
      * @throws \Zend_Log_Exception
      */
@@ -360,9 +383,9 @@ class LogService
     }
 
     /**
-     * Set the default format.
+     * Sets the default log output format.
      *
-     * @param null|string $format Format of logging
+     * @param string $format Format of log output.
      */
     public function setDefaultFormat($format)
     {
@@ -370,11 +393,17 @@ class LogService
     }
 
     /**
-     * Return the format from configuration or the default format.
+     * Returns the default log output format.
+     *
+     * The output format can be set explicitly in this class or
+     * be configured in the global configuration.
+     *
+     * A run ID is added to the output format if the placeholder %runId%
+     * is present in order to match log output to separate requests.
      *
      * @return string
      */
-    public function getDefaultFormat()      //use placeholder for the ID string
+    public function getDefaultFormat()
     {
         if ($this->defaultFormat == null) {
             $config = $this->getConfig();
@@ -396,8 +425,8 @@ class LogService
     }
 
     /**
-     * Write ID string to global variables, so we can identify/match individual runs.
-     *
+     * Set the run ID to identify/match individual runs.
+     * @param string $runId
      */
     public function setRunId($runId)
     {
@@ -405,7 +434,7 @@ class LogService
     }
 
     /**
-     * Get the global variable ID string or set it if it doesn't exist.
+     * Get unique run ID.
      *
      * @return string
      */
