@@ -40,15 +40,11 @@ use Opus\Exception;
  *
  * @package     Opus\Log
  **
- * TODO we should configure the default options the same way like for other logger
+ * TODO we should configure the default options the same way like for other loggers
  *      logging.log.default.format instead of 'log.format', but I would leave a decision until the end
- *
- * TODO Do we actually need the PHP_EOL at the end of the log format?
- *
- * TODO provide function for closing loggers (file handles) - basically this should remove the logger
- *      a new call to createLog will create a new logger object
- *
- * TODO should logger names be case sensitive
+ * TODO should logger names be case insensitive (?)
+ * TODO protection against creating multiple loggers for same file (?)
+ * TODO protection against adding loggers for existing name (?)
  */
 class LogService
 {
@@ -161,8 +157,7 @@ class LogService
      *
      * @param string $name Name of log
      * @param \Zend_Log $logger
-     *
-     * TODO check if logger already exists
+     * @throws Exception
      */
     public function addLog($name, $logger)
     {
@@ -263,15 +258,9 @@ class LogService
     }
 
     /**
-     * Returns the log level.
+     * Returns the name of the default log level.
      *
-     * Gets either the log level name from configuration or the default log level name and
-     *
-     * @return int
-     *
-     *
-     * TODO - $logger could not be defined yet.
-     *      May be make class variable flag and check where the function is called to write the warning and error messages.
+     * @return string
      */
     public function getDefaultPriorityAsString()
     {
@@ -281,7 +270,10 @@ class LogService
     /**
      * Sets the default log priority.
      *
-     * @param int|string $priority
+     * Either the name or the Zend_Log constants can be used to set the default
+     * log level.
+     *
+     * @param int|string $priority Value or name of log level.
      *
      */
     public function setDefaultPriority($priority)
