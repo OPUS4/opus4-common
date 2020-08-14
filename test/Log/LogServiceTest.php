@@ -34,6 +34,7 @@
 
 namespace OpusTest\Log;
 
+use Opus\Exception;
 use Opus\Log\LogService;
 
 /**
@@ -58,6 +59,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $tempFolder = $this->createTempFolder();
         $this->tempFolder = $tempFolder;
+        $this->createFolder('log');
 
         $this->logService = LogService::getInstance();
         $this->logService->setConfig(new \Zend_Config([
@@ -108,7 +110,12 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPathNotConfigured()
     {
-        // TODO what happens if workspacePath has not been configured
+        $logService = LogService::getInstance();
+        $logService->setConfig(new \Zend_Config([]));
+
+        $this->setExpectedException(Exception::class, 'Workspace path not found in configuration.');
+
+        $logService->getPath();
     }
 
     /**
@@ -117,8 +124,21 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     public function testSetPath()
     {
         $logService = LogService::getInstance();
-        $logService->setPath(__DIR__);
-        $this->assertEquals(__DIR__, $logService->getPath());
+
+        $path = rtrim(__DIR__, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+        $logService->setPath($path);
+        $this->assertEquals($path, $logService->getPath());
+    }
+
+    public function testSetPathAddsDirectorySeparator()
+    {
+        $logService = LogService::getInstance();
+
+        $path = rtrim(__DIR__, DIRECTORY_SEPARATOR);
+
+        $logService->setPath($path);
+        $this->assertEquals($path . DIRECTORY_SEPARATOR, $logService->getPath());
     }
 
     /**
@@ -130,7 +150,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $level = $logService->getDefaultPriority();
 
-        $this->assertEquals('WARN', $level);
+        $this->assertEquals(\Zend_Log::WARN, $level);
     }
 
     /**
@@ -144,21 +164,30 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
             'log' => ['level' => null]
         ]));
 
-        $priority = $logService->getDefaultPriority();
+        $priority = $logService->getDefaultPriorityAsString();
 
         $this->assertEquals(LogService::DEFAULT_PRIORITY, $priority);
+    }
+
+    public function testSetDefaultPriority()
+    {
+        $logService = $this->getLogService();
+
+        $logService->setDefaultPriority(\Zend_Log::EMERG);
+
+        $this->assertEquals(\Zend_Log::EMERG, $logService->getDefaultPriority());
     }
 
     /**
      * Test setting custom default log priority.
      */
-    public function testSetDefaultPriority()
+    public function testSetDefaultPriorityWithString()
     {
         $logService = $this->getLogService();
 
         $logService->setDefaultPriority('DEBUG');
 
-        $this->assertEquals('DEBUG', $logService->getDefaultPriority());
+        $this->assertEquals('DEBUG', $logService->getDefaultPriorityAsString());
     }
 
     /**
@@ -262,9 +291,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('customId', $logService->getRunId());
     }
 
-    /**
-     * TODO Check getting default log.
-     */
     public function testGetDefaultLog()
     {
         $logService = $this->getLogService();
@@ -287,9 +313,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($logger, $logService->getDefaultLog());
     }
 
-    /**
-     * TODO Check if configured logger are returned properly configured.
-     */
     public function testGetLogConfiguredLog()
     {
         $logService = $this->getLogService();
@@ -324,17 +347,23 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test exception is thrown if logger is unknown.
-     *
-     * TODO is that the best behavior or should we simply create a new logger with default settings
-     *      using the unknown name for the new log file? (probably the better option)
      */
     public function testGetLogForUnknownLog()
     {
         $logService = $this->getLogService();
 
-        $this->setExpectedException(UnknownLogException::class);
+        $logger = $logService->getLog('unknownLogger');
 
-        $logService->getLog('unknownLogger');
+        $this->assertNotNull($logger);
+        $this->assertInstanceOf('\Zend_Log', $logger);
+
+        $message = 'UNKNOWN LOGGER TEST';
+
+        $logger->warn($message);
+
+        $content = $this->readLogFile('unknownLogger.log');
+
+        $this->assertContains($message, $content);
     }
 
     /**
@@ -392,19 +421,29 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals([
             'format' => $logService->getDefaultFormat(),
-            'level' => $logService->getDefaultLevel(),
+            'level' => $logService->getDefaultPriorityAsString(),
             'file' => 'error.log'
         ], $logConfig->toArray());
     }
 
+    /**
+     * Check if default configuration is returned if logging.log does not exist
+     */
     public function testGetLogConfigForUnknownLog()
     {
-        // TODO if we allow unknown log (I think we should), this should return array with default options
+        $logService = $this->getLogService();
+
+        $doiLogConfig = [
+            'format' => $logService->getDefaultFormat(),
+            'file' => 'doi.log',
+            'level' => $logService->getDefaultPriorityAsString()
+        ];
+
+        $config = $logService->getLogConfig('doi');
+
+        $this->assertEquals($doiLogConfig, $config->toArray());
     }
 
-    /**
-     * TODO Test creating a new logger.
-     */
     public function testCreateLog()
     {
         $logService = $this->getLogService();
@@ -415,24 +454,18 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $message = 'TRANSLATION LOG TEST MESSAGE';
 
-        $logger->info($message);
+        $logger->warn($message);
 
         $content = $this->readLogFile('translation.log');
 
         $this->assertContains($message, $content);
     }
 
-    /**
-     * TODO Test creating log with custom options.
-     *
-     * TODO because the number of options is limited this is okay, otherwise we could use options array
-     *      with named options
-     */
     public function testCreateLogWithOptions()
     {
         $logService = $this->getLogService();
 
-        $logger = $logService->createLog('error', 'opus-error.log', 'ERR', 'ERROR %message%');
+        $logger = $logService->createLog('error', 'ERR', 'ERROR %message%', 'opus-error.log');
 
         $this->assertInstanceOf(\Zend_Log::class, $logger);
 
@@ -445,18 +478,15 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertContains("ERROR $message", $this->readLogFile('opus-error.log'));
     }
 
-    /**
-     * TODO Test customizing the log file for the default logger.
-     */
     public function testCreateDefaultLogWithCustomFilename()
     {
         $logService = $this->getLogService();
 
-        $logger = $logService->createLog(LogService::DEFAULT_LOG, 'opus-console.log');
+        $logger = $logService->createLog(LogService::DEFAULT_LOG, null, null, 'opus-console.log');
 
         $message = 'custom default log file test';
 
-        $logger->info($message);
+        $logger->warn($message);
 
         $content = $this->readLogFile('opus-console.log');
 
@@ -466,7 +496,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * TODO Test adding an externally created log object.
      */
     public function testAddLog()
     {
@@ -477,6 +506,88 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $logService->addLog('mylog', $logger);
 
         $this->assertSame($logger, $logService->getLog('mylog'));
+    }
+
+    public function testAddLogWrongObjectType()
+    {
+        $logService = $this->getLogService();
+
+        $object = new \Zend_Config([]);
+
+        $this->setExpectedException(Exception::class, 'must be of type Zend_Log');
+
+        $logService->addLog('myLog', $object);
+    }
+
+    public function testConvertPriorityFromString()
+    {
+        $logService = $this->getLogService();
+
+        $this->assertEquals(\Zend_Log::INFO, $logService->convertPriorityFromString('INFO'));
+        $this->assertEquals(\Zend_Log::INFO, $logService->convertPriorityFromString('info'));
+        $this->assertEquals(\Zend_Log::DEBUG, $logService->convertPriorityFromString('DEBUG'));
+    }
+
+    public function testConvertPriorityFromStringUnknownPriority()
+    {
+        $logService = $this->getLogService();
+
+        $this->assertNull($logService->convertPriorityFromString('TestLevel'));
+    }
+
+    public function testConvertPriorityToString()
+    {
+        $logService = $this->getLogService();
+
+        $this->assertEquals('INFO', $logService->convertPriorityToString(\Zend_Log::INFO));
+        $this->assertEquals('ERR', $logService->convertPriorityToString(\Zend_Log::ERR));
+        $this->assertEquals('EMERG', $logService->convertPriorityToString(\Zend_Log::EMERG));
+    }
+
+    public function testConvertPriorityToStringUnknownPriority()
+    {
+        $logService = $this->getLogService();
+
+        $this->assertNull($logService->convertPriorityToString(-1));
+        $this->assertNull($logService->convertPriorityToString(99));
+    }
+
+    public function testLineBreaksInLogOutput()
+    {
+        $logService = $this->getLogService();
+
+        $logService->setDefaultPriority('INFO');
+        $logService->setDefaultFormat('%message%');
+        $logger = $logService->getLog('translation');
+
+        $logger->info('log message 1');
+        $logger->info('log message 2');
+
+        $content = $this->readLogFile('translation.log');
+
+        $this->assertEquals(
+            'log message 1' . PHP_EOL . 'log message 2' . PHP_EOL,
+            $content
+        );
+    }
+
+    public function testLineBreaksOnlyOne()
+    {
+        $logService = $this->getLogService();
+
+        $logService->setDefaultPriority('INFO');
+        $logService->setDefaultFormat('%message%' . PHP_EOL);
+        $logger = $logService->getLog('translation');
+
+        $logger->info('log message 1');
+        $logger->info('log message 2');
+
+        $content = $this->readLogFile('translation.log');
+
+        $this->assertEquals(
+            'log message 1' . PHP_EOL . 'log message 2' . PHP_EOL,
+            $content
+        );
     }
 
     /**
@@ -495,6 +606,18 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         return $path;
     }
 
+    /**
+     * TODO Move it from here for use in other tests as well.
+     * TODO fix - has a generic name, but very specific function relying on a class variable (bad feeling here)
+     * @return String path to log folder.
+     */
+    protected function createFolder($folderName)
+    {
+        $path = $this->tempFolder . DIRECTORY_SEPARATOR . $folderName;
+        mkdir($path, 0777, true);
+        return $path;
+    }
+
     protected function removeFolder($path)
     {
         if (! is_null($path) && file_exists($path)) {
@@ -502,7 +625,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
                 $iterator = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
                 foreach ($iterator as $file) {
                     if ($file->isDir()) {
-                        $this->deleteFolder($file->getPathname());
+                        $this->removeFolder($file->getPathname());
                     } else {
                         unlink($file->getPathname());
                     }
@@ -514,11 +637,11 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
     protected function readLogFile($name)
     {
-        $path = $this->tempFolder . DIRECTORY_SEPARATOR . $name;
+        $path = $this->tempFolder . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . $name;
         if (file_exists($path)) {
             return file_get_contents($path);
         } else {
-            throw new Exception("log file '$name' not found");
+            throw new \Exception("log file '$name' not found");
         }
     }
 }
