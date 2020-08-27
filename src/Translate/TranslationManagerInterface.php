@@ -60,9 +60,9 @@ interface TranslationManagerInterface
      *
      * TODO define default values
      */
-    function getTranslations($sort, $sortDirection);
+    public function getTranslations($sort, $sortDirection);
 
-    function getTranslation($key);
+    public function getTranslation($key);
 
     /**
      * @param $key
@@ -70,17 +70,17 @@ interface TranslationManagerInterface
      * @param string $module // TODO do we need this parameter?
      * @return mixed
      */
-    function renameKey($key, $newKey, $module = 'default');
+    public function renameKey($key, $newKey, $module = 'default');
 
-    function updateTranslation($key, $translations, $module = null, $oldKey = null);
+    public function updateTranslation($key, $translations, $module = null, $oldKey = null);
 
-    function setTranslation($key, $values, $module = null);
+    public function setTranslation($key, $values, $module = null);
 
-    function delete($key, $module = null);
+    public function delete($key, $module = null);
 
-    function deleteAll();
+    public function deleteAll();
 
-    function deleteMatches();
+    public function deleteMatches();
 
-    function keyExists($key);
+    public function keyExists($key);
 }
