@@ -35,7 +35,6 @@
 namespace Opus\Log;
 
 use Opus\Exception;
-use phpDocumentor\Reflection\Types\String_;
 
 /**
  * Class for managing multiple loggers.

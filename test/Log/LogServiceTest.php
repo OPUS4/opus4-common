@@ -266,7 +266,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * TODO Custom logger format should be returned.
+     * Custom logger format should be returned.
      */
     public function testGetCustomLogFormat()
     {
@@ -281,7 +281,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * TODO Custom log format should contain run ID.
+     * Custom log format should contain run ID.
      */
     public function testGetCustomLogFormatContainsRunId()
     {
