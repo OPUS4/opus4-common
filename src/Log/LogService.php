@@ -35,6 +35,7 @@
 namespace Opus\Log;
 
 use Opus\Exception;
+use phpDocumentor\Reflection\Types\String_;
 
 /**
  * Class for managing multiple loggers.
@@ -269,7 +270,7 @@ class LogService
         $config = $this->getConfig();
 
         $defaultConfig = new \Zend_Config([
-            'format' => $this->getDefaultFormat(),
+            'format' => $this->getCustomLogFormat($name),
             'file' => $name . '.log',
             'level' => $this->getDefaultPriorityAsString()
         ], true);
@@ -304,7 +305,7 @@ class LogService
     {
         if (is_int($priority)) {
             $this->defaultPriority = $priority;
-        } else if (is_string($priority)) {
+        } elseif (is_string($priority)) {
             $this->defaultPriority = $this->convertPriorityFromString($priority);
         } else {
             throw new Exception('Setting default priority with invalid parameter.');
@@ -422,6 +423,25 @@ class LogService
         $format = rtrim(preg_replace('/%runId%/', $runId, $this->defaultFormat), PHP_EOL) . PHP_EOL;
 
         return $format;
+    }
+
+    /**
+     * Returns custom log format
+     *
+     * @param $logName string
+     * @return string
+     */
+    public function getCustomLogFormat($logName)
+    {
+        $config = $this->getConfig();
+
+        if (! isset($config->logging->log->$logName) || ! isset($config->logging->log->$logName->format)) {
+            return $this->getDefaultFormat();
+        } else {
+            $format = $config->logging->log->$logName->format;
+            $runId = $this->getRunId();
+            return rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL) . PHP_EOL;
+        }
     }
 
     /**
