@@ -268,11 +268,11 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * Custom logger format should be returned.
      */
-    public function testGetCustomLogFormat()
+    public function testGetLogFormat()
     {
         $logService = $this->getLogService();
 
-        $format = $logService->getCustomLogFormat('translation');
+        $format = $logService->getLogFormat('translation');
 
         $expected = preg_replace('/%runId%/', $logService->getRunId(), self::DEFAULT_FORMAT);
         $expected .= PHP_EOL;
@@ -283,11 +283,11 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * Custom log format should contain run ID.
      */
-    public function testGetCustomLogFormatContainsRunId()
+    public function testGetLogFormatContainsRunId()
     {
         $logService = $this->getLogService();
 
-        $format = $logService->getCustomLogFormat('translation');
+        $format = $logService->getLogFormat('translation');
 
         $runId = $logService->getRunId();
 

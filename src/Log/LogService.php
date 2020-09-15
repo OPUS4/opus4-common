@@ -269,7 +269,7 @@ class LogService
         $config = $this->getConfig();
 
         $defaultConfig = new \Zend_Config([
-            'format' => $this->getCustomLogFormat($name),
+            'format' => $this->getLogFormat($name),
             'file' => $name . '.log',
             'level' => $this->getDefaultPriorityAsString()
         ], true);
@@ -392,55 +392,67 @@ class LogService
         $this->defaultFormat = $format;
     }
 
+//    /**
+//     * Returns the default log output format.
+//     *
+//     * The output format can be set explicitly in this class or
+//     * be configured in the global configuration.
+//     *
+//     * A run ID is added to the output format if the placeholder %runId%
+//     * is present in order to match log output to separate requests.
+//     *
+//     * @return string
+//     */
+//    public function getDefaultFormat()
+//    {
+//        if ($this->defaultFormat == null) {
+//            $config = $this->getConfig();
+//
+//            $format = self::DEFAULT_FORMAT;
+//
+//            if (isset($config->log->format)) {
+//                $format = $config->log->format;
+//            }
+//
+//            $this->defaultFormat = $format;
+//        }
+//
+//        $runId = $this->getRunId();
+//
+//        $format = rtrim(preg_replace('/%runId%/', $runId, $this->defaultFormat), PHP_EOL) . PHP_EOL;
+//
+//        return $format;
+//    }
+
     /**
-     * Returns the default log output format.
-     *
-     * The output format can be set explicitly in this class or
-     * be configured in the global configuration.
-     *
-     * A run ID is added to the output format if the placeholder %runId%
-     * is present in order to match log output to separate requests.
-     *
-     * @return string
-     */
-    public function getDefaultFormat()
-    {
-        if ($this->defaultFormat == null) {
-            $config = $this->getConfig();
-
-            $format = self::DEFAULT_FORMAT;
-
-            if (isset($config->log->format)) {
-                $format = $config->log->format;
-            }
-
-            $this->defaultFormat = $format;
-        }
-
-        $runId = $this->getRunId();
-
-        $format = rtrim(preg_replace('/%runId%/', $runId, $this->defaultFormat), PHP_EOL) . PHP_EOL;
-
-        return $format;
-    }
-
-    /**
-     * Returns custom log format
+     * Returns either custom log format or default format if custom log format doesn't exist.
      *
      * @param $logName string
      * @return string
      */
-    public function getCustomLogFormat($logName)
+    public function getLogFormat($logName)
     {
         $config = $this->getConfig();
 
         if (! isset($config->logging->log->$logName) || ! isset($config->logging->log->$logName->format)) {
-            return $this->getDefaultFormat();
+            if ($this->defaultFormat === null) {
+                $format = self::DEFAULT_FORMAT;
+
+                if (isset($config->log->format)) {
+                    $format = $config->log->format;
+                }
+
+                $this->defaultFormat = $format;
+            } else {
+                $format = $this->defaultFormat;
+            }
         } else {
             $format = $config->logging->log->$logName->format;
-            $runId = $this->getRunId();
-            return rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL) . PHP_EOL;
         }
+
+        $runId = $this->getRunId();
+        $format = rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL) . PHP_EOL;
+        return $format;
     }
 
     /**
