@@ -60,6 +60,8 @@ class ProgressOutput extends BaseProgressOutput
      */
     public function setProgress($progress)
     {
+        parent::setProgress($progress);
+
         $memNow = round(memory_get_usage() / 1024 / 1024);
         $memPeak = round(memory_get_peak_usage() / 1024 / 1024);
 
