@@ -70,6 +70,8 @@ abstract class BaseProgressOutput implements ProgressOutputInterface
      */
     protected $endTime;
 
+    private $progress = 0;
+
     public function __construct(OutputInterface $output, $max = 0)
     {
         $this->output = $output;
@@ -83,6 +85,7 @@ abstract class BaseProgressOutput implements ProgressOutputInterface
     public function start()
     {
         $this->startTime = microtime(true);
+        $this->progress = 0;
     }
 
     /**
@@ -100,5 +103,15 @@ abstract class BaseProgressOutput implements ProgressOutputInterface
     public function getRuntime()
     {
         return $this->endTime - $this->startTime;
+    }
+
+    public function advance($step = 1)
+    {
+        $this->setProgress($this->progress + $step);
+    }
+
+    public function setProgress($progress)
+    {
+        $this->progress = $progress;
     }
 }

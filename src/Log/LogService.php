@@ -304,7 +304,7 @@ class LogService
     {
         if (is_int($priority)) {
             $this->defaultPriority = $priority;
-        } else if (is_string($priority)) {
+        } elseif (is_string($priority)) {
             $this->defaultPriority = $this->convertPriorityFromString($priority);
         } else {
             throw new Exception('Setting default priority with invalid parameter.');
