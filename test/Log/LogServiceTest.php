@@ -266,35 +266,6 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Custom logger format should be returned.
-     */
-    public function testGetLogFormat()
-    {
-        $logService = $this->getLogService();
-
-        $format = $logService->getLogFormat('translation');
-
-        $expected = preg_replace('/%runId%/', $logService->getRunId(), self::DEFAULT_FORMAT);
-        $expected .= PHP_EOL;
-
-        $this->assertEquals($expected, $format);
-    }
-
-    /**
-     * Custom log format should contain run ID.
-     */
-    public function testGetLogFormatContainsRunId()
-    {
-        $logService = $this->getLogService();
-
-        $format = $logService->getLogFormat('translation');
-
-        $runId = $logService->getRunId();
-
-        $this->assertContains("ID $runId", $format);
-    }
-
-    /**
      * Test that a unique ID is generated only once.
      */
     public function testGetRunId()
