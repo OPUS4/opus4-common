@@ -25,7 +25,6 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * @category    Application
- * @package     Application_Console
  * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
@@ -36,82 +35,74 @@ namespace Opus\Console\Helper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Base class for ProgressOutput helper.
+ * Displays progress like PHPUnit with different characters to signal status for each step.
+ *
+ * Uses following characters:
+ * - '.' for every successful step (or unknown status)
+ * - 'F' for failures
+ * - 'w' for warnings
+ *
+ * The line length of the output should be limited to 80 characters.
+ *
+ * .......................................................II......  63 / 187 ( 33%)
+ *
+ * TODO second step different status
  *
  * @package Opus\Console\Helper
- *
- * TODO do we need to get time as float?
  */
-abstract class BaseProgressOutput implements ProgressOutputInterface
+class ProgressMatrix extends BaseProgressOutput
 {
 
-    /**
-     * @var int Maximum number of steps (progress)
-     */
-    protected $max;
+    private $maxLineLength;
 
-    /**
-     * @var int Number of digits to display maximum number of steps
-     */
-    protected $maxDigits;
+    private $currentLineLength;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
-
-    /**
-     * @var float Time progress started
-     */
-    protected $startTime;
-
-    /**
-     * @var float Time progress ended
-     */
-    protected $endTime;
-
-    protected $progress = 0;
-
-    public function __construct(OutputInterface $output, $max = 0)
+    public function __construct($output, $max)
     {
-        $this->output = $output;
-        $this->max = $max;
-        $this->maxDigits = strlen(( string )$max);
+        parent::__construct($output, $max);
+
+        $this->maxLineLength = 80 - 2 * $this->maxDigits - 12;
     }
 
-    /**
-     * Starts progress.
-     */
     public function start()
     {
-        $this->startTime = microtime(true);
-        $this->progress = 0;
+        parent::start();
+        $this->currentLineLength = 0;
     }
 
     /**
-     * Finishes progress.
+     * TODO output Time, Memory and ?
      */
     public function finish()
     {
-        $this->endTime = microtime(true);
+        parent::finish();
+        $this->output->writeln('');
     }
 
     /**
-     * Returns complete time for running progress.
-     * @return float Runtime of progress
+     * @param $step
+     * @param null $status
+     *
+     * TODO handle going backwards?
+     * TODO handle step > max
      */
-    public function getRuntime()
+    public function setProgress($step, $status = null)
     {
-        return $this->endTime - $this->startTime;
+        for ($i = $this->progress; $i < $step; $i++) {
+            $this->progress++;
+            $this->currentLineLength++;
+            $this->output->write('.');
+
+            if ($this->currentLineLength > $this->maxLineLength) {
+                $percent = $this->progress * 100.0 / $this->max;
+                $message = sprintf("  %{$this->maxDigits}d / %{$this->maxDigits}d (%3d%%)", $this->progress, $this->max, $percent);
+                $this->output->writeln($message);
+                $this->currentLineLength = 0;
+            }
+        }
     }
 
-    public function advance($step = 1, $status = null)
+    protected function display()
     {
-        $this->setProgress($this->progress + $step);
-    }
-
-    public function setProgress($progress, $status = null)
-    {
-        $this->progress = $progress;
     }
 }

@@ -70,12 +70,12 @@ class ProgressBar extends BaseProgressOutput
         $this->output->writeln('');
     }
 
-    public function advance($step = 1)
+    public function advance($step = 1, $status = null)
     {
         $this->progressBar->advance($step);
     }
 
-    public function setProgress($step)
+    public function setProgress($step, $status = null)
     {
         $this->progressBar->setProgress($step);
     }

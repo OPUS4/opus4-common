@@ -58,7 +58,7 @@ class ProgressOutput extends BaseProgressOutput
      *
      * TODO handle startTime = null, because start() was forgotten
      */
-    public function setProgress($progress)
+    public function setProgress($progress, $status = null)
     {
         parent::setProgress($progress);
 
@@ -91,7 +91,7 @@ class ProgressOutput extends BaseProgressOutput
     {
     }
 
-    public function advance($steps = 1)
+    public function advance($steps = 1, $status = null)
     {
         // TODO: Implement advance() method.
     }

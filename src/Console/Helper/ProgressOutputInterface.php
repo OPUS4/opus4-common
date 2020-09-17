@@ -56,9 +56,9 @@ interface ProgressOutputInterface
 
     public function finish();
 
-    public function advance($steps = 1);
+    public function advance($steps = 1, $status = null);
 
-    public function setProgress($progress);
+    public function setProgress($progress, $status = null);
 
     public function getRuntime();
 }
