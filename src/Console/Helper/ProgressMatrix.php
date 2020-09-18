@@ -33,50 +33,83 @@
 namespace Opus\Console\Helper;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\ProgressBar as SymfonyProgressBar;
 
 /**
- * Adapter for Symfoy class ProgressBar in order to use it interchangeably with other
- * OPUS 4 ProgressOutput classes.
+ * Displays progress like PHPUnit with different characters to signal status for each step.
+ *
+ * Uses following characters:
+ * - '.' for every successful step (or unknown status)
+ * - 'F' for failures
+ * - 'w' for warnings
+ *
+ * The line length of the output should be limited to 80 characters.
+ *
+ * .......................................................II......  63 / 187 ( 33%)
+ *
+ * TODO second step different status
+ * TODO make status options configurable with defaults
+ * TODO class using ProgressMatrix should not have to worry about formatting - just provide result for step(s)
+ * TODO support providing status in array for block of steps
  *
  * @package Opus\Console\Helper
  */
-class ProgressBar extends BaseProgressOutput
+class ProgressMatrix extends BaseProgressOutput
 {
 
-    /**
-     * @var \Symfony\Component\Console\Helper\ProgressBar
-     */
-    private $progressBar;
+    private $maxLineLength;
 
-    public function __construct(OutputInterface $output, $max)
+    private $currentLineLength;
+
+    public function __construct($output, $max)
     {
         parent::__construct($output, $max);
 
-        $this->progressBar = new SymfonyProgressBar($output, $max);
-        $this->progressBar->setBarWidth(69 - 2 * $this->maxDigits); // TODO use get functions
+        $this->maxLineLength = 80 - 2 * $this->maxDigits - 12;
     }
 
     public function start()
     {
         parent::start();
-        $this->progressBar->start();
+        $this->currentLineLength = 0;
     }
 
+    /**
+     * TODO output Time, Memory and ?
+     */
     public function finish()
     {
-        $this->progressBar->finish();
         parent::finish();
         $this->output->writeln('');
     }
 
-    public function advance($step = 1, $status = null)
-    {
-        $this->progressBar->advance($step);
-    }
-
+    /**
+     * @param $step
+     * @param null $status
+     *
+     * TODO handle going backwards?
+     * TODO handle step > max
+     */
     public function setProgress($step, $status = null)
     {
-        $this->progressBar->setProgress($step);
+        for ($i = $this->progress; $i < $step; $i++) {
+            $this->progress++;
+            $this->currentLineLength++;
+            if ($status === null) {
+                $this->output->write('.');
+            } else {
+                $this->output->write($status);
+            }
+
+            if ($this->currentLineLength > $this->maxLineLength) {
+                $percent = $this->progress * 100.0 / $this->max;
+                $message = sprintf("  %{$this->maxDigits}d / %{$this->maxDigits}d (%3d%%)", $this->progress, $this->max, $percent);
+                $this->output->writeln($message);
+                $this->currentLineLength = 0;
+            }
+        }
+    }
+
+    protected function display()
+    {
     }
 }

@@ -32,67 +32,46 @@
 
 namespace Opus\Console\Helper;
 
-/**
- * Class ProgressOutput
- * @package Opus\Search\Console
- *
- * TODO modify interface to match ProgressBar more closely
- * TODO separate setProgress from displaying
- * TODO handle creating "blocks" here, so Command can call advance for every document (while output gets only
- *      updated every 10)
- */
-class ProgressOutput extends BaseProgressOutput
+class ProgressReportEntry
 {
 
-    /**
-     * @var string
-     * TODO make format configurable
-     */
-    protected $format;
+    protected $title;
 
-    /**
-     * Output current processing status and performance.
-     *
-     * @param $runtime long Time of start of processing
-     * @param $numOfDocs Number of processed documents
-     *
-     * TODO handle startTime = null, because start() was forgotten
-     */
-    public function setProgress($progress, $status = null)
+    protected $category;
+
+    protected $exceptions;
+
+    public function setTitle($title)
     {
-        parent::setProgress($progress);
-
-        $memNow = round(memory_get_usage() / 1024 / 1024);
-        $memPeak = round(memory_get_peak_usage() / 1024 / 1024);
-
-        $currentTime = microtime(true);
-
-        $deltaTime = $currentTime - $this->startTime;
-        $docPerSecond = round($deltaTime) == 0 ? 'inf' : round($progress / $deltaTime, 2);
-        $secondsPerDoc = round($deltaTime / $progress, 2);
-
-        $message = sprintf(
-            "%s Stats after <fg=yellow>%{$this->maxDigits}d</> docs -- mem <fg=yellow>%3d</> MB, peak <fg=yellow>%3d</> MB, <fg=yellow>%6.2f</> docs/s, <fg=yellow>%5.2f</> s/doc",
-            date('Y-m-d H:i:s'),
-            $progress,
-            $memNow,
-            $memPeak,
-            $docPerSecond,
-            $secondsPerDoc
-        );
-
-        $this->output->writeln($message);
+        $this->title = $title;
     }
 
-    /**
-     * TODO separate output function from setProgress
-     */
-    protected function display()
+    public function getTitle()
     {
+        return $this->title;
     }
 
-    public function advance($steps = 1, $status = null)
+    public function setCategory($category)
     {
-        // TODO: Implement advance() method.
+        $this->category = $category;
+    }
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    public function addException($e)
+    {
+        if ($this->exceptions === null) {
+            $this->exceptions = [];
+        }
+
+        $this->exceptions[] = $e;
+    }
+
+    public function getExceptions()
+    {
+        return $this->exceptions;
     }
 }

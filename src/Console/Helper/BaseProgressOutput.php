@@ -70,7 +70,7 @@ abstract class BaseProgressOutput implements ProgressOutputInterface
      */
     protected $endTime;
 
-    private $progress = 0;
+    protected $progress = 0;
 
     public function __construct(OutputInterface $output, $max = 0)
     {
@@ -105,12 +105,12 @@ abstract class BaseProgressOutput implements ProgressOutputInterface
         return $this->endTime - $this->startTime;
     }
 
-    public function advance($step = 1)
+    public function advance($step = 1, $status = null)
     {
-        $this->setProgress($this->progress + $step);
+        $this->setProgress($this->progress + $step, $status);
     }
 
-    public function setProgress($progress)
+    public function setProgress($progress, $status = null)
     {
         $this->progress = $progress;
     }

@@ -7,11 +7,12 @@
  *
  * OPUS 4 is a complete rewrite of the original OPUS software and was developed
  * by the Stuttgart University Library, the Library Service Center
- * Baden-Wuerttemberg, the Cooperative Library Network Berlin-Brandenburg,
- * the Saarland University and State Library, the Saxon State Library -
- * Dresden State and University Library, the Bielefeld University Library and
- * the University Library of Hamburg University of Technology with funding from
- * the German Research Foundation and the European Regional Development Fund.
+ * Baden-Wuerttemberg, the North Rhine-Westphalian Library Service Center,
+ * the Cooperative Library Network Berlin-Brandenburg, the Saarland University
+ * and State Library, the Saxon State Library - Dresden State and University
+ * Library, the Bielefeld University Library and the University Library of
+ * Hamburg University of Technology with funding from the German Research
+ * Foundation and the European Regional Development Fund.
  *
  * LICENCE
  * OPUS is free software; you can redistribute it and/or modify it under the
@@ -30,35 +31,25 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Console\Helper;
+namespace OpusTest\Console\Helper;
 
-/**
- * Interface for progress output in OPUS 4 commands like index:index, or index:extract.
- *
- * Using this interface the commands can switch between different implementations depending
- * on the desired verbosity.
- *
- * The levels are:
- * - ProgressBar as default output
- * - ProgressOutput for verbose output (-v), this is the old output after each block of documents
- * - ProgressMatrix for more verbose output (-vv), this is like PHPUnit (".....F..")
- * - ProgressDetail for maximum verbosity (-vvv), printing out detailed information after each document (or block)
- *
- * TODO ProgressMatrix not implemented yet
- * TODO ProgressDetail not implemented yet
- *
- * @package Opus\Console\Helper
- */
-interface ProgressOutputInterface
+use Symfony\Component\Console\Output\StreamOutput;
+
+class ProgressReportTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function start();
+    public function testAddException()
+    {
+        $this->markTestIncomplete();
+    }
 
-    public function finish();
+    public function testSetEntryInfo()
+    {
+        $this->markTestIncomplete();
+    }
 
-    public function advance($steps = 1, $status = null);
-
-    public function setProgress($progress, $status = null);
-
-    public function getRuntime();
+    public function testWrite()
+    {
+        $this->markTestIncomplete();
+    }
 }
