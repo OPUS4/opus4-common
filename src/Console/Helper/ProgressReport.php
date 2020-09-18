@@ -94,7 +94,6 @@ class ProgressReport
         $output->writeln('');
 
         foreach ($this->entries as $index => $entry) {
-
             $header = sprintf("%{$maxDigits}d) %s", $index + 1, $entry->getTitle());
             $output->writeln($header);
             $output->writeln('');
@@ -122,6 +121,5 @@ class ProgressReport
 
     public function clear()
     {
-
     }
 }
