@@ -47,6 +47,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  * .......................................................II......  63 / 187 ( 33%)
  *
  * TODO second step different status
+ * TODO make status options configurable with defaults
+ * TODO class using ProgressMatrix should not have to worry about formatting - just provide result for step(s)
+ * TODO support providing status in array for block of steps
  *
  * @package Opus\Console\Helper
  */
@@ -91,7 +94,11 @@ class ProgressMatrix extends BaseProgressOutput
         for ($i = $this->progress; $i < $step; $i++) {
             $this->progress++;
             $this->currentLineLength++;
-            $this->output->write('.');
+            if ($status === null) {
+                $this->output->write('.');
+            } else {
+                $this->output->write($status);
+            }
 
             if ($this->currentLineLength > $this->maxLineLength) {
                 $percent = $this->progress * 100.0 / $this->max;

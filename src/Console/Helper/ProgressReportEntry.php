@@ -25,7 +25,6 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * @category    Application
- * @package     Application_Console
  * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
@@ -33,85 +32,46 @@
 
 namespace Opus\Console\Helper;
 
-use Symfony\Component\Console\Output\OutputInterface;
-
-/**
- * Base class for ProgressOutput helper.
- *
- * @package Opus\Console\Helper
- *
- * TODO do we need to get time as float?
- */
-abstract class BaseProgressOutput implements ProgressOutputInterface
+class ProgressReportEntry
 {
 
-    /**
-     * @var int Maximum number of steps (progress)
-     */
-    protected $max;
+    protected $title;
 
-    /**
-     * @var int Number of digits to display maximum number of steps
-     */
-    protected $maxDigits;
+    protected $category;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
+    protected $exceptions;
 
-    /**
-     * @var float Time progress started
-     */
-    protected $startTime;
-
-    /**
-     * @var float Time progress ended
-     */
-    protected $endTime;
-
-    protected $progress = 0;
-
-    public function __construct(OutputInterface $output, $max = 0)
+    public function setTitle($title)
     {
-        $this->output = $output;
-        $this->max = $max;
-        $this->maxDigits = strlen(( string )$max);
+        $this->title = $title;
     }
 
-    /**
-     * Starts progress.
-     */
-    public function start()
+    public function getTitle()
     {
-        $this->startTime = microtime(true);
-        $this->progress = 0;
+        return $this->title;
     }
 
-    /**
-     * Finishes progress.
-     */
-    public function finish()
+    public function setCategory($category)
     {
-        $this->endTime = microtime(true);
+        $this->category = $category;
     }
 
-    /**
-     * Returns complete time for running progress.
-     * @return float Runtime of progress
-     */
-    public function getRuntime()
+    public function getCategory()
     {
-        return $this->endTime - $this->startTime;
+        return $this->category;
     }
 
-    public function advance($step = 1, $status = null)
+    public function addException($e)
     {
-        $this->setProgress($this->progress + $step, $status);
+        if ($this->exceptions === null) {
+            $this->exceptions = [];
+        }
+
+        $this->exceptions[] = $e;
     }
 
-    public function setProgress($progress, $status = null)
+    public function getExceptions()
     {
-        $this->progress = $progress;
+        return $this->exceptions;
     }
 }
