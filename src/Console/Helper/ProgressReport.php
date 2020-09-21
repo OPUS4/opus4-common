@@ -51,6 +51,8 @@ class ProgressReport
 
     private $reportTitle = "<bg=red>There were %d documents with problems:</>";
 
+    private $reportTitleSingular = "<bg=red>There was 1 document with problems:</>";
+
     /**
      * @var ProgressReportEntry[]
      */
@@ -86,15 +88,21 @@ class ProgressReport
     {
         $entryCount = count($this->entries);
 
-        $maxDigits = strlen(( string )$entryCount);
+        if ($entryCount === 0) {
+            return;
+        } elseif ($entryCount === 1) {
+            $reportTitleFormat = $this->reportTitleSingular;
+        } else {
+            $reportTitleFormat = $this->reportTitle;
+        }
 
-        $reportTitle = sprintf($this->reportTitle, $entryCount);
+        $reportTitle = sprintf($reportTitleFormat, $entryCount);
         $output->writeln('');
         $output->writeln($reportTitle);
         $output->writeln('');
 
         foreach ($this->entries as $index => $entry) {
-            $header = sprintf("%{$maxDigits}d) %s", $index + 1, $entry->getTitle());
+            $header = sprintf("%d) %s", $index + 1, $entry->getTitle());
             $output->writeln($header);
             $output->writeln('');
 
@@ -116,10 +124,12 @@ class ProgressReport
 
     public function getCurrentEntry()
     {
-        $this->currentEntry;
+        return $this->currentEntry;
     }
 
     public function clear()
     {
+        $this->entries = [];
+        $this->currentEntry = null;
     }
 }

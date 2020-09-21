@@ -33,23 +33,159 @@
 
 namespace OpusTest\Console\Helper;
 
+use Opus\Console\Helper\ProgressReport;
+use Opus\Console\Helper\ProgressReportEntry;
 use Symfony\Component\Console\Output\StreamOutput;
 
 class ProgressReportTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testAddException()
+    public function testAddExceptionCreatesEntry()
     {
-        $this->markTestIncomplete();
+        $report = new ProgressReport();
+
+        $this->assertNull($report->getCurrentEntry());
+
+        $ex = new \Exception('test');
+
+        $report->addException($ex);
+
+        $entry = $report->getCurrentEntry();
+
+        $this->assertNotNull($entry);
+        $this->assertInstanceOf(ProgressReportEntry::class, $entry);
+
+        $report->finishEntry();
+
+        $this->assertNull($report->getCurrentEntry());
     }
 
     public function testSetEntryInfo()
     {
-        $this->markTestIncomplete();
+        $report = new ProgressReport();
+
+        $ex = new \Exception('TestException');
+
+        $report->addException($ex);
+        $report->setEntryInfo('TestTitle', 'Test');
+
+        $entry = $report->getCurrentEntry();
+
+        $this->assertEquals('TestTitle', $entry->getTitle());
+        $this->assertEquals('Test', $entry->getCategory());
+        $this->assertCount(1, $entry->getExceptions());
     }
 
-    public function testWrite()
+    public function testWriteSingleStepWithException()
     {
-        $this->markTestIncomplete();
+        $outputInterface = $this->createOutputInterface();
+
+        $report = new ProgressReport();
+
+        $ex = new \Exception('TestException');
+
+        $report->addException($ex);
+        $report->setEntryInfo('TestTitle', 'Test');
+
+        $report->write($outputInterface);
+
+        rewind($outputInterface->getStream());
+        $output = stream_get_contents($outputInterface->getStream());
+
+        $this->assertContains('There was 1 document with problems:', $output);
+        $this->assertContains('1) TestTitle' . PHP_EOL, $output);
+        $this->assertContains('TestException' . PHP_EOL, $output);
+    }
+
+    public function testWriteMultipleStepsWithException()
+    {
+        $outputInterface = $this->createOutputInterface();
+
+        $report = new ProgressReport();
+
+        $ex = new \Exception('TestException');
+
+        $report->addException($ex);
+        $report->setEntryInfo('TestTitle', 'Test');
+        $report->finishEntry();
+
+        $ex = new \Exception('TestException2');
+
+        $report->addException($ex);
+        $report->setEntryInfo('TestTitle2', 'Test');
+        $report->finishEntry();
+
+        $report->write($outputInterface);
+
+        rewind($outputInterface->getStream());
+        $output = stream_get_contents($outputInterface->getStream());
+
+        $this->assertContains('There were 2 documents with problems:', $output);
+        $this->assertContains('1) TestTitle' . PHP_EOL, $output);
+        $this->assertContains('TestException' . PHP_EOL, $output);
+        $this->assertContains('2) TestTitle2' . PHP_EOL, $output);
+        $this->assertContains('TestException2' . PHP_EOL, $output);
+    }
+
+    public function testWriteNothingIfNotEntries()
+    {
+        $outputInterface = $this->createOutputInterface();
+
+        $report = new ProgressReport();
+
+        $report->write($outputInterface);
+
+        rewind($outputInterface->getStream());
+        $output = stream_get_contents($outputInterface->getStream());
+
+        $this->assertTrue(strlen($output) === 0);
+    }
+
+    public function testMultipleExceptionsForEntry()
+    {
+        $outputInterface = $this->createOutputInterface();
+
+        $report = new ProgressReport();
+
+        $report->addException(new \Exception('TestException'));
+        $report->addException(new \Exception('TestException2'));
+        $report->setEntryInfo('TestTitle', 'Test');
+
+        $report->write($outputInterface);
+
+        rewind($outputInterface->getStream());
+        $output = stream_get_contents($outputInterface->getStream());
+
+        $this->assertContains('There was 1 document with problems:', $output);
+        $this->assertContains('1) TestTitle' . PHP_EOL, $output);
+        $this->assertContains('TestException' . PHP_EOL . 'TestException2' . PHP_EOL, $output);
+    }
+
+    public function testClear()
+    {
+        $outputInterface = $this->createOutputInterface();
+
+        $report = new ProgressReport();
+
+        $ex = new \Exception('TestException');
+
+        $report->addException($ex);
+        $report->setEntryInfo('TestTitle', 'Test');
+        $report->clear();
+
+        $report->write($outputInterface);
+
+        rewind($outputInterface->getStream());
+        $output = stream_get_contents($outputInterface->getStream());
+
+        $this->assertTrue(strlen($output) === 0);
+    }
+
+    /**
+     * @return StreamOutput
+     */
+    protected function createOutputInterface()
+    {
+        return new StreamOutput(fopen('php://memory', 'r+', false));
     }
 }
