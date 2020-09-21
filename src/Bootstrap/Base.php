@@ -91,6 +91,10 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
             'cache_dir' => $config->workspacePath . '/cache/'
         ];
 
+        if ($this->isConsoleScript()) {
+            $backendOptions['file_name_prefix'] = 'zend_cache_console';
+        }
+
         $cache = \Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
 
         \Zend_Translate::setCache($cache);
@@ -144,8 +148,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
             $logFilename = $config->log->filename;
         } else {
             $logFilename = 'opus.log';
-            if (! array_key_exists('SERVER_PROTOCOL', $_SERVER)
-               and ! array_key_exists('REQUEST_METHOD', $_SERVER)) {
+            if ($this->isConsoleScript()) {
                 $logFilename = "opus-console.log";
             }
         }
@@ -180,5 +183,11 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         // TODO setup in config, still put in registry?
         $locale = new \Zend_Locale("de");
         \Zend_Registry::set('Zend_Locale', $locale);
+    }
+
+    protected function isConsoleScript()
+    {
+        return ! (array_key_exists('SERVER_PROTOCOL', $_SERVER) or
+            array_key_exists('REQUEST_METHOD', $_SERVER));
     }
 }
