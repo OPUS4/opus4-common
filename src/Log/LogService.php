@@ -163,9 +163,11 @@ class LogService
         $level = $this->convertPriorityFromString($priority);
 
         if ($format === null) {
-            $format = $logConfig->format;
-        } else {
-            $format = $this->addRunIdToFormat($format);
+            if (isset($logConfig->logging->log->$name->format)) {
+                $format = $logConfig->logging->log->$name->format;
+            } else {
+                $format = $logConfig->format;
+            }
         }
 
         $logger = $this->createLogger($format, $level, $logFile);
@@ -270,14 +272,8 @@ class LogService
     {
         $config = $this->getConfig();
 
-        if (! isset($config->logging->log->$name) || ! isset($config->logging->log->$name->format)) {
-            $format = $this->getDefaultFormat();
-        } else {
-            $format = $this->addRunIdToFormat($config->logging->log->$name->format);
-        }
-
         $defaultConfig = new \Zend_Config([
-            'format' => $format,
+            'format' => $this->getDefaultFormat(),
             'file' => $name . '.log',
             'level' => $this->getDefaultPriorityAsString()
         ], true);
@@ -377,7 +373,8 @@ class LogService
      */
     protected function createLogger($format, $priority, $file)
     {
-        $formatter = new \Zend_Log_Formatter_Simple($format);
+        $formatWithRunId = $this->replaceFormatPlaceholder($format);
+        $formatter = new \Zend_Log_Formatter_Simple($formatWithRunId);
 
         $writer = new \Zend_Log_Writer_Stream($file);
         $writer->setFormatter($formatter);
@@ -425,9 +422,7 @@ class LogService
             $this->defaultFormat = $format;
         }
 
-        $format = $this->addRunIdToFormat($this->defaultFormat);
-
-        return $format;
+        return $this->defaultFormat;
     }
 
     /**
@@ -436,11 +431,10 @@ class LogService
      * @param $format string
      * @returns string
      */
-    public function addRunIdToFormat($format)
+    public function replaceFormatPlaceholder($format)
     {
         $runId = $this->getRunId();
-        $format = rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL) . PHP_EOL;
-        return $format;
+        return rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL) . PHP_EOL;
     }
 
     /**

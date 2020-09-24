@@ -199,8 +199,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $format = $logService->getDefaultFormat();
 
-        $expected = preg_replace('/%runId%/', $logService->getRunId(), self::DEFAULT_FORMAT);
-        $expected .= PHP_EOL;
+        $expected = self::DEFAULT_FORMAT;
 
         $this->assertEquals($expected, $format);
     }
@@ -218,24 +217,9 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $format = $logService->getDefaultFormat();
 
-        $expected = preg_replace('/%runId%/', $logService->getRunId(), LogService::DEFAULT_FORMAT);
-        $expected .= PHP_EOL;
+        $expected = LogService::DEFAULT_FORMAT;
 
         $this->assertEquals($expected, $format);
-    }
-
-    /**
-     * Format should contain run ID.
-     */
-    public function testGetDefaultFormatContainsRunId()
-    {
-        $logService = $this->getLogService();
-
-        $format = $logService->getDefaultFormat();
-
-        $runId = $logService->getRunId();
-
-        $this->assertContains("ID $runId", $format);
     }
 
     /**
@@ -247,22 +231,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $logService->setDefaultFormat('%message%');
 
-        $this->assertEquals('%message%' . PHP_EOL, $logService->getDefaultFormat());
-    }
-
-    /**
-     * Check a custom format can use %runId% placeholder.
-     */
-    public function testGetDefaultFormatCustomFormatContainsRunId()
-    {
-        $logService = $this->getLogService();
-
-        $logService->setDefaultFormat('ID %runId%: %message%');
-        $runId = $logService->getRunId();
-
-        $format = $logService->getDefaultFormat();
-
-        $this->assertContains($runId, $format);
+        $this->assertEquals('%message%', $logService->getDefaultFormat());
     }
 
     /**
