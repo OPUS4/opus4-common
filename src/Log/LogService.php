@@ -163,11 +163,7 @@ class LogService
         $level = $this->convertPriorityFromString($priority);
 
         if ($format === null) {
-            if (isset($logConfig->logging->log->$name->format)) {
-                $format = $logConfig->logging->log->$name->format;
-            } else {
-                $format = $logConfig->format;
-            }
+            $format = $logConfig->format;
         }
 
         $logger = $this->createLogger($format, $level, $logFile);
@@ -373,7 +369,7 @@ class LogService
      */
     protected function createLogger($format, $priority, $file)
     {
-        $formatWithRunId = $this->replaceFormatPlaceholder($format);
+        $formatWithRunId = $this->prepareFormat($format);
         $formatter = new \Zend_Log_Formatter_Simple($formatWithRunId);
 
         $writer = new \Zend_Log_Writer_Stream($file);
@@ -431,7 +427,7 @@ class LogService
      * @param $format string
      * @returns string
      */
-    public function replaceFormatPlaceholder($format)
+    public function prepareFormat($format)
     {
         $runId = $this->getRunId();
         return rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL) . PHP_EOL;

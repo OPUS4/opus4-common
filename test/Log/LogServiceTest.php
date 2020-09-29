@@ -260,6 +260,25 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('customId', $logService->getRunId());
     }
 
+    /**
+     * Test that format's %runId% placeholder is being replaced by runId.
+     */
+    public function testPrepareFormat()
+    {
+        $logService = $this->getLogService();
+
+        $format = $logService->prepareFormat(self::DEFAULT_FORMAT);
+
+        $runId = $logService->getRunId();
+
+        $expected = preg_replace('/%runId%/', $runId, self::DEFAULT_FORMAT);
+
+        $expected .= PHP_EOL;
+
+        $this->assertContains("ID $runId", $format);
+        $this->assertEquals($expected, $format);
+    }
+
     public function testGetDefaultLog()
     {
         $logService = $this->getLogService();
