@@ -369,8 +369,8 @@ class LogService
      */
     protected function createLogger($format, $priority, $file)
     {
-        $formatWithRunId = $this->prepareFormat($format);
-        $formatter = new \Zend_Log_Formatter_Simple($formatWithRunId);
+        $preparedFormat = $this->prepareFormat($format);
+        $formatter = new \Zend_Log_Formatter_Simple($preparedFormat);
 
         $writer = new \Zend_Log_Writer_Stream($file);
         $writer->setFormatter($formatter);
@@ -429,6 +429,9 @@ class LogService
      */
     public function prepareFormat($format)
     {
+        if ($format === null)
+            throw new Exception('Format must not be null.');
+
         $runId = $this->getRunId();
         return rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL) . PHP_EOL;
     }

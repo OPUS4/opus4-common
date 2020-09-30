@@ -279,11 +279,84 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $format);
     }
 
+    /**
+     * Test exception is thrown when format is null.
+     */
+    public function testPrepareFormatForNullFormat()
+    {
+        $logService = $this->getLogService();
+
+        $this->setExpectedException(Exception::class, 'Format must not be null');
+
+        $logService->prepareFormat(null);
+    }
+
+    /**
+     * Test format has EOL.
+     */
+    public function testPrepareFormatHasEol()
+    {
+        $logService = $this->getLogService();
+
+        $format = $logService->prepareFormat(self::DEFAULT_FORMAT);
+
+        $this->assertContains(PHP_EOL, $format);
+    }
+
+    /**
+     * Test format has EOL only once even if EOL is in argument.
+     */
+    public function testPrepareFormatHasEolOnce()
+    {
+        $logService = $this->getLogService();
+
+        $format = $logService->prepareFormat(self::DEFAULT_FORMAT . PHP_EOL);
+
+        $runId = $logService->getRunId();
+
+        $expected = preg_replace('/%runId%/', $runId, self::DEFAULT_FORMAT) . PHP_EOL;
+
+        $this->assertEquals($expected, $format);
+    }
+
     public function testGetDefaultLog()
     {
         $logService = $this->getLogService();
 
         $logger = $logService->getDefaultLog();
+
+        $this->assertNotNull($logger);
+        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertSame($logger, $logService->getDefaultLog());
+    }
+
+    /**
+     * Test logger created by createLogger().
+     *
+     * @throws Exception
+     * @throws \ReflectionException
+     */
+    public function testCreateLogger()
+    {
+        $logService = $this->getLogService();
+
+        $logFilePath = $logService->getPath() . 'default.log';
+        $logFile = @fopen($logFilePath, 'a', false);
+        if ($logFile === false) {
+            $path = dirname($logFilePath);
+
+            if (! is_dir($path)) {
+                throw new \Exception('Directory for logging does not exist');
+            } else {
+                throw new \Exception('Failed to open logging file:' . $logFilePath);
+            }
+        }
+
+        $reflection = new \ReflectionClass($logService);
+
+        $createLogger = $reflection->getMethod('createLogger');
+        $createLogger->setAccessible(true);
+        $logger = $createLogger->invokeArgs($logService, [$logService->getDefaultFormat(), $logService->getDefaultPriority(), $logFile]);
 
         $this->assertNotNull($logger);
         $this->assertInstanceOf(\Zend_Log::class, $logger);
