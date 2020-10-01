@@ -34,7 +34,6 @@
 
 namespace OpusTest\Log;
 
-use http\Exception\InvalidArgumentException;
 use Opus\Exception;
 use Opus\Log\LogService;
 
@@ -287,7 +286,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        $this->setExpectedException(InvalidArgumentException::class, 'Format must not be null');
+        $this->setExpectedException(\InvalidArgumentException::class, 'Format must not be null');
 
         $logService->prepareFormat(null);
     }
@@ -301,7 +300,9 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $format = $logService->prepareFormat('%message%');
 
-        $this->assertSame(PHP_EOL, ltrim($format, '%message%'));
+        $expected = '%message%' . PHP_EOL;
+
+        $this->assertEquals($expected, $format);
     }
 
     /**
@@ -313,7 +314,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $format = $logService->prepareFormat('%message%' . PHP_EOL);
 
-        $expected = $logService->prepareFormat('%message%');
+        $expected = '%message%' . PHP_EOL;
 
         $this->assertEquals($expected, $format);
     }
@@ -341,32 +342,30 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $logFilePath = $logService->getPath() . 'test.log';
         $logFile = @fopen($logFilePath, 'a', false);
-        if ($logFile === false) {
-            $path = dirname($logFilePath);
-
-            if (! is_dir($path)) {
-                throw new \Exception('Directory for logging does not exist');
-            } else {
-                throw new \Exception('Failed to open logging file:' . $logFilePath);
-            }
-        }
 
         $reflection = new \ReflectionClass($logService);
 
         $createLogger = $reflection->getMethod('createLogger');
         $createLogger->setAccessible(true);
-        $logger = $createLogger->invokeArgs($logService, ['%message%', 6, $logFile]);
+        $logger = $createLogger->invokeArgs($logService, ['%message% ID %runId%', \Zend_Log::INFO, $logFile]);
+
+        $this->assertNotNull($logger);
 
         $warnMessage = 'WARN Message';
         $debugMessage = 'DEBUG Message';
         $logger->warn($warnMessage);
         $logger->debug($debugMessage);
 
+        $runId = $logService->getRunId();
+
+        $expected = $warnMessage . ' ID ' . $runId . PHP_EOL;
+
         $content = $this->readLogFile('test.log');
 
-        $this->assertNotNull($logger);
         $this->assertInstanceOf(\Zend_Log::class, $logger);
         $this->assertContains($warnMessage, $content);
+        $this->assertContains($runId, $content);
+        $this->assertEquals($expected, $content);
         $this->assertNotContains($debugMessage, $content);
     }
 
