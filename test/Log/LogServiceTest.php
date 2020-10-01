@@ -199,8 +199,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $format = $logService->getDefaultFormat();
 
-        $expected = preg_replace('/%runId%/', $logService->getRunId(), self::DEFAULT_FORMAT);
-        $expected .= PHP_EOL;
+        $expected = self::DEFAULT_FORMAT;
 
         $this->assertEquals($expected, $format);
     }
@@ -218,24 +217,9 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $format = $logService->getDefaultFormat();
 
-        $expected = preg_replace('/%runId%/', $logService->getRunId(), LogService::DEFAULT_FORMAT);
-        $expected .= PHP_EOL;
+        $expected = LogService::DEFAULT_FORMAT;
 
         $this->assertEquals($expected, $format);
-    }
-
-    /**
-     * Format should contain run ID.
-     */
-    public function testGetDefaultFormatContainsRunId()
-    {
-        $logService = $this->getLogService();
-
-        $format = $logService->getDefaultFormat();
-
-        $runId = $logService->getRunId();
-
-        $this->assertContains("ID $runId", $format);
     }
 
     /**
@@ -247,22 +231,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $logService->setDefaultFormat('%message%');
 
-        $this->assertEquals('%message%' . PHP_EOL, $logService->getDefaultFormat());
-    }
-
-    /**
-     * Check a custom format can use %runId% placeholder.
-     */
-    public function testGetDefaultFormatCustomFormatContainsRunId()
-    {
-        $logService = $this->getLogService();
-
-        $logService->setDefaultFormat('ID %runId%: %message%');
-        $runId = $logService->getRunId();
-
-        $format = $logService->getDefaultFormat();
-
-        $this->assertContains($runId, $format);
+        $this->assertEquals('%message%', $logService->getDefaultFormat());
     }
 
     /**
@@ -291,6 +260,65 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('customId', $logService->getRunId());
     }
 
+    /**
+     * Test that format's %runId% placeholder is being replaced by runId.
+     */
+    public function testPrepareFormat()
+    {
+        $logService = $this->getLogService();
+
+        $format = $logService->prepareFormat(self::DEFAULT_FORMAT);
+
+        $runId = $logService->getRunId();
+
+        $expected = preg_replace('/%runId%/', $runId, self::DEFAULT_FORMAT);
+
+        $expected .= PHP_EOL;
+
+        $this->assertContains("ID $runId", $format);
+        $this->assertEquals($expected, $format);
+    }
+
+    /**
+     * Test exception is thrown when format is null.
+     */
+    public function testPrepareFormatForNullFormat()
+    {
+        $logService = $this->getLogService();
+
+        $this->setExpectedException(\InvalidArgumentException::class, 'Format must not be null');
+
+        $logService->prepareFormat(null);
+    }
+
+    /**
+     * Test format has EOL.
+     */
+    public function testPrepareFormatHasEol()
+    {
+        $logService = $this->getLogService();
+
+        $format = $logService->prepareFormat('%message%');
+
+        $expected = '%message%' . PHP_EOL;
+
+        $this->assertEquals($expected, $format);
+    }
+
+    /**
+     * Test format has EOL only once even if EOL is in argument.
+     */
+    public function testPrepareFormatHasEolOnce()
+    {
+        $logService = $this->getLogService();
+
+        $format = $logService->prepareFormat('%message%' . PHP_EOL);
+
+        $expected = '%message%' . PHP_EOL;
+
+        $this->assertEquals($expected, $format);
+    }
+
     public function testGetDefaultLog()
     {
         $logService = $this->getLogService();
@@ -300,6 +328,45 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($logger);
         $this->assertInstanceOf(\Zend_Log::class, $logger);
         $this->assertSame($logger, $logService->getDefaultLog());
+    }
+
+    /**
+     * Test logger created by createLogger().
+     *
+     * @throws Exception
+     * @throws \ReflectionException
+     */
+    public function testCreateLogger()
+    {
+        $logService = $this->getLogService();
+
+        $logFilePath = $logService->getPath() . 'test.log';
+        $logFile = @fopen($logFilePath, 'a', false);
+
+        $reflection = new \ReflectionClass($logService);
+
+        $createLogger = $reflection->getMethod('createLogger');
+        $createLogger->setAccessible(true);
+        $logger = $createLogger->invokeArgs($logService, ['%message% ID %runId%', \Zend_Log::INFO, $logFile]);
+
+        $this->assertNotNull($logger);
+
+        $warnMessage = 'WARN Message';
+        $debugMessage = 'DEBUG Message';
+        $logger->warn($warnMessage);
+        $logger->debug($debugMessage);
+
+        $runId = $logService->getRunId();
+
+        $expected = $warnMessage . ' ID ' . $runId . PHP_EOL;
+
+        $content = $this->readLogFile('test.log');
+
+        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertContains($warnMessage, $content);
+        $this->assertContains($runId, $content);
+        $this->assertEquals($expected, $content);
+        $this->assertNotContains($debugMessage, $content);
     }
 
     public function testGetLogGettingDefaultLogger()
