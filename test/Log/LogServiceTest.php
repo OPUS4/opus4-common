@@ -34,6 +34,7 @@
 
 namespace OpusTest\Log;
 
+use http\Exception\InvalidArgumentException;
 use Opus\Exception;
 use Opus\Log\LogService;
 
@@ -286,7 +287,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        $this->setExpectedException(Exception::class, 'Format must not be null');
+        $this->setExpectedException(InvalidArgumentException::class, 'Format must not be null');
 
         $logService->prepareFormat(null);
     }
@@ -298,9 +299,9 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        $format = $logService->prepareFormat(self::DEFAULT_FORMAT);
+        $format = $logService->prepareFormat('%message%');
 
-        $this->assertContains(PHP_EOL, $format);
+        $this->assertSame(PHP_EOL, ltrim($format, '%message%'));
     }
 
     /**
@@ -310,11 +311,9 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        $format = $logService->prepareFormat(self::DEFAULT_FORMAT . PHP_EOL);
+        $format = $logService->prepareFormat('%message%' . PHP_EOL);
 
-        $runId = $logService->getRunId();
-
-        $expected = preg_replace('/%runId%/', $runId, self::DEFAULT_FORMAT) . PHP_EOL;
+        $expected = $logService->prepareFormat('%message%');
 
         $this->assertEquals($expected, $format);
     }
@@ -340,7 +339,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        $logFilePath = $logService->getPath() . 'default.log';
+        $logFilePath = $logService->getPath() . 'test.log';
         $logFile = @fopen($logFilePath, 'a', false);
         if ($logFile === false) {
             $path = dirname($logFilePath);
@@ -356,11 +355,19 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $createLogger = $reflection->getMethod('createLogger');
         $createLogger->setAccessible(true);
-        $logger = $createLogger->invokeArgs($logService, [$logService->getDefaultFormat(), $logService->getDefaultPriority(), $logFile]);
+        $logger = $createLogger->invokeArgs($logService, ['%message%', 6, $logFile]);
+
+        $warnMessage = 'WARN Message';
+        $debugMessage = 'DEBUG Message';
+        $logger->warn($warnMessage);
+        $logger->debug($debugMessage);
+
+        $content = $this->readLogFile('test.log');
 
         $this->assertNotNull($logger);
         $this->assertInstanceOf(\Zend_Log::class, $logger);
-        $this->assertSame($logger, $logService->getDefaultLog());
+        $this->assertContains($warnMessage, $content);
+        $this->assertNotContains($debugMessage, $content);
     }
 
     public function testGetLogGettingDefaultLogger()

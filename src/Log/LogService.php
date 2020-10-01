@@ -34,6 +34,7 @@
 
 namespace Opus\Log;
 
+use http\Exception\InvalidArgumentException;
 use Opus\Exception;
 
 /**
@@ -429,8 +430,9 @@ class LogService
      */
     public function prepareFormat($format)
     {
-        if ($format === null)
-            throw new Exception('Format must not be null.');
+        if ($format === null) {
+            throw new InvalidArgumentException('Format must not be null.');
+        }
 
         $runId = $this->getRunId();
         return rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL) . PHP_EOL;
