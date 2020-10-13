@@ -41,7 +41,7 @@ class OpusLog extends \Zend_Log
         parent::__construct($writer);
     }
 
-    public function setLevel($level)
+    public function setPriority($level)
     {
         if ($level === null) {
             $level = parent::INFO;
