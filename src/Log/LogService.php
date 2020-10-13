@@ -375,7 +375,7 @@ class LogService
         $writer = new \Zend_Log_Writer_Stream($file);
         $writer->setFormatter($formatter);
 
-        $logger = new \Zend_Log($writer);
+        $logger = new OpusLog($writer);
 
         $priorityFilter = new \Zend_Log_Filter_Priority($priority);
         $logger->addFilter($priorityFilter);
