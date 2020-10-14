@@ -28,7 +28,7 @@
  * @package     Opus_Model
  * @author      Ralf Claußnitzer (ralf.claussnitzer@slub-dresden.de)
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
@@ -38,8 +38,8 @@ namespace Opus\Model;
  * Exception type for Opus_Model.
  *
  * @category Framework
- * @package  Opus_Model
+ * @package  Opus\Model
  */
-class Exception extends \Exception
+class ModelException extends \Exception
 {
 }
