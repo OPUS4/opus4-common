@@ -35,7 +35,9 @@ namespace Opus\Model;
 
 use Opus\Model\Plugin\PluginInterface;
 use Opus\Model\Plugin\ServerStateChangeListener;
-use Opus\Document; // TODO IMPORTANT OPUSVIER-4417
+use Opus\Document;
+
+ // TODO IMPORTANT Dependency to framework class OPUSVIER-4417
 
 /**
  * Trait for adding plugin support to a class.
