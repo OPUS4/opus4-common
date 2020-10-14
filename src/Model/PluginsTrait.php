@@ -214,7 +214,7 @@ trait PluginsTrait
                 $plugin->$methodname($param);
             }
         } catch (\Exception $ex) {
-            throw new Exception('Plugin ' . $name . ' failed in ' . $methodname . ' with ' . $ex->getMessage());
+            throw new ModelException('Plugin ' . $name . ' failed in ' . $methodname . ' with ' . $ex->getMessage());
         }
     }
 
