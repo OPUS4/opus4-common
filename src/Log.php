@@ -25,28 +25,101 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * @category    opus4-common
- * @Package     Opus\Log
+ * @package     Opus\Log
  * @author      Kaustabh Barman <barman@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Log;
+namespace Opus;
 
-class OpusLog extends \Zend_Log
+use Opus\Log\LogService;
+
+class Log extends \Zend_Log
 {
     public function __construct(\Zend_Log_Writer_Stream $writer = null)
     {
         parent::__construct($writer);
     }
 
-    public function setPriority($level)
+    /**
+     * Eliminates all prior priority filters and sets a new one.
+     *
+     * @param String $priority
+     * @throws \Zend_Log_Exception
+     */
+    public function setPriority($priority)
     {
-        if ($level === null) {
-            $level = parent::INFO;
+        if ($priority === null) {
+            $priority = LogService::DEFAULT_PRIORITY;
         }
+
+        $level = $this->convertPriorityToInt($priority);
+
+        if ($level === null) {
+            throw new \Exception("No such priority found as " . $priority);
+        }
+
+        $this->_filters = null;
+
         $priorityFilter = new \Zend_Log_Filter_Priority($level);
         $this->addFilter($priorityFilter);
+    }
+
+    /**
+     * Returns the highest priority of the logger.
+     *
+     * @return String|null
+     * @throws \ReflectionException
+     */
+    public function getPriority()
+    {
+        $priorities = [];
+
+        $filters = $this->_filters;
+
+        foreach ($filters as $filter) {
+            $zendRefl = new \ReflectionClass($filter);
+            $property = $zendRefl->getProperty('_priority');
+            $property->setAccessible(true);
+            $priorities[] = $property->getValue($filter);
+        }
+
+        $priority = $this->convertPriorityToString(min($priorities));
+
+        return $priority;
+    }
+
+    /**
+     * @param int $priority
+     * @return String|null
+     */
+    public function convertPriorityToString($priority)
+    {
+        $zendLogRefl = new \ReflectionClass('Zend_Log');
+        $constants = $zendLogRefl->getConstants();
+
+        $levels = array_flip($constants);
+
+        if (isset($levels[$priority])) {
+            return $levels[$priority];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param String $priorityName
+     */
+    public function convertPriorityToInt($priorityName)
+    {
+        $zendLogRefl = new \ReflectionClass('Zend_Log');
+        $priority = $zendLogRefl->getConstant(strtoupper($priorityName));
+
+        if ($priority !== false) {
+            return $priority;
+        } else {
+            return null;
+        }
     }
 }

@@ -35,6 +35,7 @@
 namespace Opus\Log;
 
 use Opus\Exception;
+use Opus\Log;
 
 /**
  * Class for managing multiple loggers.
@@ -375,7 +376,7 @@ class LogService
         $writer = new \Zend_Log_Writer_Stream($file);
         $writer->setFormatter($formatter);
 
-        $logger = new OpusLog($writer);
+        $logger = new Log($writer);
 
         $priorityFilter = new \Zend_Log_Filter_Priority($priority);
         $logger->addFilter($priorityFilter);
