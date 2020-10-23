@@ -103,13 +103,4 @@ interface PluginInterface
      * @return void
      */
     public function postDelete($modelId);
-
-    /**
-     * Gets called after a permanent delete was performed.
-     *
-     * TODO refactor - a DELETE is just a state change (UPDATE), while deletePermanent is an actual delete
-     * @param $modelId
-     * @return mixed
-     */
-    public function postDeletePermanent($modelId);
 }
