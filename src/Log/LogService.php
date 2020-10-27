@@ -377,9 +377,7 @@ class LogService
         $writer->setFormatter($formatter);
 
         $logger = new Log($writer);
-
-        $priorityFilter = new \Zend_Log_Filter_Priority($priority);
-        $logger->addFilter($priorityFilter);
+        $logger->setPriority($priority);
 
         return $logger;
     }

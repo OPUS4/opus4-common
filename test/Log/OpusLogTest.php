@@ -25,13 +25,13 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * @category    Test
- * @package     Opus
+ * @package     OpusTest
  * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Log;
+namespace OpusTest\Log;     //TODO change to OpusTest\LogTest
 
 use Opus\Log\LogService;
 
@@ -74,7 +74,7 @@ class OpusLogTest extends \PHPUnit_Framework_TestCase
     public function testSetPriority()
     {
         $opusLog = $this->getOpusLog();
-        $opusLog->setPriority('debug');
+        $opusLog->setPriority(\Zend_Log::DEBUG);
 
         $debugMessage = 'Debug level message from testSetPriority';
         $opusLog->debug($debugMessage);
@@ -113,51 +113,19 @@ class OpusLogTest extends \PHPUnit_Framework_TestCase
         $opusLog = $this->getOpusLog();
         $priority = $opusLog->getPriority();
 
-        $this->assertEquals('INFO', $priority);
+        $this->assertEquals(\Zend_Log::INFO, $priority);
     }
 
     public function testGetPriorityAfterSetPriority()
     {
         $opusLog = $this->getOpusLog();
-        $opusLog->setPriority('debug');
+        $opusLog->setPriority(\Zend_Log::DEBUG);
         $priority = $opusLog->getPriority();
 
-        $this->assertEquals('DEBUG', $priority);
+        $this->assertEquals(\Zend_Log::DEBUG, $priority);
     }
 
-    public function testConvertPriorityToInt()
-    {
-        $opusLog = $this->getOpusLog();
-
-        $this->assertEquals(\Zend_Log::DEBUG, $opusLog->convertPriorityToInt('debug'));
-        $this->assertEquals(\Zend_Log::CRIT, $opusLog->convertPriorityToInt('CRIT'));
-        $this->assertEquals(\Zend_Log::INFO, $opusLog->convertPriorityToInt('Info'));
-    }
-
-    public function testConvertPriorityToIntUnknownPriority()
-    {
-        $opusLog = $this->getOpusLog();
-
-        $this->assertNull($opusLog->convertPriorityToInt('TestLevel'));
-    }
-
-    public function testConvertPriorityToString()
-    {
-        $opusLog = $this->getOpusLog();
-
-        $this->assertEquals('INFO', $opusLog->convertPriorityToString(\Zend_Log::INFO));
-        $this->assertEquals('ERR', $opusLog->convertPriorityToString(\Zend_Log::ERR));
-        $this->assertEquals('EMERG', $opusLog->convertPriorityToString(\Zend_Log::EMERG));
-    }
-
-    public function testConvertPriorityToStringUnknownPriority()
-    {
-        $opusLog = $this->getOpusLog();
-
-        $this->assertNull($opusLog->convertPriorityToString(10));
-    }
-
-    public function getOpusLog()
+    protected function getOpusLog()
     {
         return $this->opusLog;
     }

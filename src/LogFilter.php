@@ -25,7 +25,7 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * @category    opus4-common
- * @package     Opus\Log
+ * @package     Opus\LogFilter
  * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
@@ -33,50 +33,23 @@
 
 namespace Opus;
 
-use Opus\Log\LogService;
-
-class Log extends \Zend_Log
+class LogFilter extends \Zend_Log_Filter_Priority
 {
-    private $logService;
+    private $priority;
 
-    private $filter;
-
-    public function __construct(\Zend_Log_Writer_Stream $writer = null)
+    public function __construct($priority, $operator = null)
     {
-        parent::__construct($writer);
-        $this->logService = LogService::getInstance();
+        parent::__construct($priority, $operator);
     }
 
-    /**
-     * TODO should be avoided using internal info like _filters
-     *
-     * Change the priority of the filter.
-     *
-     * @param int $priority
-     * @throws \Zend_Log_Exception
-     */
     public function setPriority($priority)
     {
-        if ($this->filter === null) {
-            $this->filter = new LogFilter($priority);
-            $this->addFilter($this->filter);
-        } else {
-            $this->filter->setPriority($priority);
-        }
+        $this->priority = $priority;
+        $this->_priority = $this->priority;
     }
 
-    /**
-     * Returns the highest priority of the logger.
-     *
-     * @return String|null
-     * @throws \ReflectionException
-     */
     public function getPriority()
     {
-        if ($this->filter === null) {
-            return null;
-        } else {
-            return $this->filter->getPriority();
-        }
+        return $this->priority;
     }
 }
