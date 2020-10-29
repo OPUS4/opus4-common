@@ -31,42 +31,25 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Log;     //TODO change to OpusTest\LogTest
+namespace OpusTest;
 
-use Opus\Log\LogService;
+use Opus\Log;
 
-class OpusLogTest extends \PHPUnit_Framework_TestCase
+class LogTest extends \PHPUnit_Framework_TestCase
 {
-    private $opusLog;
 
-    private $tempFolder;
+    private $logFile;
 
     public function setUp()
     {
         parent::setUp();
-
-        $tempFolder = $this->createTempFolder();
-        $this->tempFolder = $tempFolder;
-        $this->createFolder('log');
-
-        $logService = LogService::getInstance();
-        $logService->setConfig(new \Zend_Config([
-            'workspacePath' => $tempFolder
-        ], true));
-
-        $this->opusLog = $logService->createLog(LogService::DEFAULT_LOG);
     }
 
     public function tearDown()
     {
-        $singleton = LogService::getInstance();
-        $reflection = new \ReflectionClass($singleton);
-        $instance = $reflection->getProperty('instance');
-        $instance->setAccessible(true);
-        $instance->setValue(null, null);
-        $instance->setAccessible(false);
-
-        $this->removeFolder($this->tempFolder);
+        if (is_resource($this->logFile)) {
+            fclose($this->logFile);
+        }
 
         parent::tearDown();
     }
@@ -78,12 +61,12 @@ class OpusLogTest extends \PHPUnit_Framework_TestCase
 
         $debugMessage = 'Debug level message from testSetPriority';
         $opusLog->debug($debugMessage);
-        $content = $this->readLogFile('default.log');
+        $content = $this->readLogFile();
 
         $this->assertContains($debugMessage, $content);
     }
 
-    public function testSetPriorityWithNullPriority()
+    public function testSetPriorityWithNullPriority()  //TODO filter is not disabled on null yet.
     {
         $opusLog = $this->getOpusLog();
         $opusLog->setPriority(null);
@@ -91,19 +74,39 @@ class OpusLogTest extends \PHPUnit_Framework_TestCase
         $debugMessage = 'Debug level message from testSetPriorityWithNullPriority';
         $opusLog->debug($debugMessage);
 
-        $infoMessage = 'Info level message from testSetPriorityWithNullPriority';
-        $opusLog->info($infoMessage);
+        $content = $this->readLogFile();
 
-        $content = $this->readLogFile('default.log');
-
-        $this->assertContains($infoMessage, $content);
+        $this->assertContains($debugMessage, $content);
     }
 
-    public function testSetPriorityUnknownPriority()
+    public function testSetPriorityWithCustomPriorityWithNullArgument()
+    {
+        $opusLog = $this->getOpusLog();
+        $opusLog->addPriority('TEST', 8);
+        $opusLog->setPriority(null);
+
+        $testMessage = 'Test level message';
+        $opusLog->test($testMessage);
+
+        $content = $this->readLogFile();
+
+        $this->assertContains($testMessage, $content);
+    }
+
+    public function testSetPriorityNegativePriority()
     {
         $opusLog = $this->getOpusLog();
 
-        $this->setExpectedException(\Exception::class, "No such priority found as TestPriority");
+        $this->setExpectedException(\Exception::class, 'Priority should be of Integer type and cannot be negative');
+
+        $opusLog->setPriority(-1);
+    }
+
+    public function testSetPriorityNotIntPriority()
+    {
+        $opusLog = $this->getOpusLog();
+
+        $this->setExpectedException(\Exception::class, 'Priority should be of Integer type and cannot be negative');
 
         $opusLog->setPriority('TestPriority');
     }
@@ -125,9 +128,47 @@ class OpusLogTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(\Zend_Log::DEBUG, $priority);
     }
 
+    public function testGetPriorityReturnsHighestPriorityOnNull()
+    {
+        $opusLog = $this->getOpusLog();
+        $opusLog->setPriority(null);
+        $priority = $opusLog->getPriority();
+
+        $this->assertEquals(\Zend_Log::DEBUG, $priority);
+    }
+
     protected function getOpusLog()
     {
-        return $this->opusLog;
+        $format = '%priorityName%: %message%' . PHP_EOL;
+        $formatter = new \Zend_Log_Formatter_Simple($format);
+
+        $this->logFile = fopen('php://temp', 'rw');
+        $writer = new \Zend_Log_Writer_Stream($this->logFile);
+        $writer->setFormatter($formatter);
+
+        $logger = new Log($writer);
+
+        $priority = \Zend_Log::INFO;
+        $logger->setPriority($priority);
+
+        return $logger;
+    }
+
+    protected function readLogFile()
+    {
+        rewind($this->logFile);
+        $content = '';
+        while (true) {
+            $string = fgets($this->logFile);
+
+            if (! $string) {
+                break;
+            }
+
+            $content .= $string;
+        }
+
+        return $content;
     }
 
     protected function createTempFolder()
@@ -136,44 +177,5 @@ class OpusLogTest extends \PHPUnit_Framework_TestCase
         $path = $path . DIRECTORY_SEPARATOR . uniqid('opus4-common_test_');
         mkdir($path, 0777, true);
         return $path;
-    }
-
-    /**
-     * Use helper methods from OPUSVIER-4400
-     *
-     * @return String path to log folder.
-     */
-    protected function createFolder($folderName)
-    {
-        $path = $this->tempFolder . DIRECTORY_SEPARATOR . $folderName;
-        mkdir($path, 0777, true);
-        return $path;
-    }
-
-    protected function removeFolder($path)
-    {
-        if (! is_null($path) && file_exists($path)) {
-            if (is_dir($path)) {
-                $iterator = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
-                foreach ($iterator as $file) {
-                    if ($file->isDir()) {
-                        $this->removeFolder($file->getPathname());
-                    } else {
-                        unlink($file->getPathname());
-                    }
-                }
-                rmdir($path);
-            }
-        }
-    }
-
-    protected function readLogFile($name)
-    {
-        $path = $this->tempFolder . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . $name;
-        if (file_exists($path)) {
-            return file_get_contents($path);
-        } else {
-            throw new \Exception("log file '$name' not found");
-        }
     }
 }

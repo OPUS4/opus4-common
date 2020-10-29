@@ -25,18 +25,16 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * @category    opus4-common
- * @package     Opus\LogFilter
+ * @package     Opus\LevelFilter
  * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace Opus\Log;
 
-class LogFilter extends \Zend_Log_Filter_Priority
+class LevelFilter extends \Zend_Log_Filter_Priority
 {
-    private $priority;
-
     public function __construct($priority, $operator = null)
     {
         parent::__construct($priority, $operator);
@@ -44,12 +42,11 @@ class LogFilter extends \Zend_Log_Filter_Priority
 
     public function setPriority($priority)
     {
-        $this->priority = $priority;
-        $this->_priority = $this->priority;
+        $this->_priority = $priority;
     }
 
     public function getPriority()
     {
-        return $this->priority;
+        return $this->_priority;
     }
 }

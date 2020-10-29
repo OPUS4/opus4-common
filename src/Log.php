@@ -33,43 +33,47 @@
 
 namespace Opus;
 
-use Opus\Log\LogService;
+use Opus\Log\LevelFilter;
 
 class Log extends \Zend_Log
 {
-    private $logService;
-
     private $filter;
 
     public function __construct(\Zend_Log_Writer_Stream $writer = null)
     {
         parent::__construct($writer);
-        $this->logService = LogService::getInstance();
     }
 
     /**
-     * TODO should be avoided using internal info like _filters
-     *
      * Change the priority of the filter.
+     *
+     * TODO On null, the function disables the filter
      *
      * @param int $priority
      * @throws \Zend_Log_Exception
      */
     public function setPriority($priority)
     {
+        if ($priority !== null && ($priority < 0 || gettype($priority) !== 'integer')) {
+            throw new \Exception('Priority should be of Integer type and cannot be negative');
+        }
         if ($this->filter === null) {
-            $this->filter = new LogFilter($priority);
+            $this->filter = new LevelFilter($priority);
             $this->addFilter($this->filter);
         } else {
-            $this->filter->setPriority($priority);
+            if ($priority === null) {
+                $highestPriority = max(array_flip($this->_priorities));
+                $this->filter->setPriority($highestPriority);
+            } else {
+                $this->filter->setPriority($priority);
+            }
         }
     }
 
     /**
      * Returns the highest priority of the logger.
      *
-     * @return String|null
-     * @throws \ReflectionException
+     * @return int|null
      */
     public function getPriority()
     {
