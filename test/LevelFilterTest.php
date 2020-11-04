@@ -24,51 +24,55 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    opus4-common
- * @package     Opus\LevelFilter
+ * @category    Test
+ * @package     OpusTest
  * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Log;
+namespace OpusTest;
 
-class LevelFilter extends \Zend_Log_Filter_Priority
+use Opus\Log\LevelFilter;
+
+class LevelFilterTest extends \PHPUnit_Framework_TestCase
 {
-    public function __construct($priority, $operator = null)
+    public function testSetPriority()
     {
-        parent::__construct($priority, $operator);
+        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter->setPriority(\Zend_Log::INFO);
+
+        $infoEvent = ['priority' => \Zend_Log::INFO];
+        $debugEvent = ['priority' => \Zend_Log::DEBUG];
+
+        $this->assertTrue($filter->accept($infoEvent));
+        $this->assertFalse($filter->accept($debugEvent));
     }
 
-    /**
-     * Set the priority of the filter. On null argument, filter is disabled.
-     *
-     * Filter is disabled by setting the priority to lowest value and altering the comparison operator
-     * to greater or equal.
-     *
-     * @param $priority
-     */
-    public function setPriority($priority)
+    public function testSetPriorityNullArgument()
     {
-        if ($priority === null) {
-            $this->_operator = '>=';
-            $this->_priority = \Zend_Log::EMERG;
-        } else {
-            $this->_operator = '<=';
-            $this->_priority = $priority;
-        }
+        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter->setPriority(null);
+
+        $emergEvent = ['priority' => \Zend_Log::EMERG];
+        $debugEvent = ['priority' => \Zend_Log::DEBUG];
+
+        $this->assertTrue($filter->accept($emergEvent));
+        $this->assertTrue($filter->accept($debugEvent));
     }
 
-    /**
-     * Returns priority of the filter.
-     *
-     * @return int|null
-     */
-    public function getPriority()
+    public function testGetPriority()
     {
-        if ($this->_operator === '>=') {
-            return null;
-        }
-        return $this->_priority;
+        $filter = new LevelFilter(\Zend_Log::WARN);
+
+        $this->assertEquals(\Zend_Log::WARN, $filter->getPriority());
+    }
+
+    public function testGetPriorityOnNull()
+    {
+        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter->setPriority(null);
+
+        $this->assertNull($filter->getPriority());
     }
 }

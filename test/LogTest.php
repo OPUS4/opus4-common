@@ -66,7 +66,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($debugMessage, $content);
     }
 
-    public function testSetPriorityWithNullPriority()  //TODO filter is not disabled on null yet.
+    public function testSetPriorityWithNullPriority()
     {
         $opusLog = $this->getOpusLog();
         $opusLog->setPriority(null);
@@ -79,18 +79,23 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($debugMessage, $content);
     }
 
-    public function testSetPriorityWithCustomPriorityWithNullArgument()
+    public function testSetPriorityWithCustomPriorityAndNullArgument()
     {
         $opusLog = $this->getOpusLog();
         $opusLog->addPriority('TEST', 8);
         $opusLog->setPriority(null);
+        $opusLog->addPriority('TLEVEL', 9);
 
         $testMessage = 'Test level message';
         $opusLog->test($testMessage);
 
+        $tlevelMessage = 'Tlevel message';
+        $opusLog->tlevel($tlevelMessage);
+
         $content = $this->readLogFile();
 
         $this->assertContains($testMessage, $content);
+        $this->assertContains($tlevelMessage, $content);
     }
 
     public function testSetPriorityNegativePriority()
@@ -128,13 +133,13 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(\Zend_Log::DEBUG, $priority);
     }
 
-    public function testGetPriorityReturnsHighestPriorityOnNull()
+    public function testGetPriorityOnNullPriority()
     {
         $opusLog = $this->getOpusLog();
         $opusLog->setPriority(null);
         $priority = $opusLog->getPriority();
 
-        $this->assertEquals(\Zend_Log::DEBUG, $priority);
+        $this->assertNull($priority);
     }
 
     protected function getOpusLog()

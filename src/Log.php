@@ -45,9 +45,7 @@ class Log extends \Zend_Log
     }
 
     /**
-     * Change the priority of the filter.
-     *
-     * TODO On null, the function disables the filter
+     * Change the priority of the filter. On null argument, it disables the filter.
      *
      * @param int $priority
      * @throws \Zend_Log_Exception
@@ -61,12 +59,7 @@ class Log extends \Zend_Log
             $this->filter = new LevelFilter($priority);
             $this->addFilter($this->filter);
         } else {
-            if ($priority === null) {
-                $highestPriority = max(array_flip($this->_priorities));
-                $this->filter->setPriority($highestPriority);
-            } else {
-                $this->filter->setPriority($priority);
-            }
+            $this->filter->setPriority($priority);
         }
     }
 
