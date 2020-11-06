@@ -33,11 +33,22 @@
 
 namespace Opus\Log;
 
+/**
+ * Class LevelFilter
+ *
+ * Class for manipulating the filter of a logger like setting the level and disabling it.
+ *
+ * @package Opus\Log
+ */
 class LevelFilter extends \Zend_Log_Filter_Priority
 {
+    private $operator;
+
     public function __construct($priority, $operator = null)
     {
         parent::__construct($priority, $operator);
+
+        $this->operator = $this->_operator;
     }
 
     /**
@@ -48,13 +59,15 @@ class LevelFilter extends \Zend_Log_Filter_Priority
      *
      * @param $priority
      */
-    public function setPriority($priority)
+    public function setLevel($priority)
     {
         if ($priority === null) {
             $this->_operator = '>=';
             $this->_priority = \Zend_Log::EMERG;
+        } elseif ($priority < 0 || ! is_int($priority)) {
+            throw new \InvalidArgumentException('Priority should be of Integer type and cannot be negative');
         } else {
-            $this->_operator = '<=';
+            $this->_operator = $this->operator;
             $this->_priority = $priority;
         }
     }
@@ -62,11 +75,13 @@ class LevelFilter extends \Zend_Log_Filter_Priority
     /**
      * Returns priority of the filter.
      *
+     * Returns null if the filter has is disabled.
+     *
      * @return int|null
      */
-    public function getPriority()
+    public function getLevel()
     {
-        if ($this->_operator === '>=') {
+        if ($this->_operator === '>=' && $this->_priority == \Zend_Log::EMERG) {
             return null;
         }
         return $this->_priority;

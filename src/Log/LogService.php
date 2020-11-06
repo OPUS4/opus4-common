@@ -377,7 +377,7 @@ class LogService
         $writer->setFormatter($formatter);
 
         $logger = new Log($writer);
-        $logger->setPriority($priority);
+        $logger->setLevel($priority);
 
         return $logger;
     }

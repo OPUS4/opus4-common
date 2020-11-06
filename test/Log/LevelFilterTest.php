@@ -31,16 +31,16 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest;
+namespace OpusTest\Log;
 
 use Opus\Log\LevelFilter;
 
 class LevelFilterTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSetPriority()
+    public function testSetLevel()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
-        $filter->setPriority(\Zend_Log::INFO);
+        $filter->setLevel(\Zend_Log::INFO);
 
         $infoEvent = ['priority' => \Zend_Log::INFO];
         $debugEvent = ['priority' => \Zend_Log::DEBUG];
@@ -49,10 +49,10 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($filter->accept($debugEvent));
     }
 
-    public function testSetPriorityNullArgument()
+    public function testSetLevelOnNullArgument()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
-        $filter->setPriority(null);
+        $filter->setLevel(null);
 
         $emergEvent = ['priority' => \Zend_Log::EMERG];
         $debugEvent = ['priority' => \Zend_Log::DEBUG];
@@ -61,18 +61,43 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($filter->accept($debugEvent));
     }
 
-    public function testGetPriority()
+    public function testSetLevelOnNegativeArgument()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
 
-        $this->assertEquals(\Zend_Log::WARN, $filter->getPriority());
+        $this->setExpectedException(\InvalidArgumentException::class, 'Priority should be of Integer type and cannot be negative');
+
+        $filter->setLevel(-1);
     }
 
-    public function testGetPriorityOnNull()
+    public function testSetLevelOnStringArgument()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
-        $filter->setPriority(null);
 
-        $this->assertNull($filter->getPriority());
+        $this->setExpectedException(\InvalidArgumentException::class, 'Priority should be of Integer type and cannot be negative');
+
+        $filter->setLevel('TestPriority');
+    }
+
+    public function testGetLevel()
+    {
+        $filter = new LevelFilter(\Zend_Log::WARN);
+
+        $this->assertEquals(\Zend_Log::WARN, $filter->getLevel());
+    }
+
+    public function testGetLevelForDisabledFilter()
+    {
+        $filter = new LevelFilter(\Zend_Log::EMERG, '>=');
+
+        $this->assertNull($filter->getLevel());
+    }
+
+    public function testGetLevelOnNull()
+    {
+        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter->setLevel(null);
+
+        $this->assertNull($filter->getLevel());
     }
 }

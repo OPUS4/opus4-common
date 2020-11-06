@@ -35,9 +35,21 @@ namespace Opus;
 
 use Opus\Log\LevelFilter;
 
+/**
+ * TODO check functionality with framework
+ *
+ * Class for manipulating a logger with additional functionalities like changing the priority level.
+ *
+ * @package Opus
+ */
 class Log extends \Zend_Log
 {
     private $filter;
+
+    /**
+     * @var \Zend_Log
+     */
+    protected static $cachedReference;
 
     public function __construct(\Zend_Log_Writer_Stream $writer = null)
     {
@@ -50,16 +62,16 @@ class Log extends \Zend_Log
      * @param int $priority
      * @throws \Zend_Log_Exception
      */
-    public function setPriority($priority)
+    public function setLevel($priority)
     {
-        if ($priority !== null && ($priority < 0 || gettype($priority) !== 'integer')) {
-            throw new \Exception('Priority should be of Integer type and cannot be negative');
+        if ($priority !== null && ($priority < 0 || ! is_int($priority))) {
+            throw new \InvalidArgumentException('Priority should be of Integer type and cannot be negative');
         }
         if ($this->filter === null) {
             $this->filter = new LevelFilter($priority);
             $this->addFilter($this->filter);
         } else {
-            $this->filter->setPriority($priority);
+            $this->filter->setLevel($priority);
         }
     }
 
@@ -68,12 +80,33 @@ class Log extends \Zend_Log
      *
      * @return int|null
      */
-    public function getPriority()
+    public function getLevel()
     {
         if ($this->filter === null) {
             return null;
         } else {
-            return $this->filter->getPriority();
+            return $this->filter->getLevel();
         }
+    }
+
+    /**
+     * @return Log
+     * @throws \Zend_Exception
+     */
+    public static function get()
+    {
+        if (! self::$cachedReference) {
+            self::$cachedReference = \Zend_Registry::get('Zend_Log');
+        }
+
+        return self::$cachedReference;
+    }
+
+    /**
+     * Drops any cached reference on logging facility to use.
+     */
+    public static function drop()
+    {
+        self::$cachedReference = null;
     }
 }
