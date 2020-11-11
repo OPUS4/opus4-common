@@ -53,14 +53,14 @@ class LogTest extends \PHPUnit_Framework_TestCase
     {
         $opusLog = $this->getOpusLog();
         $opusLog->setLevel(\Zend_Log::DEBUG);
-        $debugMessage = 'Debug level message from testSetPriority';
+        $debugMessage = 'Debug level message from testSetLevel';
         $opusLog->debug($debugMessage);
         $content = $this->readLog();
 
         $level = $opusLog->getLevel();
 
         $this->assertContains($debugMessage, $content);
-        $this->assertSame(\Zend_Log::DEBUG, $level);
+        $this->assertEquals(\Zend_Log::DEBUG, $level);
     }
 
     public function testSetLevelForFilterDisabling()
@@ -68,7 +68,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $opusLog = $this->getOpusLog();
         $opusLog->setLevel(null);
 
-        $debugMessage = 'Debug level message from testSetPriorityWithNullPriority';
+        $debugMessage = 'Debug level message from testSetLevelWithNullLevel';
         $opusLog->debug($debugMessage);
 
         $content = $this->readLog();
@@ -120,48 +120,48 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($errorMessage, $content);
     }
 
-    public function testSetLevelNegativePriority()
+    public function testSetLevelNegativeLevel()
     {
         $opusLog = $this->getOpusLog();
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Priority should be of Integer type and cannot be negative');
+        $this->setExpectedException(\InvalidArgumentException::class, 'Level should be of Integer type and cannot be negative');
 
         $opusLog->setLevel(-1);
     }
 
-    public function testSetLevelNotIntPriority()
+    public function testSetLevelStringArgument()
     {
         $opusLog = $this->getOpusLog();
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Priority should be of Integer type and cannot be negative');
+        $this->setExpectedException(\InvalidArgumentException::class, 'Level should be of Integer type and cannot be negative');
 
-        $opusLog->setLevel('TestPriority');
+        $opusLog->setLevel('TestLevel');
+    }
+
+    public function testSetLevelStringLevel()
+    {
+        $opusLog = $this->getOpusLog();
+
+        $opusLog->setLevel('7');
+
+        $this->assertEquals(\Zend_Log::DEBUG, $opusLog->getLevel());
     }
 
     public function testGetLevel()
     {
         $opusLog = $this->getOpusLog();
-        $priority = $opusLog->getLevel();
+        $level = $opusLog->getLevel();
 
-        $this->assertEquals(\Zend_Log::INFO, $priority);
+        $this->assertEquals(\Zend_Log::INFO, $level);
     }
 
-    public function testGetLevelAfterSetPriority()
-    {
-        $opusLog = $this->getOpusLog();
-        $opusLog->setLevel(\Zend_Log::DEBUG);
-        $priority = $opusLog->getLevel();
-
-        $this->assertEquals(\Zend_Log::DEBUG, $priority);
-    }
-
-    public function testGetLevelOnNullPriority()
+    public function testGetLevelReturnsNull()
     {
         $opusLog = $this->getOpusLog();
         $opusLog->setLevel(null);
-        $priority = $opusLog->getLevel();
+        $level = $opusLog->getLevel();
 
-        $this->assertNull($priority);
+        $this->assertNull($level);
     }
 
     protected function getOpusLog()
@@ -175,8 +175,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
         $logger = new Log($writer);
 
-        $priority = \Zend_Log::INFO;
-        $logger->setLevel($priority);
+        $level = \Zend_Log::INFO;
+        $logger->setLevel($level);
 
         return $logger;
     }
@@ -196,13 +196,5 @@ class LogTest extends \PHPUnit_Framework_TestCase
         }
 
         return $content;
-    }
-
-    protected function createTempFolder()
-    {
-        $path = sys_get_temp_dir();
-        $path = $path . DIRECTORY_SEPARATOR . uniqid('opus4-common_test_');
-        mkdir($path, 0777, true);
-        return $path;
     }
 }

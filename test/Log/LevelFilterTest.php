@@ -25,7 +25,7 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * @category    Test
- * @package     OpusTest
+ * @package     OpusTest\Log
  * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
@@ -61,11 +61,21 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($filter->accept($debugEvent));
     }
 
+    public function testSetLevelChangedAfterNullArgument()
+    {
+        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter->setLevel(null);
+        $filter->setLevel(\Zend_Log::INFO);
+
+        $this->assertTrue($filter->accept(['priority' => \Zend_Log::INFO]));
+        $this->assertSame(\Zend_Log::INFO, $filter->getLevel());
+    }
+
     public function testSetLevelOnNegativeArgument()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Priority should be of Integer type and cannot be negative');
+        $this->setExpectedException(\InvalidArgumentException::class, 'Level should be of Integer type and cannot be negative');
 
         $filter->setLevel(-1);
     }
@@ -74,9 +84,19 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Priority should be of Integer type and cannot be negative');
+        $this->setExpectedException(\InvalidArgumentException::class, 'Level should be of Integer type and cannot be negative');
 
-        $filter->setLevel('TestPriority');
+        $filter->setLevel('TestLevel');
+    }
+
+    public function testSetLevelStringNumericArgument()
+    {
+        $filter = new LevelFilter(\Zend_Log::WARN);
+
+        $filter->setLevel('7');
+
+        $this->assertTrue($filter->accept(['priority' => \Zend_Log::DEBUG]));
+        $this->assertEquals(\Zend_Log::DEBUG, $filter->getLevel());
     }
 
     public function testGetLevel()
@@ -86,18 +106,18 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(\Zend_Log::WARN, $filter->getLevel());
     }
 
-    public function testGetLevelForDisabledFilter()
-    {
-        $filter = new LevelFilter(\Zend_Log::EMERG, '>=');
-
-        $this->assertNull($filter->getLevel());
-    }
-
     public function testGetLevelOnNull()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
         $filter->setLevel(null);
 
         $this->assertNull($filter->getLevel());
+    }
+
+    public function testGetLevelOnInvertedConfig()
+    {
+        $filter = new LevelFilter(\Zend_Log::EMERG, '>=');
+
+        $this->assertEquals(\Zend_Log::EMERG, $filter->getLevel());
     }
 }

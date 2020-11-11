@@ -25,7 +25,7 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * @category    opus4-common
- * @package     Opus\LevelFilter
+ * @package     Opus\Log
  * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
@@ -34,54 +34,53 @@
 namespace Opus\Log;
 
 /**
- * Class LevelFilter
- *
  * Class for manipulating the filter of a logger like setting the level and disabling it.
- *
- * @package Opus\Log
  */
 class LevelFilter extends \Zend_Log_Filter_Priority
 {
     private $operator;
 
-    public function __construct($priority, $operator = null)
+    private $nullLevel;
+
+    public function __construct($level, $operator = null)
     {
-        parent::__construct($priority, $operator);
+        parent::__construct($level, $operator);
 
         $this->operator = $this->_operator;
     }
 
     /**
-     * Set the priority of the filter. On null argument, filter is disabled.
+     * Set the level of the filter.
      *
-     * Filter is disabled by setting the priority to lowest value and altering the comparison operator
-     * to greater or equal.
+     * On null argument, filter is disabled.
      *
-     * @param $priority
+     * @param int $level
      */
-    public function setLevel($priority)
+    public function setLevel($level)
     {
-        if ($priority === null) {
+        if ($level === null) {
+            /**Filter is disabled by setting the level to lowest value and altering the comparison operator
+            to greater or equal. */
             $this->_operator = '>=';
             $this->_priority = \Zend_Log::EMERG;
-        } elseif ($priority < 0 || ! is_int($priority)) {
-            throw new \InvalidArgumentException('Priority should be of Integer type and cannot be negative');
+            $this->nullLevel = true;
+        } elseif ($level < 0 || ! is_numeric($level)) {
+            throw new \InvalidArgumentException('Level should be of Integer type and cannot be negative');
         } else {
             $this->_operator = $this->operator;
-            $this->_priority = $priority;
+            $this->_priority = $level;
+            $this->nullLevel = false;
         }
     }
 
     /**
-     * Returns priority of the filter.
-     *
-     * Returns null if the filter has is disabled.
+     * Returns level of the filter.
      *
      * @return int|null
      */
     public function getLevel()
     {
-        if ($this->_operator === '>=' && $this->_priority == \Zend_Log::EMERG) {
+        if ($this->nullLevel) {
             return null;
         }
         return $this->_priority;

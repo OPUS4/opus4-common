@@ -25,7 +25,7 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * @category    opus4-common
- * @package     Opus\Log
+ * @package     Opus
  * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
@@ -36,17 +36,15 @@ namespace Opus;
 use Opus\Log\LevelFilter;
 
 /**
- * TODO check functionality with framework
- *
  * Class for manipulating a logger with additional functionalities like changing the priority level.
- *
- * @package Opus
  */
 class Log extends \Zend_Log
 {
     private $filter;
 
     /**
+     * Stores the default logger.
+     *
      * @var \Zend_Log
      */
     protected static $cachedReference;
@@ -57,26 +55,26 @@ class Log extends \Zend_Log
     }
 
     /**
-     * Change the priority of the filter. On null argument, it disables the filter.
+     * Change the level of the filter. On null argument, it disables the filter.
      *
-     * @param int $priority
+     * @param int $level
      * @throws \Zend_Log_Exception
      */
-    public function setLevel($priority)
+    public function setLevel($level)
     {
-        if ($priority !== null && ($priority < 0 || ! is_int($priority))) {
-            throw new \InvalidArgumentException('Priority should be of Integer type and cannot be negative');
+        if ($level !== null && ($level < 0 or ! is_numeric($level))) {
+            throw new \InvalidArgumentException('Level should be of Integer type and cannot be negative');
         }
         if ($this->filter === null) {
-            $this->filter = new LevelFilter($priority);
+            $this->filter = new LevelFilter($level);
             $this->addFilter($this->filter);
         } else {
-            $this->filter->setLevel($priority);
+            $this->filter->setLevel($level);
         }
     }
 
     /**
-     * Returns the highest priority of the logger.
+     * Returns the level of the logger.
      *
      * @return int|null
      */
@@ -90,6 +88,8 @@ class Log extends \Zend_Log
     }
 
     /**
+     * Returns a default logger.
+     *
      * @return Log
      * @throws \Zend_Exception
      */
