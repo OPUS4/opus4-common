@@ -124,7 +124,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
     {
         $opusLog = $this->getOpusLog();
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Level should be of Integer type and cannot be negative');
+        $exceptionMessage = 'Level should be of Integer type and cannot be negative';
+        $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
 
         $opusLog->setLevel(-1);
     }
@@ -133,7 +134,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
     {
         $opusLog = $this->getOpusLog();
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Level should be of Integer type and cannot be negative');
+        $exceptionMessage = 'Level should be of Integer type and cannot be negative';
+        $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
 
         $opusLog->setLevel('TestLevel');
     }
