@@ -164,6 +164,31 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($level);
     }
 
+    public function testGet()
+    {
+        \Zend_Registry::set('Zend_Log', $this->getOpusLog());
+        $log = Log::get();
+
+        $this->assertSame(\Zend_Registry::get('Zend_Log'), $log);
+    }
+
+    public function testDrop()
+    {
+        $log = $this->getOpusLog();
+        \Zend_Registry::set('Zend_Log', $log);
+
+        Log::get();
+        Log::drop();
+
+        $refl = new \ReflectionClass($log);
+        $prop = $refl->getProperty('cachedReference');
+        $prop->setAccessible(true);
+        $value = $prop->getValue();
+        $prop->setAccessible(false);
+
+        $this->assertNull($value);
+    }
+
     protected function getOpusLog()
     {
         $format = '%priorityName%: %message%' . PHP_EOL;
