@@ -179,16 +179,11 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $log = $this->getOpusLog();
         \Zend_Registry::set('Zend_Log', $log);
 
-        Log::get();
+        $logger1 = Log::get();
         Log::drop();
+        $logger2 = Log::get();
 
-        $refl = new \ReflectionClass($log);
-        $prop = $refl->getProperty('cachedReference');
-        $prop->setAccessible(true);
-        $value = $prop->getValue();
-        $prop->setAccessible(false);
-
-        $this->assertNull($value);
+        $this->assertNotSame($logger1, $logger2);
     }
 
     protected function getOpusLog()

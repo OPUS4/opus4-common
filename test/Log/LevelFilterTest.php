@@ -75,7 +75,9 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Level should be of Integer type and cannot be negative');
+        $exceptionMessage = 'Level should be of Integer type and cannot be negative';
+
+        $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
 
         $filter->setLevel(-1);
     }
@@ -84,7 +86,9 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Level should be of Integer type and cannot be negative');
+        $exceptionMessage = 'Level should be of Integer type and cannot be negative';
+
+        $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
 
         $filter->setLevel('TestLevel');
     }
