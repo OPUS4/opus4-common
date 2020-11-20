@@ -55,27 +55,33 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $opusLog->setLevel(\Zend_Log::DEBUG);
         $debugMessage = 'Debug level message from testSetLevel';
         $opusLog->debug($debugMessage);
-        $content = $this->readLog();
 
-        $level = $opusLog->getLevel();
-
-        $this->assertContains($debugMessage, $content);
-        $this->assertEquals(\Zend_Log::DEBUG, $level);
+        $this->assertContains($debugMessage, $this->readLog());
+        $this->assertEquals(\Zend_Log::DEBUG, $opusLog->getLevel());
     }
 
     public function testSetLevelForFilterDisabling()
     {
         $opusLog = $this->getOpusLog();
-        $opusLog->setLevel(null);
 
         $debugMessage = 'Debug level message from testSetLevelWithNullLevel';
-        $opusLog->debug($debugMessage);
+        $infoMessage = 'Info level message';
 
+        $opusLog->info($infoMessage);
+        $opusLog->debug($debugMessage);
+        $priorContent = $this->readLog();
+
+        $opusLog->setLevel(null);
+
+        $opusLog->debug($debugMessage);
         $content = $this->readLog();
 
+        $this->assertContains($infoMessage, $priorContent);
+        $this->assertNotContains($debugMessage, $priorContent);
         $this->assertContains($debugMessage, $content);
     }
 
+    // To test custom level messages are also working properly when filter is disabled.
     public function testSetLevelToNullHavingCustomLevels()
     {
         $opusLog = $this->getOpusLog();
@@ -83,10 +89,10 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $opusLog->setLevel(null);
         $opusLog->addPriority('TLEVEL', 9);
 
-        $testMessage = 'Test level message';
+        $testMessage = 'Test level created before filter disabled';
         $opusLog->test($testMessage);
 
-        $tlevelMessage = 'Tlevel message';
+        $tlevelMessage = 'Test level created after filter disabled';
         $opusLog->tlevel($tlevelMessage);
 
         $content = $this->readLog();
@@ -95,26 +101,31 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($tlevelMessage, $content);
     }
 
-    public function testSetLevelNotEffectingOtherFilters()
+    public function testSetLevelNotModifyingOtherFilters()
     {
         $opusLog = $this->getOpusLog();
+        $initialLevel = $opusLog->getLevel(); //Should return INFO
 
         $filter = new \Zend_Log_Filter_Priority(\Zend_Log::WARN);
         $opusLog->addFilter($filter);
 
+        // INFO message shouldn't be logged despite of having INFO level set because of the new filter(WARN) above.
         $infoMessage = 'Info level Message';
         $opusLog->info($infoMessage);
 
+        // Changing to NOTICE level still shouldn't log NOTICE message because the other filter(WARN) is NOT modified.
         $opusLog->setLevel(\Zend_Log::NOTICE);
         $noticeMessage = 'Notice Level Message';
         $opusLog->notice($noticeMessage);
 
-        $opusLog->setLevel(\Zend_Log::ERR);
+        // ERROR level message should be logged because it has lower level than both the filters proving both filters
+        // are behaving as they should.
         $errorMessage = 'Error level Message';
         $opusLog->err($errorMessage);
 
         $content = $this->readLog();
 
+        $this->assertEquals(\Zend_Log::INFO, $initialLevel);
         $this->assertNotContains($infoMessage, $content);
         $this->assertNotContains($noticeMessage, $content);
         $this->assertContains($errorMessage, $content);
@@ -152,18 +163,16 @@ class LogTest extends \PHPUnit_Framework_TestCase
     public function testGetLevel()
     {
         $opusLog = $this->getOpusLog();
-        $level = $opusLog->getLevel();
 
-        $this->assertEquals(\Zend_Log::INFO, $level);
+        $this->assertEquals(\Zend_Log::INFO, $opusLog->getLevel());
     }
 
     public function testGetLevelReturnsNull()
     {
         $opusLog = $this->getOpusLog();
         $opusLog->setLevel(null);
-        $level = $opusLog->getLevel();
 
-        $this->assertNull($level);
+        $this->assertNull($opusLog->getLevel());
     }
 
     public function testGet()
@@ -191,7 +200,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $format = '%priorityName%: %message%' . PHP_EOL;
         $formatter = new \Zend_Log_Formatter_Simple($format);
 
-        $this->logFile = fopen('php://temp', 'rw');
+        $this->logFile = fopen('php://memory', 'rw');
         $writer = new \Zend_Log_Writer_Stream($this->logFile);
         $writer->setFormatter($formatter);
 

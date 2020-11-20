@@ -37,6 +37,19 @@ use Opus\Log\LevelFilter;
 
 class LevelFilterTest extends \PHPUnit_Framework_TestCase
 {
+    public function testConstructor()
+    {
+        $filter = new LevelFilter(\Zend_Log::WARN);
+
+        $warnEvent = ['priority' => \Zend_Log::WARN];
+        $emergEvent = ['priority' => \Zend_Log::EMERG];
+        $infoEvent = ['priority' => \Zend_Log::INFO];
+
+        $this->assertTrue($filter->accept($warnEvent));
+        $this->assertTrue($filter->accept($emergEvent));
+        $this->assertFalse($filter->accept($infoEvent));
+    }
+
     public function testSetLevel()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
@@ -49,7 +62,7 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($filter->accept($debugEvent));
     }
 
-    public function testSetLevelOnNullArgument()
+    public function testSetLevelArgumentNull()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
         $filter->setLevel(null);
@@ -64,14 +77,16 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
     public function testSetLevelChangedAfterNullArgument()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
-        $filter->setLevel(null);
-        $filter->setLevel(\Zend_Log::INFO);
 
-        $this->assertTrue($filter->accept(['priority' => \Zend_Log::INFO]));
-        $this->assertSame(\Zend_Log::INFO, $filter->getLevel());
+        $filter->setLevel(null);
+        $this->assertTrue($filter->accept(['priority' => \Zend_Log::DEBUG]));
+
+        $filter->setLevel(\Zend_Log::INFO);
+        $this->assertFalse($filter->accept(['priority' => \Zend_Log::DEBUG]));
+        $this->assertEquals(\Zend_Log::INFO, $filter->getLevel());
     }
 
-    public function testSetLevelOnNegativeArgument()
+    public function testSetLevelNegativeArgument()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
 
@@ -82,7 +97,7 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
         $filter->setLevel(-1);
     }
 
-    public function testSetLevelOnStringArgument()
+    public function testSetLevelStringArgument()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
 
@@ -116,12 +131,5 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
         $filter->setLevel(null);
 
         $this->assertNull($filter->getLevel());
-    }
-
-    public function testGetLevelOnInvertedConfig()
-    {
-        $filter = new LevelFilter(\Zend_Log::EMERG, '>=');
-
-        $this->assertEquals(\Zend_Log::EMERG, $filter->getLevel());
     }
 }

@@ -57,12 +57,15 @@ class Log extends \Zend_Log
     /**
      * Change the level of the filter. On null argument, it disables the filter.
      *
+     * It doesn't effect or modify other filters of the loggers. So, if applicable, they will still filter out log
+     * messages having higher level than their filter irrespective of what setLevel() sets the level for the current one.
+     *
      * @param int $level
      * @throws \Zend_Log_Exception
      */
     public function setLevel($level)
     {
-        if ($level !== null && ($level < 0 or ! is_numeric($level))) {
+        if ($level !== null && ( ! is_numeric($level) or $level < 0)) {
             throw new \InvalidArgumentException('Level should be of Integer type and cannot be negative');
         }
         if ($this->filter === null) {
