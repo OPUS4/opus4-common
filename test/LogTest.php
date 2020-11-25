@@ -69,20 +69,21 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
         $opusLog->info($infoMessage);
         $opusLog->debug($debugMessage);
-        $priorContent = $this->readLog();
+        $content = $this->readLog();
+        $this->assertContains($infoMessage, $content);
+        $this->assertNotContains($debugMessage, $content);
 
         $opusLog->setLevel(null);
 
         $opusLog->debug($debugMessage);
         $content = $this->readLog();
-
-        $this->assertContains($infoMessage, $priorContent);
-        $this->assertNotContains($debugMessage, $priorContent);
         $this->assertContains($debugMessage, $content);
     }
 
-    // To test custom level messages are also working properly when filter is disabled.
-    public function testSetLevelToNullHavingCustomLevels()
+    /**
+     * To test custom level messages are also working properly when filter is disabled.
+     */
+    public function testCustomLevelsWithFiltersDisabled()
     {
         $opusLog = $this->getOpusLog();
         $opusLog->addPriority('TEST', 8);
@@ -91,20 +92,19 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
         $testMessage = 'Test level created before filter disabled';
         $opusLog->test($testMessage);
+        $content = $this->readLog();
+        $this->assertContains($testMessage, $content);
 
         $tlevelMessage = 'Test level created after filter disabled';
         $opusLog->tlevel($tlevelMessage);
-
         $content = $this->readLog();
-
-        $this->assertContains($testMessage, $content);
         $this->assertContains($tlevelMessage, $content);
     }
 
     public function testSetLevelNotModifyingOtherFilters()
     {
         $opusLog = $this->getOpusLog();
-        $initialLevel = $opusLog->getLevel(); //Should return INFO
+        $this->assertEquals(\Zend_Log::INFO, $opusLog->getLevel());
 
         $filter = new \Zend_Log_Filter_Priority(\Zend_Log::WARN);
         $opusLog->addFilter($filter);
@@ -112,22 +112,21 @@ class LogTest extends \PHPUnit_Framework_TestCase
         // INFO message shouldn't be logged despite of having INFO level set because of the new filter(WARN) above.
         $infoMessage = 'Info level Message';
         $opusLog->info($infoMessage);
+        $content = $this->readLog();
+        $this->assertNotContains($infoMessage, $content);
 
         // Changing to NOTICE level still shouldn't log NOTICE message because the other filter(WARN) is NOT modified.
         $opusLog->setLevel(\Zend_Log::NOTICE);
         $noticeMessage = 'Notice Level Message';
         $opusLog->notice($noticeMessage);
+        $content = $this->readLog();
+        $this->assertNotContains($noticeMessage, $content);
 
         // ERROR level message should be logged because it has lower level than both the filters proving both filters
         // are behaving as they should.
         $errorMessage = 'Error level Message';
         $opusLog->err($errorMessage);
-
         $content = $this->readLog();
-
-        $this->assertEquals(\Zend_Log::INFO, $initialLevel);
-        $this->assertNotContains($infoMessage, $content);
-        $this->assertNotContains($noticeMessage, $content);
         $this->assertContains($errorMessage, $content);
     }
 
