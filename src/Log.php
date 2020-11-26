@@ -40,17 +40,14 @@ use Opus\Log\LevelFilter;
  */
 class Log extends \Zend_Log
 {
+    
     /**
-     * LevelFilter object used to set and get the level of the logs filter.
-     *
-     * @var LevelFilter
+     * @var LevelFilter Filter object used to control the level of the log.
      */
     private $filter;
 
     /**
-     * Stores the default logger.
-     *
-     * @var \Zend_Log
+     * @var \Zend_Log Stores the default logger.
      */
     protected static $cachedReference;
 
@@ -66,14 +63,15 @@ class Log extends \Zend_Log
      * applicable, they will still filter out log messages having higher level than their filter irrespective of what
      * setLevel() sets the level for the current one.
      *
-     * @param int|null $level
+     * @param int|null $level New level of the log
      * @throws \Zend_Log_Exception
      */
     public function setLevel($level)
     {
-        if ($level !== null && ( ! is_numeric($level) or $level < 0)) {
-            throw new \InvalidArgumentException('Level should be of Integer type and cannot be negative');
+        if ($level !== null && (! is_numeric($level) or $level < 0)) {
+            throw new \InvalidArgumentException('Level needs to be an integer >= 0');
         }
+        
         if ($this->filter === null) {
             $this->filter = new LevelFilter($level);
             $this->addFilter($this->filter);
@@ -99,7 +97,7 @@ class Log extends \Zend_Log
     /**
      * Returns a default logger.
      *
-     * @return Log|\Zend_Log
+     * @return \Zend_Log
      * @throws \Zend_Exception
      */
     public static function get()
