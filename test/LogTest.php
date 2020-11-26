@@ -103,7 +103,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
     public function testSetLevelNotAffectingOtherFilters()
     {
         $opusLog = $this->getOpusLog();
-        $this->setLevel(\Zend_Log::INFO);        
+        $opusLog->setLevel(\Zend_Log::INFO);        
         
         $additionalFilter = new \Zend_Log_Filter_Priority(\Zend_Log::WARN);
         $opusLog->addFilter($additionalFilter);
