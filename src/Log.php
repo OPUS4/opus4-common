@@ -69,7 +69,7 @@ class Log extends \Zend_Log
     public function setLevel($level)
     {
         if ($level !== null && (! is_numeric($level) or $level < 0)) {
-            throw new \InvalidArgumentException('Level needs to be an integer >= 0');
+            throw new \InvalidArgumentException('Level needs to be an integer and cannot be negative');
         }
         
         if ($this->filter === null) {
