@@ -97,8 +97,8 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
         
         $filter->setLevel(null);
         
-        $this->assertTrue($filter->accepts(['priority' => \Zend_Log::EMERG]));
-        $this->assertTrue($filter->accepts(['priority' => \Zend_Log::DEBUG]));
+        $this->assertTrue($filter->accept(['priority' => \Zend_Log::EMERG]));
+        $this->assertTrue($filter->accept(['priority' => \Zend_Log::DEBUG]));
                                             
         $filter->setLevel(\Zend_Log::INFO);
                                             
@@ -111,7 +111,7 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
 
-        $exceptionMessage = 'Level should be of Integer type and cannot be negative';
+        $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
         $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
 
@@ -122,7 +122,7 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
     {
         $filter = new LevelFilter(\Zend_Log::WARN);
 
-        $exceptionMessage = 'Level should be of Integer type and cannot be negative';
+        $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
         $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
 
