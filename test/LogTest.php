@@ -53,7 +53,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
     {
         $opusLog = $this->getOpusLog();
         $opusLog->setLevel(\Zend_Log::DEBUG);
-        
+
         $debugMessage = 'Debug level message from testSetLevel';
         $opusLog->debug($debugMessage);
 
@@ -70,14 +70,14 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
         $opusLog->info($infoMessage);
         $opusLog->debug($debugMessage);
-        
+
         $content = $this->readLog();
         $this->assertContains($infoMessage, $content);
         $this->assertNotContains($debugMessage, $content);
 
         $opusLog->setLevel(null);
         $opusLog->debug($debugMessage);
-        
+
         $content = $this->readLog();
         $this->assertContains($debugMessage, $content);
     }
@@ -103,8 +103,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
     public function testSetLevelNotAffectingOtherFilters()
     {
         $opusLog = $this->getOpusLog();
-        $opusLog->setLevel(\Zend_Log::INFO);        
-        
+        $opusLog->setLevel(\Zend_Log::INFO);
+
         $additionalFilter = new \Zend_Log_Filter_Priority(\Zend_Log::WARN);
         $opusLog->addFilter($additionalFilter);
 
@@ -112,7 +112,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $infoMessage = 'Info level Message';
         $opusLog->info($infoMessage);
         $this->assertNotContains($infoMessage, $this->readLog());
-        
+
         // After setting level to DEBUG the additional filter still rejects DEBUG message
         $opusLog->setLevel(\Zend_Log::DEBUG);
         $debugMessage = 'Debug Level Message';
@@ -130,7 +130,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $opusLog = $this->getOpusLog();
 
         $this->setExpectedException(
-            \InvalidArgumentException::class, 
+            \InvalidArgumentException::class,
             'Level needs to be an integer and cannot be negative'
         );
 
@@ -142,7 +142,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $opusLog = $this->getOpusLog();
 
         $this->setExpectedException(
-            \InvalidArgumentException::class, 
+            \InvalidArgumentException::class,
             'Level needs to be an integer and cannot be negative'
         );
 

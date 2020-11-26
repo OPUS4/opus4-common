@@ -82,31 +82,31 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
         $filter->setLevel(\Zend_Log::INFO); // enable filtering
 
         $this->assertEquals(\Zend_Log::INFO, $filter->getLevel());
-        
+
         // Assert levels <= INFO are accepted
         $this->assertTrue($filter->accept(['priority' => \Zend_Log::WARN]));
         $this->assertTrue($filter->accept(['priority' => \Zend_Log::INFO]));
-        
+
         // Assert levels > INFO are rejected
         $this->assertFalse($filter->accept(['priority' => \Zend_Log::DEBUG]));
     }
-    
+
     public function testEnablingFilteringRestoresCustomOperator()
     {
         $filter = new LevelFilter(\Zend_Log::WARN, '=');
-        
+
         $filter->setLevel(null);
-        
+
         $this->assertTrue($filter->accept(['priority' => \Zend_Log::EMERG]));
         $this->assertTrue($filter->accept(['priority' => \Zend_Log::DEBUG]));
-                                            
+
         $filter->setLevel(\Zend_Log::INFO);
-                                            
+
         $this->assertFalse($filter->accept(['priority' => \Zend_Log::WARN]));
         $this->assertTrue($filter->accept(['priority' => \Zend_Log::INFO]));
         $this->assertFalse($filter->accept(['priority' => \Zend_Log::DEBUG]));
-    }    
-    
+    }
+
     public function testSetLevelNegativeArgument()
     {
         $filter = new LevelFilter(\Zend_Log::WARN);

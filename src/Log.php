@@ -40,7 +40,7 @@ use Opus\Log\LevelFilter;
  */
 class Log extends \Zend_Log
 {
-    
+
     /**
      * @var LevelFilter Filter object used to control the level of the log.
      */
@@ -71,7 +71,7 @@ class Log extends \Zend_Log
         if ($level !== null && (! is_numeric($level) or $level < 0)) {
             throw new \InvalidArgumentException('Level needs to be an integer and cannot be negative');
         }
-        
+
         if ($this->filter === null) {
             $this->filter = new LevelFilter($level);
             $this->addFilter($this->filter);
