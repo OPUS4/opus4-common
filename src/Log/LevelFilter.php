@@ -39,14 +39,12 @@ namespace Opus\Log;
 class LevelFilter extends \Zend_Log_Filter_Priority
 {
     /**
-     * A copy from parent to enable filtering again after disabling it.
-     * @var string
+     * @var string Original operator to restore filtering when enabling filter again.
      */
     private $operator;
 
     /**
-     * Flag to determine if filter is set to disabled.
-     * @var bool
+     * @var bool Flag to determine if filter is disabled.
      */
     private $disabled;
 
@@ -60,19 +58,17 @@ class LevelFilter extends \Zend_Log_Filter_Priority
     /**
      * Set the level of the filter.
      *
-     * On null argument, filter is disabled.
-     *
-     * @param int $level
+     * @param int|null $level New level or null to disable filtering
      */
     public function setLevel($level)
     {
         if ($level === null) {
-            //Filter disabled by setting lowest level and altering comparision operator.
+            // Filter disabled by setting lowest level and altering comparison operator.
             $this->_operator = '>=';
             $this->_priority = \Zend_Log::EMERG;
             $this->disabled = true;
         } elseif (! is_numeric($level) or $level < 0) {
-            throw new \InvalidArgumentException('Level should be of Integer type and cannot be negative');
+            throw new \InvalidArgumentException('Level needs to be an integer and cannot be negative');
         } else {
             $this->_operator = $this->operator;
             $this->_priority = $level;
