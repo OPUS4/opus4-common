@@ -53,6 +53,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
     {
         $opusLog = $this->getOpusLog();
         $opusLog->setLevel(\Zend_Log::DEBUG);
+        
         $debugMessage = 'Debug level message from testSetLevel';
         $opusLog->debug($debugMessage);
 
@@ -69,13 +70,14 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
         $opusLog->info($infoMessage);
         $opusLog->debug($debugMessage);
+        
         $content = $this->readLog();
         $this->assertContains($infoMessage, $content);
         $this->assertNotContains($debugMessage, $content);
 
         $opusLog->setLevel(null);
-
         $opusLog->debug($debugMessage);
+        
         $content = $this->readLog();
         $this->assertContains($debugMessage, $content);
     }
@@ -98,41 +100,39 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($tlevelMessage, $content);
     }
 
-    public function testSetLevelNotModifyingOtherFilters()
+    public function testSetLevelNotAffectingOtherFilters()
     {
         $opusLog = $this->getOpusLog();
-        $this->assertEquals(\Zend_Log::INFO, $opusLog->getLevel());
+        $this->setLevel(\Zend_Log::INFO);        
+        
+        $additionalFilter = new \Zend_Log_Filter_Priority(\Zend_Log::WARN);
+        $opusLog->addFilter($additionalFilter);
 
-        $filter = new \Zend_Log_Filter_Priority(\Zend_Log::WARN);
-        $opusLog->addFilter($filter);
-
-        // INFO message shouldn't be logged despite of having INFO level set because of the new filter(WARN) above.
+        // INFO message gets rejected by additional filter
         $infoMessage = 'Info level Message';
         $opusLog->info($infoMessage);
-        $content = $this->readLog();
-        $this->assertNotContains($infoMessage, $content);
+        $this->assertNotContains($infoMessage, $this->readLog());
+        
+        // After setting level to DEBUG the additional filter still rejects DEBUG message
+        $opusLog->setLevel(\Zend_Log::DEBUG);
+        $debugMessage = 'Debug Level Message';
+        $opusLog->debug($debugMessage);
+        $this->assertNotContains($debugMessage, $this->readLog());
 
-        // Changing to NOTICE level still shouldn't log NOTICE message because the other filter(WARN) is NOT modified.
-        $opusLog->setLevel(\Zend_Log::NOTICE);
-        $noticeMessage = 'Notice Level Message';
-        $opusLog->notice($noticeMessage);
-        $content = $this->readLog();
-        $this->assertNotContains($noticeMessage, $content);
-
-        // ERROR level message should be logged because it has lower level than both the filters proving both filters
-        // are behaving as they should.
+        // An ERROR level message is accepted by both filters
         $errorMessage = 'Error level Message';
         $opusLog->err($errorMessage);
-        $content = $this->readLog();
-        $this->assertContains($errorMessage, $content);
+        $this->assertContains($errorMessage, $this->readLog());
     }
 
     public function testSetLevelNegativeLevel()
     {
         $opusLog = $this->getOpusLog();
 
-        $exceptionMessage = 'Level should be of Integer type and cannot be negative';
-        $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
+        $this->setExpectedException(
+            \InvalidArgumentException::class, 
+            'Level needs to be an integer and cannot be negative'
+        );
 
         $opusLog->setLevel(-1);
     }
@@ -141,8 +141,10 @@ class LogTest extends \PHPUnit_Framework_TestCase
     {
         $opusLog = $this->getOpusLog();
 
-        $exceptionMessage = 'Level should be of Integer type and cannot be negative';
-        $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
+        $this->setExpectedException(
+            \InvalidArgumentException::class, 
+            'Level needs to be an integer and cannot be negative'
+        );
 
         $opusLog->setLevel('TestLevel');
     }
