@@ -36,10 +36,15 @@ namespace Opus;
 use Opus\Log\LevelFilter;
 
 /**
- * Class for manipulating a logger with additional functionalities like changing the priority level.
+ * Extension of Zend_Log for manipulating a logger with additional functionalities like changing the priority level.
  */
 class Log extends \Zend_Log
 {
+    /**
+     * LevelFilter object used to set and get the level of the logs filter.
+     *
+     * @var LevelFilter
+     */
     private $filter;
 
     /**
@@ -55,12 +60,13 @@ class Log extends \Zend_Log
     }
 
     /**
-     * Change the level of the filter. On null argument, it disables the filter.
+     * Change the level of the filter.
      *
-     * It doesn't effect or modify other filters of the loggers. So, if applicable, they will still filter out log
-     * messages having higher level than their filter irrespective of what setLevel() sets the level for the current one.
+     * On null argument, it disables the filter. It doesn't effect or modify other filters of the loggers. So, if
+     * applicable, they will still filter out log messages having higher level than their filter irrespective of what
+     * setLevel() sets the level for the current one.
      *
-     * @param int $level
+     * @param int|null $level
      * @throws \Zend_Log_Exception
      */
     public function setLevel($level)
@@ -93,7 +99,7 @@ class Log extends \Zend_Log
     /**
      * Returns a default logger.
      *
-     * @return Log
+     * @return Log|\Zend_Log
      * @throws \Zend_Exception
      */
     public static function get()

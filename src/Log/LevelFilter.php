@@ -34,7 +34,7 @@
 namespace Opus\Log;
 
 /**
- * Class as a filter with adjustable log level allowing manipulation of filtering.
+ * Filter with adjustable log level allowing manipulation of filtering.
  */
 class LevelFilter extends \Zend_Log_Filter_Priority
 {
@@ -67,8 +67,7 @@ class LevelFilter extends \Zend_Log_Filter_Priority
     public function setLevel($level)
     {
         if ($level === null) {
-            /* Filter is disabled by setting the level to lowest value and altering the comparison operator
-            to greater or equal. */
+            //Filter disabled by setting lowest level and altering comparision operator.
             $this->_operator = '>=';
             $this->_priority = \Zend_Log::EMERG;
             $this->disabled = true;

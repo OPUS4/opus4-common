@@ -80,9 +80,6 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($debugMessage, $content);
     }
 
-    /**
-     * To test custom level messages are also working properly when filter is disabled.
-     */
     public function testCustomLevelsWithFiltersDisabled()
     {
         $opusLog = $this->getOpusLog();
@@ -182,6 +179,10 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(\Zend_Registry::get('Zend_Log'), $log);
     }
 
+    /**
+     * Check if the logger instance gets dropped and new logger is created.
+     * @throws \Zend_Exception
+     */
     public function testDrop()
     {
         $log = $this->getOpusLog();
@@ -215,13 +216,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
     {
         rewind($this->logFile);
         $content = '';
-        while (true) {
-            $string = fgets($this->logFile);
-
-            if (! $string) {
-                break;
-            }
-
+        while ($string = fgets($this->logFile)) {
             $content .= $string;
         }
 
