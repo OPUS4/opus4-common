@@ -545,6 +545,41 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertContains("ERROR $message", $this->readLogFile('opus-error.log'));
     }
 
+    public function testCreateLogWithInvalidPriorityName()
+    {
+        $logService = $this->getLogService();
+
+        $logger = $logService->createLog('error', 'fehler', 'ERROR %message%');
+
+        $this->assertInstanceOf(\Zend_Log::class, $logger);
+
+        $message = 'error test message';
+
+        $logger->debug($message);
+        $this->assertNotContains($message, $this->readLogFile('error.log'));
+
+        // default log level in test setUp is WARN
+        $logger->warn($message);
+        $this->assertContains("ERROR $message", $this->readLogFile('error.log'));
+    }
+
+    public function testCreateLogWithPriorityValue()
+    {
+        $logService = $this->getLogService();
+
+        $logger = $logService->createLog('error', \Zend_Log::ERR, 'ERROR %message%');
+
+        $this->assertInstanceOf(\Zend_Log::class, $logger);
+
+        $message = 'error test message';
+
+        $logger->warn($message);
+        $this->assertNotContains($message, $this->readLogFile('error.log'));
+
+        $logger->err($message);
+        $this->assertContains("ERROR $message", $this->readLogFile('error.log'));
+    }
+
     public function testCreateDefaultLogWithCustomFilename()
     {
         $logService = $this->getLogService();

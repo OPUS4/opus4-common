@@ -35,6 +35,7 @@
 namespace Opus\Log;
 
 use Opus\Exception;
+use Opus\Log;
 
 /**
  * Class for managing multiple loggers.
@@ -160,7 +161,15 @@ class LogService
             $priority = $logConfig->level;
         }
 
-        $level = $this->convertPriorityFromString($priority);
+        if (ctype_alpha($priority)) {
+            $level = $this->convertPriorityFromString($priority);
+        } else {
+            $level = $priority;
+        }
+
+        if ($level === null) {
+            $level = $this->getDefaultPriority();
+        }
 
         if ($format === null) {
             $format = $logConfig->format;
@@ -315,6 +324,8 @@ class LogService
      * Return the default log priority.
      *
      * @return int
+     *
+     * TODO rename, OPUS uses term "level", Zend uses "priority"
      */
     public function getDefaultPriority()
     {
@@ -375,10 +386,8 @@ class LogService
         $writer = new \Zend_Log_Writer_Stream($file);
         $writer->setFormatter($formatter);
 
-        $logger = new \Zend_Log($writer);
-
-        $priorityFilter = new \Zend_Log_Filter_Priority($priority);
-        $logger->addFilter($priorityFilter);
+        $logger = new Log($writer);
+        $logger->setLevel($priority);
 
         return $logger;
     }

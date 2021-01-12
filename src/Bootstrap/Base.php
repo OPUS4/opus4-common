@@ -131,7 +131,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
      * Setup Logging
      *
      * @throws \Exception If logging file couldn't be opened.
-     * @return void
+     * @return \Zend_Log
      *
      * Use LogService API for calling different logs with their names
      * e.g., getLog('opus')
