@@ -33,9 +33,22 @@ namespace Opus\Model\Plugin;
 
 /**
  * Interface kann von einem Plugin implementiert werden, wenn es nur bei einer Änderung des Wertes
- * von serverState aufgerufen werden soll (bedingter Aufruf)
+ * von serverState aufgerufen werden soll (bedingter Aufruf).
  */
 interface ServerStateChangeListener
 {
 
+    /**
+     * Called when the state of a document is changed.
+     *
+     * The function has to be called, when a document with changed state is stored.
+     *
+     * TODO would it be better to isolate state changes from data changes?
+     *
+     * @param $event
+     * @return mixed
+     *
+     * TODO review and refine API - ServerStateEvent extends OpusEvent ?
+     */
+    public function serverStateChanged($document);
 }
