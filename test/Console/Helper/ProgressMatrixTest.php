@@ -27,17 +27,18 @@
  *
  * @category    Application
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Console\Helper;
 
 use Opus\Console\Helper\ProgressMatrix;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class ProgressMatrixTest extends \PHPUnit_Framework_TestCase
+class ProgressMatrixTest extends TestCase
 {
 
     public function testAdvance()

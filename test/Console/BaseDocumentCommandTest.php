@@ -27,20 +27,21 @@
  *
  * @category    Application
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Console;
 
 use Opus\Console\BaseDocumentCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class BaseDocumentCommandTest
  * @package OpusTest\Console
  */
-class BaseDocumentCommandTest extends \PHPUnit_Framework_TestCase
+class BaseDocumentCommandTest extends TestCase
 {
 
     /**
@@ -126,7 +127,8 @@ class BaseDocumentCommandTest extends \PHPUnit_Framework_TestCase
 
         $tester = new CommandTester($stub);
 
-        $this->setExpectedException(\InvalidArgumentException::class, $message);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
 
         $tester->execute([
             BaseDocumentCommand::ARGUMENT_START_ID => $argStartId,

@@ -27,15 +27,16 @@
  * @category    Test
  * @package     OpusTest
  * @author      Kaustabh Barman <barman@zib.de>
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest;
 
 use Opus\Log;
+use PHPUnit\Framework\TestCase;
 
-class LogTest extends \PHPUnit_Framework_TestCase
+class LogTest extends TestCase
 {
 
     private $logFile;
@@ -129,10 +130,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
     {
         $opusLog = $this->getOpusLog();
 
-        $this->setExpectedException(
-            \InvalidArgumentException::class,
-            'Level needs to be an integer and cannot be negative'
-        );
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Level needs to be an integer and cannot be negative');
 
         $opusLog->setLevel(-1);
     }
@@ -141,10 +140,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
     {
         $opusLog = $this->getOpusLog();
 
-        $this->setExpectedException(
-            \InvalidArgumentException::class,
-            'Level needs to be an integer and cannot be negative'
-        );
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Level needs to be an integer and cannot be negative');
 
         $opusLog->setLevel('TestLevel');
     }

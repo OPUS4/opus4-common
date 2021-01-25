@@ -28,19 +28,20 @@
  * @package     Opus_Validate
  * @author      Maximilian Salomon (salomom@zib.de)
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2017-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2017-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Validate;
 
 use Opus\Validate\Issn;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for Opus\Validate\Issn.
  * @coversDefaultClass \Opus\Validate\Issn
  */
-class IssnTest extends \PHPUnit_Framework_TestCase
+class IssnTest extends TestCase
 {
 
     /**

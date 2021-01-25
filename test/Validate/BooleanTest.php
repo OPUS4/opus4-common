@@ -29,13 +29,14 @@
  * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
  * @author      Thoralf Klein <thoralf.klein@zib.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Validate;
 
 use Opus\Validate\Boolean;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test cases for class Opus_Validate_Boolean.
@@ -46,7 +47,7 @@ use Opus\Validate\Boolean;
  * @group       BooleanTest
  *
  */
-class BooleanTest extends \PHPUnit_Framework_TestCase
+class BooleanTest extends TestCase
 {
 
     /**

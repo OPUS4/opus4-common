@@ -28,7 +28,7 @@
  * @package     Opus
  * @author      Kaustabh Barman <barman@zib.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
@@ -36,6 +36,7 @@ namespace OpusTest\Log;
 
 use Opus\Exception;
 use Opus\Log\LogService;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class LogServiceTest
@@ -44,7 +45,7 @@ use Opus\Log\LogService;
  * TODO move generic test utility functions so they can be used in other test classes,
  *      current maybe into a helper class, later perhaps into a opus4-test library
  */
-class LogServiceTest extends \PHPUnit_Framework_TestCase
+class LogServiceTest extends TestCase
 {
 
     const DEFAULT_FORMAT = '%timestamp% %priorityName% (ID %runId%): %message%';
@@ -113,7 +114,8 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $logService = LogService::getInstance();
         $logService->setConfig(new \Zend_Config([]));
 
-        $this->setExpectedException(Exception::class, 'Workspace path not found in configuration.');
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Workspace path not found in configuration.');
 
         $logService->getPath();
     }
@@ -286,7 +288,8 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
     {
         $logService = $this->getLogService();
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Format must not be null');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Format must not be null');
 
         $logService->prepareFormat(null);
     }
@@ -616,7 +619,8 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
 
         $object = new \Zend_Config([]);
 
-        $this->setExpectedException(Exception::class, 'must be of type Zend_Log');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('must be of type Zend_Log');
 
         $logService->addLog('myLog', $object);
     }

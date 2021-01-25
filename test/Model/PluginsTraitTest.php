@@ -27,15 +27,16 @@
  * @category    Test
  * @package     Opus
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2018-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Model;
 
 use Opus\Model\PluginsTrait;
+use PHPUnit\Framework\TestCase;
 
-class PluginsTraitTest extends \PHPUnit_Framework_TestCase
+class PluginsTraitTest extends TestCase
 {
 
     public function testRegisterPlugin()

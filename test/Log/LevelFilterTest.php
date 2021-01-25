@@ -27,15 +27,16 @@
  * @category    Test
  * @package     OpusTest\Log
  * @author      Kaustabh Barman <barman@zib.de>
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Log;
 
 use Opus\Log\LevelFilter;
+use PHPUnit\Framework\TestCase;
 
-class LevelFilterTest extends \PHPUnit_Framework_TestCase
+class LevelFilterTest extends TestCase
 {
     public function testConstructor()
     {
@@ -113,7 +114,8 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
 
         $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
-        $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($exceptionMessage);
 
         $filter->setLevel(-1);
     }
@@ -124,7 +126,8 @@ class LevelFilterTest extends \PHPUnit_Framework_TestCase
 
         $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
-        $this->setExpectedException(\InvalidArgumentException::class, $exceptionMessage);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($exceptionMessage);
 
         $filter->setLevel('TestLevel');
     }

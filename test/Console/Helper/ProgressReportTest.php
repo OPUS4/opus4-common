@@ -27,7 +27,7 @@
  *
  * @category    Application
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
@@ -35,9 +35,10 @@ namespace OpusTest\Console\Helper;
 
 use Opus\Console\Helper\ProgressReport;
 use Opus\Console\Helper\ProgressReportEntry;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class ProgressReportTest extends \PHPUnit_Framework_TestCase
+class ProgressReportTest extends TestCase
 {
 
     public function testAddExceptionCreatesEntry()

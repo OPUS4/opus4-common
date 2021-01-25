@@ -28,13 +28,14 @@
  * @package     Opus_Validate
  * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Validate;
 
 use Opus\Validate\MateDecorator;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test cases for application of Opus_Validate_MateDecorator.
@@ -45,7 +46,7 @@ use Opus\Validate\MateDecorator;
  * @group       MateDecoratorTest
  *
  */
-class MateDecoratorTest extends \PHPUnit_Framework_TestCase
+class MateDecoratorTest extends TestCase
 {
 
     /**
