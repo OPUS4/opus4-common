@@ -28,11 +28,13 @@
  * @package     Opus_Validate
  * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
+
+use Laminas\Validator\AbstractValidator;
 
 /**
  * Defines an validator for boolean values.
@@ -40,7 +42,7 @@ namespace Opus\Validate;
  * @category    Framework
  * @package     Opus_Validate
  */
-class Boolean extends \Zend_Validate_Abstract
+class Boolean extends AbstractValidator
 {
 
     /**
@@ -54,7 +56,7 @@ class Boolean extends \Zend_Validate_Abstract
      *
      * @var array
      */
-    protected $_messageTemplates = [
+    protected $messageTemplates = [
         self::MSG_TYPE => "'%value%' is not of type boolean",
     ];
 
@@ -66,10 +68,10 @@ class Boolean extends \Zend_Validate_Abstract
      */
     public function isValid($value)
     {
-        $this->_setValue($value);
+        $this->setValue($value);
 
         if (is_bool($value) === false) {
-            $this->_error(self::MSG_TYPE);
+            $this->error(self::MSG_TYPE);
             return false;
         }
 

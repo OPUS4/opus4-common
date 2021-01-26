@@ -107,11 +107,10 @@ class IsbnTest extends TestCase
         $validator = new Isbn();
         $result = $validator->isValid($arg);
 
-        $codes = $validator->getErrors();
-        $msgs  = $validator->getMessages();
+        $messages = $validator->getMessages();
         $err   = '';
-        foreach ($codes as $code) {
-            $err .= '(' . $msgs[$code] . ') ';
+        foreach ($messages as $coce => $message) {
+            $err .= '(' . $message . ') ';
         }
 
         $this->assertTrue($result, $arg . ' should pass validation but validator says: ' . $err);

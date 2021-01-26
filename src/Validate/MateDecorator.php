@@ -28,11 +28,13 @@
  * @package     Opus_Validate
  * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
+
+use Laminas\Validator\ValidatorInterface;
 
 /**
  * Defines an extension for validators so that the interface and functionality
@@ -48,16 +50,16 @@ class MateDecorator extends AbstractMate
     /**
      * Validator object that is decorated.
      *
-     * @var \Zend_Validate_Interface
+     * @var ValidatorInterface
      */
     protected $decorated = null;
 
     /**
      * Create decoration for given validator.
      *
-     * @param \Zend_Validate_Interface $validator Validator to be decorated.
+     * @param ValidatorInterface $validator Validator to be decorated.
      */
-    public function __construct(\Zend_Validate_Interface $validator)
+    public function __construct(ValidatorInterface $validator)
     {
         $this->decorated = $validator;
     }
@@ -65,10 +67,10 @@ class MateDecorator extends AbstractMate
     /**
      * Create and return a decorated validator.
      *
-     * @param \Zend_Validate_Interface $validator Validator to be decorated.
+     * @param ValidatorInterface $validator Validator to be decorated.
      * @return MateDecorator Decorator instance.
      */
-    public static function decorate(\Zend_Validate_Interface $validator)
+    public static function decorate(ValidatorInterface $validator)
     {
         return new MateDecorator($validator);
     }

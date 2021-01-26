@@ -28,11 +28,13 @@
  * @package     Opus_Validate
  * @author      Thoralf Klein <thoralf.klein@zib.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2011-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2011-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
+
+use Laminas\Validator\Between;
 
 /**
  * Validator for Year fields.
@@ -40,7 +42,7 @@ namespace Opus\Validate;
  * @category    Framework
  * @package     Opus_Validate
  */
-class Year extends \Zend_Validate_Between
+class Year extends Between
 {
 
     /**

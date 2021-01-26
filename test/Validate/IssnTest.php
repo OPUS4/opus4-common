@@ -127,7 +127,10 @@ class IssnTest extends TestCase
     {
         $validator = new Issn();
         $this->assertFalse($validator->isValid($arg));
-        $this->assertContains($err, $validator->getErrors());
-        $this->assertContains($msg, $validator->getMessages());
+
+        $messages = $validator->getMessages();
+
+        $this->assertArrayHasKey($err, $messages);
+        $this->assertContains($msg, $messages);
     }
 }

@@ -29,7 +29,7 @@
  * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
  * @author      Jens Schwidder <schwidder@zib.de>
  * @author      Maximilian Salomon <salomon@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
@@ -62,7 +62,7 @@ class Isbn13 extends Isbn
      *
      * @var array
      */
-    protected $_messageTemplates = [
+    protected $messageTemplates = [
         self::MSG_CHECK_DIGIT => "The check digit of '%value%' is not valid",
         self::MSG_FORM => "'%value%' is malformed"
     ];
@@ -75,24 +75,24 @@ class Isbn13 extends Isbn
      */
     public function isValid($value)
     {
-        $this->_setValue($value);
+        $this->setValue($value);
 
         // check lenght
         if (strlen($value) !== 13 and strlen($value) !== 17) {
-            $this->_error(self::MSG_FORM);
+            $this->error(self::MSG_FORM);
             return false;
         }
 
         // check form. ISBN13 can have 13 characters or 17 characters. If it has 13 characters, all digits are numbers.
         // If it has 17 characters, there are additionally 4 seperator of dashes or spaces.
         if (preg_match('/^[\d]*((-|\s)?[\d]*){4}$/', $value) === 0) {
-            $this->_error(self::MSG_FORM);
+            $this->error(self::MSG_FORM);
             return false;
         }
 
         // check for mixed separators
         if ((preg_match('/-/', $value) > 0) and (preg_match('/\s/', $value) > 0)) {
-            $this->_error(self::MSG_FORM);
+            $this->error(self::MSG_FORM);
             return false;
         }
 
@@ -100,14 +100,14 @@ class Isbn13 extends Isbn
         $digits = $this->extractDigits($value);
 
         if (count($digits) != 13) {
-            $this->_error(self::MSG_FORM);
+            $this->error(self::MSG_FORM);
             return false;
         }
 
         // Calculate and compare check digit
         $checkdigit = $this->calculateCheckDigit($digits);
         if ($checkdigit !== end($digits)) {
-            $this->_error(self::MSG_CHECK_DIGIT);
+            $this->error(self::MSG_CHECK_DIGIT);
             return false;
         }
 

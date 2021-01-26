@@ -27,13 +27,15 @@
  * @category    Framework
  * @package     Opus_Validate
  * @author      Sascha Szott <opus-development@saschaszott.de>
- * @copyright   Copyright (c) 2019, OPUS 4 development team
+ * @copyright   Copyright (c) 2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
 
-class CollectionRoleName extends \Zend_Validate_Abstract
+use Laminas\Validator\AbstractValidator;
+
+class CollectionRoleName extends AbstractValidator
 {
 
     /**

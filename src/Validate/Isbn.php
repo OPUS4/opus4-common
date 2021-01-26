@@ -29,11 +29,13 @@
  * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
  * @author      Jens Schwidder <schwidder@zib.de>
  * @author      Maximilian Salomon <salomon@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
+
+use Laminas\Validator\AbstractValidator;
 
 /**
  * Validator for ISBN values.
@@ -45,7 +47,7 @@ namespace Opus\Validate;
  *      The three classes could be merged, however we didn't want to eliminate the option of allowing
  *      only ISBN-10 or only ISBN-13 values.
  */
-class Isbn extends \Zend_Validate_Abstract
+class Isbn extends AbstractValidator
 {
     /**
      * Error message key for invalid check digit.
@@ -63,7 +65,7 @@ class Isbn extends \Zend_Validate_Abstract
      *
      * @var array
      */
-    protected $_messageTemplates = [
+    protected $messageTemplates = [
         self::MSG_CHECK_DIGIT => "The check digit of '%value%' is not valid.",
         self::MSG_FORM => "'%value%' is malformed."
     ];
@@ -76,7 +78,7 @@ class Isbn extends \Zend_Validate_Abstract
      */
     public function isValid($value)
     {
-        $this->_setValue($value);
+        $this->setValue($value);
 
         $isbn_validator = null;
         switch (count($this->extractDigits($value))) {
@@ -87,15 +89,15 @@ class Isbn extends \Zend_Validate_Abstract
                 $isbn_validator = new Isbn13();
                 break;
             default:
-                $this->_error(self::MSG_FORM);
+                $this->error(self::MSG_FORM);
                 $result = false;
                 break;
         }
 
         if (is_null($isbn_validator) === false) {
             $result = $isbn_validator->isValid($value);
-            foreach ($isbn_validator->getErrors() as $error) {
-                $this->_error($error);
+            foreach ($isbn_validator->getMessages() as $code => $message) {
+                $this->error($code);
             }
         }
 

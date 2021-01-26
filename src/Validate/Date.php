@@ -28,11 +28,13 @@
  * @package     Opus_Validate
  * @author      Henning Gerhardt (henning.gerhardt@slub-dresden.de)
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
+
+use Laminas\Validator\Date as LaminasDate;
 
 /**
  * Validator for date fields.
@@ -40,7 +42,7 @@ namespace Opus\Validate;
  * @category    Framework
  * @package     Opus_Validate
  */
-class Date extends \Zend_Validate_Date
+class Date extends LaminasDate
 {
 
     /**
@@ -49,6 +51,6 @@ class Date extends \Zend_Validate_Date
      */
     public function __construct()
     {
-        parent::__construct(\Zend_Date::DATE_MEDIUM, 'de');
+        parent::__construct(\Zend_Date::DATE_MEDIUM, 'de'); // TODO Zend_Date::DATE_MEDIUM replacement?
     }
 }

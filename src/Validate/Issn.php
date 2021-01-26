@@ -28,16 +28,18 @@
  * @package     Opus_Validate
  * @author      Maximilian Salomon <salomon@zib.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2017-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2017-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
 
+use Laminas\Validator\AbstractValidator;
+
 /**
  * Class Opus_Validate_Issn validates an ISSN-identifier.
  */
-class Issn extends \Zend_Validate_Abstract
+class Issn extends AbstractValidator
 {
     /**
      * Error message key for invalid check digit.
@@ -56,7 +58,7 @@ class Issn extends \Zend_Validate_Abstract
      *
      * @var array
      */
-    protected $_messageTemplates = [
+    protected $messageTemplates = [
         self::MSG_CHECK_DIGIT => "The check digit of '%value%' is not valid.",
         self::MSG_FORM => "'%value%' is malformed."
     ];
@@ -68,17 +70,17 @@ class Issn extends \Zend_Validate_Abstract
      */
     public function isValid($value)
     {
-        $this->_setValue($value);
+        $this->setValue($value);
 
         // check length
         if (strlen($value) !== (8 + 1)) {
-            $this->_error(self::MSG_FORM);
+            $this->error(self::MSG_FORM);
             return false;
         }
 
         // check form
         if (preg_match('/^[0-9]{4}[-][0-9]{3}[0-9X]$/', $value) === 0) {
-            $this->_error(self::MSG_FORM);
+            $this->error(self::MSG_FORM);
             return false;
         }
 
@@ -88,7 +90,7 @@ class Issn extends \Zend_Validate_Abstract
         // Calculate and compare check digit
         $checkdigit = $this->calculateCheckDigit($issn);
         if ($checkdigit !== $issn[8]) {
-            $this->_error(self::MSG_CHECK_DIGIT);
+            $this->error(self::MSG_CHECK_DIGIT);
             return false;
         }
 

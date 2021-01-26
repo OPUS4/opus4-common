@@ -28,11 +28,13 @@
  * @package     Opus_Validate
  * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
+
+use Laminas\Validator\AbstractValidator;
 
 /**
  * Defines an abstract implementation of Opus_Validate_Mate.
@@ -40,7 +42,7 @@ namespace Opus\Validate;
  * @category    Framework
  * @package     Opus_Validate
  */
-abstract class AbstractMate extends \Zend_Validate_Abstract implements Mate
+abstract class AbstractMate extends AbstractValidator implements Mate
 {
 
     /**
@@ -118,7 +120,7 @@ abstract class AbstractMate extends \Zend_Validate_Abstract implements Mate
             return true;
         }
 
-        $this->_setValue($value);
+        $this->setValue($value);
         $result = $this->isValidCheck($value);
 
         if ($result === true) {

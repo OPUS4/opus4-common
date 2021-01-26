@@ -34,11 +34,12 @@
 
 namespace OpusTest\Validate;
 
+use Laminas\Validator\NotEmpty;
 use Opus\Validate\MateDecorator;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test cases for application of Opus_Validate_MateDecorator.
+ * Test cases for application of Opus\Validate\MateDecorator.
  *
  * @category    Tests
  * @package     Opus_Validate
@@ -56,7 +57,7 @@ class MateDecoratorTest extends TestCase
      */
     public function testDecoratingSingleValidator()
     {
-        $validator = new \Zend_Validate_NotEmpty();
+        $validator = new NotEmpty();
         $decorated = MateDecorator::decorate($validator);
 
         $this->assertEquals(
@@ -74,7 +75,7 @@ class MateDecoratorTest extends TestCase
      */
     public function testDecoratedValidatorSticksToValidationResult()
     {
-        $validator = new \Zend_Validate_NotEmpty();
+        $validator = new NotEmpty();
         $decorated = MateDecorator::decorate($validator);
 
         $decision1 = $decorated->isValid('content');
@@ -95,8 +96,8 @@ class MateDecoratorTest extends TestCase
      */
     public function testMateGroupDecidesCommon()
     {
-        $decorated1 = MateDecorator::decorate(new \Zend_Validate_NotEmpty());
-        $decorated2 = MateDecorator::decorate(new \Zend_Validate_NotEmpty());
+        $decorated1 = MateDecorator::decorate(new NotEmpty());
+        $decorated2 = MateDecorator::decorate(new NotEmpty());
 
         $decorated1->addMate($decorated2);
 
@@ -121,7 +122,7 @@ class MateDecoratorTest extends TestCase
         $decorated = [];
         $count = 10;
         for ($i = 0; $i < $count; $i++) {
-            $decorated[$i] = MateDecorator::decorate(new \Zend_Validate_NotEmpty());
+            $decorated[$i] = MateDecorator::decorate(new NotEmpty());
         }
 
         // Link them together in a group of mates.

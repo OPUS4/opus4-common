@@ -28,11 +28,13 @@
  * @package     Opus_Validate
  * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
+
+use Laminas\Validator\AbstractValidator;
 
 /**
  * Defines an validator for possible enum values. Classes based on this
@@ -42,7 +44,7 @@ namespace Opus\Validate;
  * @category    Common
  * @package     \Opus\Validate
  */
-abstract class AbstractEnum extends \Zend_Validate_Abstract
+abstract class AbstractEnum extends AbstractValidator
 {
 
     protected $validEnums = [];
@@ -55,10 +57,10 @@ abstract class AbstractEnum extends \Zend_Validate_Abstract
      */
     public function isValid($value)
     {
-        $this->_setValue($value);
+        $this->setValue($value);
 
         if (array_search($value, $this->validEnums, true) === false) {
-            $this->_error("Invalid enum value '$value'");
+            $this->error("Invalid enum value '$value'");
             return false;
         }
 
