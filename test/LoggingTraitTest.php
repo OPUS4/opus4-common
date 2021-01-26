@@ -33,6 +33,7 @@
 
 namespace OpusTest;
 
+use Laminas\Log\Logger;
 use Opus\LoggingTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -43,7 +44,7 @@ class LoggingTraitTest extends TestCase
 
     public function setUp()
     {
-        $log = new \Zend_Log();
+        $log = new Logger();
 
         \Zend_Registry::set('Zend_Log', $log);
         $this->logger = $log;
@@ -60,7 +61,7 @@ class LoggingTraitTest extends TestCase
     {
         $mock = $this->getMockForTrait(LoggingTrait::class);
 
-        $newLog = new \Zend_Log();
+        $newLog = new Logger();
 
         $mock->setLogger($newLog);
 

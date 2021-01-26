@@ -33,6 +33,7 @@
 
 namespace OpusTest\Log;
 
+use Laminas\Log\Logger;
 use Opus\Log\LevelFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -40,77 +41,77 @@ class LevelFilterTest extends TestCase
 {
     public function testConstructor()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter = new LevelFilter(Logger::WARN);
 
-        $warnEvent = ['priority' => \Zend_Log::WARN];
-        $emergEvent = ['priority' => \Zend_Log::EMERG];
-        $infoEvent = ['priority' => \Zend_Log::INFO];
+        $warnEvent = ['priority' => Logger::WARN];
+        $emergEvent = ['priority' => Logger::EMERG];
+        $infoEvent = ['priority' => Logger::INFO];
 
-        $this->assertTrue($filter->accept($warnEvent));
-        $this->assertTrue($filter->accept($emergEvent));
-        $this->assertFalse($filter->accept($infoEvent));
+        $this->assertTrue($filter->filter($warnEvent));
+        $this->assertTrue($filter->filter($emergEvent));
+        $this->assertFalse($filter->filter($infoEvent));
     }
 
     public function testSetLevel()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN);
-        $filter->setLevel(\Zend_Log::INFO);
+        $filter = new LevelFilter(Logger::WARN);
+        $filter->setLevel(Logger::INFO);
 
-        $infoEvent = ['priority' => \Zend_Log::INFO];
-        $debugEvent = ['priority' => \Zend_Log::DEBUG];
+        $infoEvent = ['priority' => Logger::INFO];
+        $debugEvent = ['priority' => Logger::DEBUG];
 
-        $this->assertTrue($filter->accept($infoEvent));
-        $this->assertFalse($filter->accept($debugEvent));
+        $this->assertTrue($filter->filter($infoEvent));
+        $this->assertFalse($filter->filter($debugEvent));
     }
 
     public function testSetLevelArgumentNull()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter = new LevelFilter(Logger::WARN);
         $filter->setLevel(null);
 
-        $emergEvent = ['priority' => \Zend_Log::EMERG];
-        $debugEvent = ['priority' => \Zend_Log::DEBUG];
+        $emergEvent = ['priority' => Logger::EMERG];
+        $debugEvent = ['priority' => Logger::DEBUG];
 
-        $this->assertTrue($filter->accept($emergEvent));
-        $this->assertTrue($filter->accept($debugEvent));
+        $this->assertTrue($filter->filter($emergEvent));
+        $this->assertTrue($filter->filter($debugEvent));
     }
 
     public function testEnablingFilteringRestoresEqualOrLessOperator()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter = new LevelFilter(Logger::WARN);
 
         $filter->setLevel(null); // disable filtering
-        $filter->setLevel(\Zend_Log::INFO); // enable filtering
+        $filter->setLevel(Logger::INFO); // enable filtering
 
-        $this->assertEquals(\Zend_Log::INFO, $filter->getLevel());
+        $this->assertEquals(Logger::INFO, $filter->getLevel());
 
-        // Assert levels <= INFO are accepted
-        $this->assertTrue($filter->accept(['priority' => \Zend_Log::WARN]));
-        $this->assertTrue($filter->accept(['priority' => \Zend_Log::INFO]));
+        // Assert levels <= INFO are filtered
+        $this->assertTrue($filter->filter(['priority' => Logger::WARN]));
+        $this->assertTrue($filter->filter(['priority' => Logger::INFO]));
 
         // Assert levels > INFO are rejected
-        $this->assertFalse($filter->accept(['priority' => \Zend_Log::DEBUG]));
+        $this->assertFalse($filter->filter(['priority' => Logger::DEBUG]));
     }
 
     public function testEnablingFilteringRestoresCustomOperator()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN, '=');
+        $filter = new LevelFilter(Logger::WARN, '=');
 
         $filter->setLevel(null);
 
-        $this->assertTrue($filter->accept(['priority' => \Zend_Log::EMERG]));
-        $this->assertTrue($filter->accept(['priority' => \Zend_Log::DEBUG]));
+        $this->assertTrue($filter->filter(['priority' => Logger::EMERG]));
+        $this->assertTrue($filter->filter(['priority' => Logger::DEBUG]));
 
-        $filter->setLevel(\Zend_Log::INFO);
+        $filter->setLevel(Logger::INFO);
 
-        $this->assertFalse($filter->accept(['priority' => \Zend_Log::WARN]));
-        $this->assertTrue($filter->accept(['priority' => \Zend_Log::INFO]));
-        $this->assertFalse($filter->accept(['priority' => \Zend_Log::DEBUG]));
+        $this->assertFalse($filter->filter(['priority' => Logger::WARN]));
+        $this->assertTrue($filter->filter(['priority' => Logger::INFO]));
+        $this->assertFalse($filter->filter(['priority' => Logger::DEBUG]));
     }
 
     public function testSetLevelNegativeArgument()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter = new LevelFilter(Logger::WARN);
 
         $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
@@ -122,7 +123,7 @@ class LevelFilterTest extends TestCase
 
     public function testSetLevelStringArgument()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter = new LevelFilter(Logger::WARN);
 
         $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
@@ -134,24 +135,24 @@ class LevelFilterTest extends TestCase
 
     public function testSetLevelStringNumericArgument()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter = new LevelFilter(Logger::WARN);
 
         $filter->setLevel('7');
 
-        $this->assertTrue($filter->accept(['priority' => \Zend_Log::DEBUG]));
-        $this->assertEquals(\Zend_Log::DEBUG, $filter->getLevel());
+        $this->assertTrue($filter->filter(['priority' => Logger::DEBUG]));
+        $this->assertEquals(Logger::DEBUG, $filter->getLevel());
     }
 
     public function testGetLevel()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter = new LevelFilter(Logger::WARN);
 
-        $this->assertEquals(\Zend_Log::WARN, $filter->getLevel());
+        $this->assertEquals(Logger::WARN, $filter->getLevel());
     }
 
     public function testGetLevelOnNull()
     {
-        $filter = new LevelFilter(\Zend_Log::WARN);
+        $filter = new LevelFilter(Logger::WARN);
         $filter->setLevel(null);
 
         $this->assertNull($filter->getLevel());

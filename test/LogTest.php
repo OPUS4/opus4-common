@@ -33,6 +33,10 @@
 
 namespace OpusTest;
 
+use Laminas\Log\Filter\Priority;
+use Laminas\Log\Formatter\Simple;
+use Laminas\Log\Logger;
+use Laminas\Log\Writer\Stream;
 use Opus\Log;
 use PHPUnit\Framework\TestCase;
 
@@ -53,13 +57,13 @@ class LogTest extends TestCase
     public function testSetLevel()
     {
         $opusLog = $this->getOpusLog();
-        $opusLog->setLevel(\Zend_Log::DEBUG);
+        $opusLog->setLevel(Logger::DEBUG);
 
         $debugMessage = 'Debug level message from testSetLevel';
         $opusLog->debug($debugMessage);
 
         $this->assertContains($debugMessage, $this->readLog());
-        $this->assertEquals(\Zend_Log::DEBUG, $opusLog->getLevel());
+        $this->assertEquals(Logger::DEBUG, $opusLog->getLevel());
     }
 
     public function testSetLevelForFilterDisabling()
@@ -83,31 +87,16 @@ class LogTest extends TestCase
         $this->assertContains($debugMessage, $content);
     }
 
-    public function testCustomLevelsWithFiltersDisabled()
-    {
-        $opusLog = $this->getOpusLog();
-        $opusLog->addPriority('TEST', 8);
-        $opusLog->setLevel(null);
-        $opusLog->addPriority('TLEVEL', 9);
-
-        $testMessage = 'Test level created before filter disabled';
-        $opusLog->test($testMessage);
-        $content = $this->readLog();
-        $this->assertContains($testMessage, $content);
-
-        $tlevelMessage = 'Test level created after filter disabled';
-        $opusLog->tlevel($tlevelMessage);
-        $content = $this->readLog();
-        $this->assertContains($tlevelMessage, $content);
-    }
-
     public function testSetLevelNotAffectingOtherFilters()
     {
         $opusLog = $this->getOpusLog();
-        $opusLog->setLevel(\Zend_Log::INFO);
+        $opusLog->setLevel(Logger::INFO);
 
-        $additionalFilter = new \Zend_Log_Filter_Priority(\Zend_Log::WARN);
-        $opusLog->addFilter($additionalFilter);
+        $additionalFilter = new Priority(Logger::WARN);
+
+        $writers = $opusLog->getWriters()->toArray();
+
+        $writers[0]->addFilter($additionalFilter);
 
         // INFO message gets rejected by additional filter
         $infoMessage = 'Info level Message';
@@ -115,7 +104,7 @@ class LogTest extends TestCase
         $this->assertNotContains($infoMessage, $this->readLog());
 
         // After setting level to DEBUG the additional filter still rejects DEBUG message
-        $opusLog->setLevel(\Zend_Log::DEBUG);
+        $opusLog->setLevel(Logger::DEBUG);
         $debugMessage = 'Debug Level Message';
         $opusLog->debug($debugMessage);
         $this->assertNotContains($debugMessage, $this->readLog());
@@ -152,14 +141,14 @@ class LogTest extends TestCase
 
         $opusLog->setLevel('7');
 
-        $this->assertEquals(\Zend_Log::DEBUG, $opusLog->getLevel());
+        $this->assertEquals(Logger::DEBUG, $opusLog->getLevel());
     }
 
     public function testGetLevel()
     {
         $opusLog = $this->getOpusLog();
 
-        $this->assertEquals(\Zend_Log::INFO, $opusLog->getLevel());
+        $this->assertEquals(Logger::INFO, $opusLog->getLevel());
     }
 
     public function testGetLevelReturnsNull()
@@ -197,15 +186,16 @@ class LogTest extends TestCase
     protected function getOpusLog()
     {
         $format = '%priorityName%: %message%' . PHP_EOL;
-        $formatter = new \Zend_Log_Formatter_Simple($format);
+        $formatter = new Simple($format);
 
         $this->logFile = fopen('php://memory', 'rw');
-        $writer = new \Zend_Log_Writer_Stream($this->logFile);
+        $writer = new Stream($this->logFile);
         $writer->setFormatter($formatter);
 
-        $logger = new Log($writer);
+        $logger = new Log();
+        $logger->addWriter($writer);
 
-        $level = \Zend_Log::INFO;
+        $level = Logger::INFO;
         $logger->setLevel($level);
 
         return $logger;

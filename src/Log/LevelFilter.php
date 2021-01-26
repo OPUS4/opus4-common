@@ -33,15 +33,18 @@
 
 namespace Opus\Log;
 
+use Laminas\Log\Filter\Priority;
+use Laminas\Log\Logger;
+
 /**
  * Filter with adjustable log level allowing manipulation of filtering.
  */
-class LevelFilter extends \Zend_Log_Filter_Priority
+class LevelFilter extends Priority
 {
     /**
      * @var string Original operator to restore filtering when enabling filter again.
      */
-    private $operator;
+    private $savedOperator;
 
     /**
      * @var bool Flag to determine if filter is disabled.
@@ -52,7 +55,7 @@ class LevelFilter extends \Zend_Log_Filter_Priority
     {
         parent::__construct($level, $operator);
 
-        $this->operator = $this->_operator;
+        $this->savedOperator = $this->operator;
     }
 
     /**
@@ -64,14 +67,14 @@ class LevelFilter extends \Zend_Log_Filter_Priority
     {
         if ($level === null) {
             // Filter disabled by setting lowest level and altering comparison operator.
-            $this->_operator = '>=';
-            $this->_priority = \Zend_Log::EMERG;
+            $this->operator = '>=';
+            $this->priority = Logger::EMERG;
             $this->disabled = true;
         } elseif (! is_numeric($level) or $level < 0) {
             throw new \InvalidArgumentException('Level needs to be an integer and cannot be negative');
         } else {
-            $this->_operator = $this->operator;
-            $this->_priority = $level;
+            $this->operator = $this->savedOperator;
+            $this->priority = $level;
             $this->disabled = false;
         }
     }
@@ -86,6 +89,6 @@ class LevelFilter extends \Zend_Log_Filter_Priority
         if ($this->disabled) {
             return null;
         }
-        return $this->_priority;
+        return $this->priority;
     }
 }

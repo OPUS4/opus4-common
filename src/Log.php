@@ -33,12 +33,15 @@
 
 namespace Opus;
 
+use Laminas\Log\Logger;
 use Opus\Log\LevelFilter;
 
 /**
  * Extension of Zend_Log for manipulating a logger with additional functionalities like changing the priority level.
+ *
+ * TODO Laminas Log allows multiple writers - How to refactor Log to handle this properly?
  */
-class Log extends \Zend_Log
+class Log extends Logger
 {
 
     /**
@@ -47,14 +50,9 @@ class Log extends \Zend_Log
     private $filter;
 
     /**
-     * @var \Zend_Log Stores the default logger.
+     * @var Logger Stores the default logger.
      */
     protected static $cachedReference;
-
-    public function __construct(\Zend_Log_Writer_Stream $writer = null)
-    {
-        parent::__construct($writer);
-    }
 
     /**
      * Change the level of the filter.
@@ -64,7 +62,6 @@ class Log extends \Zend_Log
      * setLevel() sets the level for the current one.
      *
      * @param int|null $level New level of the log
-     * @throws \Zend_Log_Exception
      */
     public function setLevel($level)
     {
@@ -74,7 +71,13 @@ class Log extends \Zend_Log
 
         if ($this->filter === null) {
             $this->filter = new LevelFilter($level);
-            $this->addFilter($this->filter);
+
+            $writers = $this->getWriters();
+            $writersArray = $writers->toArray();
+
+            if (count($writersArray) > 0) {
+                $writersArray[0]->addFilter($this->filter);
+            }
         } else {
             $this->filter->setLevel($level);
         }
@@ -97,8 +100,7 @@ class Log extends \Zend_Log
     /**
      * Returns a default logger.
      *
-     * @return \Zend_Log
-     * @throws \Zend_Exception
+     * @return Logger
      */
     public static function get()
     {

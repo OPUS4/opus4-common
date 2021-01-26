@@ -34,6 +34,10 @@
 
 namespace Opus\Log;
 
+use Laminas\Config\Config;
+use Laminas\Log\Formatter\Simple;
+use Laminas\Log\Logger;
+use Laminas\Log\Writer\Stream;
 use Opus\Exception;
 use Opus\Log;
 
@@ -95,7 +99,7 @@ class LogService
     /** @var string Path to the folder for log files. */
     private $logPath = null;
 
-    /** @var \Zend_Log[] All log objects with log names as keys. */
+    /** @var Logger[] All log objects with log names as keys. */
     private $loggers = [];
 
     /** @var string Default format of log output. */
@@ -133,7 +137,7 @@ class LogService
      * @param null|string $priority Name of log level.
      * @param null|string $format Format for log output.
      * @param null|string $filename Optional name of the log file.
-     * @return \Zend_Log
+     * @return Logger
      *
      * TODO what if logger already exists (name, file)
      */
@@ -186,12 +190,12 @@ class LogService
      * To add log from external modules to loggers array.
      *
      * @param string $name Name of log
-     * @param \Zend_Log $logger
+     * @param Logger $logger
      * @throws Exception
      */
     public function addLog($name, $logger)
     {
-        if (! $logger instanceof \Zend_Log) {
+        if (! $logger instanceof Logger) {
             throw new Exception('Logger added must be of type Zend_Log.');
         }
         $this->loggers[$name] = $logger;
@@ -271,13 +275,13 @@ class LogService
      * default values are used.
      *
      * @param string $name
-     * @return \Zend_Config
+     * @return Config
      */
     public function getLogConfig($name)
     {
         $config = $this->getConfig();
 
-        $defaultConfig = new \Zend_Config([
+        $defaultConfig = new Config([
             'format' => $this->getDefaultFormat(),
             'file' => $name . '.log',
             'level' => $this->getDefaultPriorityAsString()
@@ -354,7 +358,7 @@ class LogService
      * Get a log or create one if not already exists.
      *
      * @param null|string $name Name of log
-     * @return \Zend_Log
+     * @return Logger
      */
     public function getLog($name = null)
     {
@@ -375,18 +379,18 @@ class LogService
      * @param string $format
      * @param int $priority
      * @param string $file
-     * @return \Zend_Log
-     * @throws \Zend_Log_Exception
+     * @return Logger
      */
     protected function createLogger($format, $priority, $file)
     {
         $preparedFormat = $this->prepareFormat($format);
-        $formatter = new \Zend_Log_Formatter_Simple($preparedFormat);
+        $formatter = new Simple($preparedFormat);
 
-        $writer = new \Zend_Log_Writer_Stream($file);
+        $writer = new Stream($file);
         $writer->setFormatter($formatter);
 
-        $logger = new Log($writer);
+        $logger = new Log();
+        $logger->addWriter($writer);
         $logger->setLevel($priority);
 
         return $logger;
@@ -443,7 +447,7 @@ class LogService
         }
 
         $runId = $this->getRunId();
-        return rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL) . PHP_EOL;
+        return rtrim(preg_replace('/%runId%/', $runId, $format), PHP_EOL);
     }
 
     /**
@@ -475,7 +479,7 @@ class LogService
      */
     public function convertPriorityToString($priority)
     {
-        $zendLogRefl = new \ReflectionClass('Zend_Log');
+        $zendLogRefl = new \ReflectionClass(Log::class);
         $constants = $zendLogRefl->getConstants();
 
         $levels = array_flip($constants);
@@ -494,7 +498,7 @@ class LogService
      */
     public function convertPriorityFromString($priorityName)
     {
-        $zendLogRefl = new \ReflectionClass('Zend_Log');
+        $zendLogRefl = new \ReflectionClass(Logger::class);
         $priority = $zendLogRefl->getConstant(strtoupper($priorityName));
 
         if ($priority !== false) {
