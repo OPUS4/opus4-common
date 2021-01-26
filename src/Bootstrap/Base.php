@@ -43,6 +43,7 @@ namespace Opus\Bootstrap;
  *
  */
 
+use Laminas\Config\Config;
 use Opus\Log\LogService;
 
 class Base extends \Zend_Application_Bootstrap_Bootstrap
@@ -117,11 +118,11 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
      * </code>
      *
      * @throws \Exception          Exception is thrown if configuration level is invalid.
-     * @return \Zend_Config
+     * @return Config
      */
     protected function _initConfiguration()
     {
-        $config = new \Zend_Config($this->getOptions());
+        $config = new Config($this->getOptions());
         \Zend_Registry::set('Zend_Config', $config);
 
         return $config;

@@ -8,6 +8,7 @@
   ],
   "homepage": "http://www.opus-repository.org",
   "require": {
+    "laminas/laminas-config": "2.6.*",
     "laminas/laminas-validator": "2.12.2",
     "laminas/laminas-log": "2.12.0",
     "symfony/console": "*"
