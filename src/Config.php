@@ -33,10 +33,23 @@
 
 namespace Opus;
 
+/**
+ * Class Config
+ * @package Opus
+ *
+ * TODO revisit using get() for Laminas\Config object
+ *      should Opus\Config extend Laminas\Config?
+ * TODO replace singleton by dependency injection in Laminas
+ * TODO in general review this stuff and think about it !!!
+ */
 class Config
 {
 
     private $tempPath;
+
+    private $availableLanguages;
+
+    private static $instance;
 
     private static $config;
 
@@ -63,10 +76,37 @@ class Config
         $this->tempPath = $tempPath;
     }
 
+    public function getAvailableLanguages()
+    {
+        return $this->availableLanguages;
+    }
+
+    public function setAvailableLanguages($availableLanguages)
+    {
+        $this->availableLanguages = $availableLanguages;
+    }
+
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new Config();
+        }
+
+        return self::$instance;
+    }
+
+    public static function setInstance($config)
+    {
+        if ($config !== null && ! $config instanceof Config) {
+            throw new \InvalidArgumentException('Argument must be instance of Opus\Config or null');
+        }
+
+        self::$instance = $config;
+    }
+
     public static function set($config)
     {
         self::$config = $config;
-        \Zend_Registry::set('Zend_Config', $config);
     }
 
     public static function get()

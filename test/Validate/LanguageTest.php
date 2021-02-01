@@ -35,6 +35,7 @@
 
 namespace OpusTest\Validate;
 
+use Opus\Config;
 use Opus\Validate\Language;
 
 /**
@@ -100,7 +101,7 @@ class LanguageTest extends \PHPUnit_Framework_TestCase
             'ar' => 'Test_Arabisch',
             'zu' => 'Test_Zulu',
         ];
-        \Zend_Registry::set('Available_Languages', $list);
+        Config::getInstance()->setAvailableLanguages($list);
     }
 
     /**

@@ -69,7 +69,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Configuration');
         $config = $this->getResource('Configuration');
         $tempDirectory = $config->workspacePath . '/tmp/';
-        \Zend_Registry::set('temp_dir', $tempDirectory);
+        Config::getInstance()->setTempPath($tempDirectory);
     }
 
     /**
@@ -155,7 +155,6 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         $logLevel = $logService->getDefaultPriority();
 
         Log::set($logger);
-        \Zend_Registry::set('LOG_LEVEL', $logLevel);
 
         $logger->debug('Logging initialized');
 
@@ -174,10 +173,10 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         // Need cache initializatino for Zend_Locale.
         $this->bootstrap('ZendCache');
 
-        // This avoids an exception if the locale cannot determined automatically.
+        // This avoids an exception if the locale cannot be determined automatically.
         // TODO setup in config, still put in registry?
         $locale = new \Zend_Locale("de");
-        \Zend_Registry::set('Zend_Locale', $locale);
+        \Zend_Registry::set('Zend_Locale', $locale); // TODO switch to Laminas mechanism
     }
 
     protected function isConsoleScript()
