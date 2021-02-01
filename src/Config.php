@@ -24,54 +24,53 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
+ * @category    opus4-common
  * @package     Opus
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus;
 
-trait LoggingTrait
+class Config
 {
-    /**
-     * Logger for class.
-     */
-    private $logger;
+
+    private $tempPath;
+
+    private static $config;
 
     /**
-     * Returns logger for this class.
-     * @return \Zend_Log
-     * @throws \Zend_Exception
+     * Returns path to temporary files folder.
+     * @return string Path for temporary files.
+     * @throws Application_Exception
      */
-    public function getLogger()
+    public function getTempPath()
     {
-        if (is_null($this->logger)) {
-            $this->logger = Log::get();
-            // TODO what happens if no logger is found?
+        if (is_null($this->tempPath)) {
+            $this->tempPath = trim($this->getWorkspacePath() . 'tmp' . DIRECTORY_SEPARATOR);
         }
 
-        return $this->logger;
+        return $this->tempPath;
     }
 
     /**
-     * Sets logger for this class.
-     * @param $logger Zend_Log
+     * Set path to folder for temporary files.
+     * @param $tempPath
      */
-    public function setLogger($logger)
+    public function setTempPath($tempPath)
     {
-        $this->logger = $logger;
+        $this->tempPath = $tempPath;
     }
 
-    /**
-     *  Debugging helper.  Sends the given message to Zend_Log.
-     *
-     * @param string $message
-     */
-    protected function log($message)
+    public static function set($config)
     {
-        $logger = $this->getLogger();
-        $logger->info(__CLASS__ . ": $message");
+        self::$config = $config;
+        \Zend_Registry::set('Zend_Config', $config);
+    }
+
+    public static function get()
+    {
+        return self::$config;
     }
 }

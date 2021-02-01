@@ -43,6 +43,8 @@ namespace Opus\Bootstrap;
  *
  */
 
+use Opus\Config;
+use Opus\Log;
 use Opus\Log\LogService;
 
 class Base extends \Zend_Application_Bootstrap_Bootstrap
@@ -108,21 +110,14 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
     /**
      * Load application configuration file and register the configuration
      * object with the Zend registry under 'Zend_Config'.
-     *
-     * To access parts of the configuration you have to retrieve the registry
-     * instance and call the get() method:
-     * <code>
-     * $registry = Zend_Registry::getInstance();
-     * $config = $registry->get('Zend_Config');
-     * </code>
-     *
+     **
      * @throws \Exception          Exception is thrown if configuration level is invalid.
      * @return \Zend_Config
      */
     protected function _initConfiguration()
     {
         $config = new \Zend_Config($this->getOptions());
-        \Zend_Registry::set('Zend_Config', $config);
+        Config::set($config);
 
         return $config;
     }
@@ -159,7 +154,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         $logger = $logService->createLog(LogService::DEFAULT_LOG, null, null, $logFilename);
         $logLevel = $logService->getDefaultPriority();
 
-        \Zend_Registry::set('Zend_Log', $logger);
+        Log::set($logger);
         \Zend_Registry::set('LOG_LEVEL', $logLevel);
 
         $logger->debug('Logging initialized');

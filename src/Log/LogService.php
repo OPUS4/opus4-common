@@ -34,6 +34,7 @@
 
 namespace Opus\Log;
 
+use Opus\Config;
 use Opus\Exception;
 use Opus\Log;
 
@@ -205,7 +206,7 @@ class LogService
     public function getConfig()
     {
         if ($this->config === null) {
-            $this->config = \Zend_Registry::get('Zend_Config');
+            $this->config = Config::get();
         }
         return $this->config;
     }
@@ -223,6 +224,8 @@ class LogService
      * Get path to the log folder.
      *
      * @return string path to the log folder.
+     *
+     * TODO needs refactoring - log path should be injected
      */
     public function getPath()
     {
