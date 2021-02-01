@@ -183,6 +183,13 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($log, Log::get());
     }
 
+    public function testGetLevelOfDefaultLogger()
+    {
+        $log = Log::get();
+
+        $this->assertEquals(\Zend_Log::INFO, $log->getLevel());
+    }
+
     /**
      * Check if the logger instance gets dropped and new logger is created.
      * @throws \Zend_Exception
