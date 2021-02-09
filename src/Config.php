@@ -44,6 +44,7 @@ namespace Opus;
  */
 class Config
 {
+    use LoggingTrait;
 
     private $tempPath;
 
@@ -54,9 +55,32 @@ class Config
     private static $config;
 
     /**
+     * Returns the path to the application workspace.
+     *
+     * @throws Exception
+     */
+    public function getWorkspacePath()
+    {
+        $config = $this->get();
+
+        if (! isset($config->workspacePath)) {
+            $this->getLogger()->err('missing config key workspacePath');
+            throw new Exception('missing configuration key workspacePath');
+        }
+
+        $workspacePath = $config->workspacePath;
+
+        if (substr($workspacePath, -1) === DIRECTORY_SEPARATOR) {
+            return $workspacePath;
+        } else {
+            return $config->workspacePath . DIRECTORY_SEPARATOR;
+        }
+    }
+
+    /**
      * Returns path to temporary files folder.
      * @return string Path for temporary files.
-     * @throws Application_Exception
+     * @throws Exception
      */
     public function getTempPath()
     {
