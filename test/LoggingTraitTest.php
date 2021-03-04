@@ -33,6 +33,7 @@
 
 namespace OpusTest;
 
+use Opus\Log;
 use Opus\LoggingTrait;
 
 class LoggingTraitTest extends \PHPUnit_Framework_TestCase
@@ -44,7 +45,7 @@ class LoggingTraitTest extends \PHPUnit_Framework_TestCase
     {
         $log = new \Zend_Log();
 
-        \Zend_Registry::set('Zend_Log', $log);
+        Log::set($log);
         $this->logger = $log;
     }
 

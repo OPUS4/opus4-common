@@ -33,6 +33,7 @@
 
 namespace OpusTest;
 
+use Opus\Config;
 use Opus\Log;
 
 class LogTest extends \PHPUnit_Framework_TestCase
@@ -175,10 +176,18 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        \Zend_Registry::set('Zend_Log', $this->getOpusLog());
+        $log = $this->getOpusLog();
+
+        Log::set($log);
+
+        $this->assertSame($log, Log::get());
+    }
+
+    public function testGetLevelOfDefaultLogger()
+    {
         $log = Log::get();
 
-        $this->assertSame(\Zend_Registry::get('Zend_Log'), $log);
+        $this->assertEquals(\Zend_Log::INFO, $log->getLevel());
     }
 
     /**
@@ -187,8 +196,11 @@ class LogTest extends \PHPUnit_Framework_TestCase
      */
     public function testDrop()
     {
+        $tempPath = sys_get_temp_dir();
+        Log\LogService::getInstance()->setPath($tempPath);
+
         $log = $this->getOpusLog();
-        \Zend_Registry::set('Zend_Log', $log);
+        Log::set($log);
 
         $logger1 = Log::get();
         Log::drop();
