@@ -37,6 +37,7 @@ use Laminas\Log\Filter\Priority;
 use Laminas\Log\Formatter\Simple;
 use Laminas\Log\Logger;
 use Laminas\Log\Writer\Stream;
+use Opus\Config;
 use Opus\Log;
 use PHPUnit\Framework\TestCase;
 
@@ -161,10 +162,18 @@ class LogTest extends TestCase
 
     public function testGet()
     {
-        \Zend_Registry::set('Zend_Log', $this->getOpusLog());
+        $log = $this->getOpusLog();
+
+        Log::set($log);
+
+        $this->assertSame($log, Log::get());
+    }
+
+    public function testGetLevelOfDefaultLogger()
+    {
         $log = Log::get();
 
-        $this->assertSame(\Zend_Registry::get('Zend_Log'), $log);
+        $this->assertEquals(Logger::INFO, $log->getLevel());
     }
 
     /**
@@ -173,8 +182,11 @@ class LogTest extends TestCase
      */
     public function testDrop()
     {
+        $tempPath = sys_get_temp_dir();
+        Log\LogService::getInstance()->setPath($tempPath);
+
         $log = $this->getOpusLog();
-        \Zend_Registry::set('Zend_Log', $log);
+        Log::set($log);
 
         $logger1 = Log::get();
         Log::drop();

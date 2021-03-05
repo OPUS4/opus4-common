@@ -35,6 +35,7 @@
 namespace Opus\Validate;
 
 use Laminas\Validator\AbstractValidator;
+use Opus\Config;
 
 /**
  * Validator for Language field. Only accept standard Zend_Locale locale names.
@@ -74,10 +75,9 @@ class Language extends AbstractValidator
             $value = [$value];
         }
 
-        $registry = \Zend_Registry::getInstance();
-        if ($registry->isRegistered('Available_Languages')) {
-            $translationList = $registry->get('Available_Languages');
-        } else {
+        $translationList = Config::getInstance()->getAvailableLanguages();
+
+        if ($translationList === null) {
             $locale = new \Zend_Locale();
             $translationList = $locale->getTranslationList('language');
         }

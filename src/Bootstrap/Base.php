@@ -29,7 +29,7 @@
  * @author      Ralf Claussnitzer (ralf.claussnitzer@slub-dresden.de)
  * @author      Kaustabh Barman <barman@zib.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
@@ -43,7 +43,9 @@ namespace Opus\Bootstrap;
  *
  */
 
-use Laminas\Config\Config;
+use Laminas\Config\Config as LaminasConfig;
+use Opus\Config;
+use Opus\Log;
 use Opus\Log\LogService;
 
 class Base extends \Zend_Application_Bootstrap_Bootstrap
@@ -68,7 +70,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Configuration');
         $config = $this->getResource('Configuration');
         $tempDirectory = $config->workspacePath . '/tmp/';
-        \Zend_Registry::set('temp_dir', $tempDirectory);
+        Config::getInstance()->setTempPath($tempDirectory);
     }
 
     /**
@@ -109,21 +111,14 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
     /**
      * Load application configuration file and register the configuration
      * object with the Zend registry under 'Zend_Config'.
-     *
-     * To access parts of the configuration you have to retrieve the registry
-     * instance and call the get() method:
-     * <code>
-     * $registry = Zend_Registry::getInstance();
-     * $config = $registry->get('Zend_Config');
-     * </code>
-     *
+     **
      * @throws \Exception          Exception is thrown if configuration level is invalid.
      * @return Config
      */
     protected function _initConfiguration()
     {
-        $config = new Config($this->getOptions());
-        \Zend_Registry::set('Zend_Config', $config);
+        $config = new LaminasConfig($this->getOptions());
+        Config::set($config);
 
         return $config;
     }
@@ -160,8 +155,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         $logger = $logService->createLog(LogService::DEFAULT_LOG, null, null, $logFilename);
         $logLevel = $logService->getDefaultPriority();
 
-        \Zend_Registry::set('Zend_Log', $logger);
-        \Zend_Registry::set('LOG_LEVEL', $logLevel);
+        Log::set($logger);
 
         $logger->debug('Logging initialized');
 
@@ -180,10 +174,10 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         // Need cache initializatino for Zend_Locale.
         $this->bootstrap('ZendCache');
 
-        // This avoids an exception if the locale cannot determined automatically.
+        // This avoids an exception if the locale cannot be determined automatically.
         // TODO setup in config, still put in registry?
         $locale = new \Zend_Locale("de");
-        \Zend_Registry::set('Zend_Locale', $locale);
+        \Zend_Registry::set('Zend_Locale', $locale); // TODO switch to Laminas mechanism
     }
 
     protected function isConsoleScript()

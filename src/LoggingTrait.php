@@ -48,7 +48,7 @@ trait LoggingTrait
     public function getLogger()
     {
         if (is_null($this->logger)) {
-            $this->logger = \Zend_Registry::get('Zend_Log');
+            $this->logger = Log::get();
             // TODO what happens if no logger is found?
         }
 

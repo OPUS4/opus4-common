@@ -35,6 +35,7 @@ namespace Opus;
 
 use Laminas\Log\Logger;
 use Opus\Log\LevelFilter;
+use Opus\Log\LogService;
 
 /**
  * Extension of Zend_Log for manipulating a logger with additional functionalities like changing the priority level.
@@ -105,10 +106,19 @@ class Log extends Logger
     public static function get()
     {
         if (! self::$cachedReference) {
-            self::$cachedReference = \Zend_Registry::get('Zend_Log');
+            self::$cachedReference = LogService::getInstance()->getDefaultLog();
         }
 
         return self::$cachedReference;
+    }
+
+    public static function set($logger)
+    {
+        if (! $logger instanceof Logger) {
+            throw new \InvalidArgumentException('Argument must be instance of Laminas\Log\Logger');
+        }
+
+        self::$cachedReference = $logger;
     }
 
     /**

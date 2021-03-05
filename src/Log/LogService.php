@@ -28,16 +28,17 @@
  * @Package     Opus\Log
  * @author      Kaustabh Barman <barman@zib.de>
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Log;
 
-use Laminas\Config\Config;
+use Laminas\Config\Config as LaminasConfig;
 use Laminas\Log\Formatter\Simple;
 use Laminas\Log\Logger;
 use Laminas\Log\Writer\Stream;
+use Opus\Config;
 use Opus\Exception;
 use Opus\Log;
 
@@ -209,7 +210,7 @@ class LogService
     public function getConfig()
     {
         if ($this->config === null) {
-            $this->config = \Zend_Registry::get('Zend_Config');
+            $this->config = Config::get();
         }
         return $this->config;
     }
@@ -227,6 +228,8 @@ class LogService
      * Get path to the log folder.
      *
      * @return string path to the log folder.
+     *
+     * TODO needs refactoring - log path should be injected
      */
     public function getPath()
     {
@@ -275,13 +278,13 @@ class LogService
      * default values are used.
      *
      * @param string $name
-     * @return Config
+     * @return LaminasConfig
      */
     public function getLogConfig($name)
     {
         $config = $this->getConfig();
 
-        $defaultConfig = new Config([
+        $defaultConfig = new LaminasConfig([
             'format' => $this->getDefaultFormat(),
             'file' => $name . '.log',
             'level' => $this->getDefaultPriorityAsString()
