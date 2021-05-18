@@ -62,6 +62,6 @@
     "phpmd": "phpmd src xml cleancode,unusedcode,design,naming --reportfile build/phpmd.xml --ignore-violations-on-exit",
     "phpcpd": "phpcpd . --min-lines 3 --min-tokens 30 --log-pmd build/pmd-cpd.xml --progress || true",
     "phploc": "phploc --log-xml build/phploc.xml src",
-    "metrics": "phpmetrics --report-html=build/metrics ."
+    "metrics": "phpmetrics --report-html=build/metrics --junit=build/phpunit.xml ."
   }
 }
