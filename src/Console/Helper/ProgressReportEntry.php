@@ -24,22 +24,54 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Model
- * @author      Ralf Claußnitzer (ralf.claussnitzer@slub-dresden.de)
+ * @category    Application
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Model;
+namespace Opus\Console\Helper;
 
-/**
- * Exception type for Opus_Model.
- *
- * @category Framework
- * @package  Opus_Model
- */
-class Exception extends \Exception
+class ProgressReportEntry
 {
+
+    protected $title;
+
+    protected $category;
+
+    protected $exceptions;
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    public function addException($e)
+    {
+        if ($this->exceptions === null) {
+            $this->exceptions = [];
+        }
+
+        $this->exceptions[] = $e;
+    }
+
+    public function getExceptions()
+    {
+        return $this->exceptions;
+    }
 }

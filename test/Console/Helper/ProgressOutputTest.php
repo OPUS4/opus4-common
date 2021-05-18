@@ -7,11 +7,12 @@
  *
  * OPUS 4 is a complete rewrite of the original OPUS software and was developed
  * by the Stuttgart University Library, the Library Service Center
- * Baden-Wuerttemberg, the Cooperative Library Network Berlin-Brandenburg,
- * the Saarland University and State Library, the Saxon State Library -
- * Dresden State and University Library, the Bielefeld University Library and
- * the University Library of Hamburg University of Technology with funding from
- * the German Research Foundation and the European Regional Development Fund.
+ * Baden-Wuerttemberg, the North Rhine-Westphalian Library Service Center,
+ * the Cooperative Library Network Berlin-Brandenburg, the Saarland University
+ * and State Library, the Saxon State Library - Dresden State and University
+ * Library, the Bielefeld University Library and the University Library of
+ * Hamburg University of Technology with funding from the German Research
+ * Foundation and the European Regional Development Fund.
  *
  * LICENCE
  * OPUS is free software; you can redistribute it and/or modify it under the
@@ -24,54 +25,41 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus
+ * @category    Application
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace OpusTest\Console\Helper;
 
-trait LoggingTrait
+use Opus\Console\Helper\ProgressOutput;
+use Symfony\Component\Console\Output\StreamOutput;
+
+class ProgressOutputTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * Logger for class.
-     */
-    private $logger;
 
-    /**
-     * Returns logger for this class.
-     * @return \Zend_Log
-     * @throws \Zend_Exception
-     */
-    public function getLogger()
+    public function testSetProgress()
     {
-        if (is_null($this->logger)) {
-            $this->logger = Log::get();
-            // TODO what happens if no logger is found?
-        }
+        $outputInterface = $this->createOutputInterface();
 
-        return $this->logger;
+        $progress = new ProgressOutput($outputInterface, 100);
+
+        $progress->start();
+        $progress->setProgress(10);
+        $progress->finish();
+
+        rewind($outputInterface->getStream());
+        $output = stream_get_contents($outputInterface->getStream());
+
+        $this->assertContains('Stats after  10 docs', $output); // two spaces before 10
     }
 
     /**
-     * Sets logger for this class.
-     * @param $logger Zend_Log
+     * @return StreamOutput
      */
-    public function setLogger($logger)
+    protected function createOutputInterface()
     {
-        $this->logger = $logger;
-    }
-
-    /**
-     *  Debugging helper.  Sends the given message to Zend_Log.
-     *
-     * @param string $message
-     */
-    protected function log($message)
-    {
-        $logger = $this->getLogger();
-        $logger->info(__CLASS__ . ": $message");
+        return new StreamOutput(fopen('php://memory', 'r+', false));
     }
 }

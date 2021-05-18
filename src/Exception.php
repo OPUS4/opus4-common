@@ -24,54 +24,15 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
+ * @category    Common
  * @package     Opus
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus;
 
-trait LoggingTrait
+class Exception extends \Exception
 {
-    /**
-     * Logger for class.
-     */
-    private $logger;
-
-    /**
-     * Returns logger for this class.
-     * @return \Zend_Log
-     * @throws \Zend_Exception
-     */
-    public function getLogger()
-    {
-        if (is_null($this->logger)) {
-            $this->logger = Log::get();
-            // TODO what happens if no logger is found?
-        }
-
-        return $this->logger;
-    }
-
-    /**
-     * Sets logger for this class.
-     * @param $logger Zend_Log
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     *  Debugging helper.  Sends the given message to Zend_Log.
-     *
-     * @param string $message
-     */
-    protected function log($message)
-    {
-        $logger = $this->getLogger();
-        $logger->info(__CLASS__ . ": $message");
-    }
 }

@@ -24,54 +24,68 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @category    opus4-common
+ * @package     Opus\Log
+ * @author      Kaustabh Barman <barman@zib.de>
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace Opus\Log;
 
-trait LoggingTrait
+/**
+ * Filter with adjustable log level allowing manipulation of filtering.
+ */
+class LevelFilter extends \Zend_Log_Filter_Priority
 {
     /**
-     * Logger for class.
+     * @var string Original operator to restore filtering when enabling filter again.
      */
-    private $logger;
+    private $operator;
 
     /**
-     * Returns logger for this class.
-     * @return \Zend_Log
-     * @throws \Zend_Exception
+     * @var bool Flag to determine if filter is disabled.
      */
-    public function getLogger()
-    {
-        if (is_null($this->logger)) {
-            $this->logger = Log::get();
-            // TODO what happens if no logger is found?
-        }
+    private $disabled;
 
-        return $this->logger;
+    public function __construct($level, $operator = null)
+    {
+        parent::__construct($level, $operator);
+
+        $this->operator = $this->_operator;
     }
 
     /**
-     * Sets logger for this class.
-     * @param $logger Zend_Log
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     *  Debugging helper.  Sends the given message to Zend_Log.
+     * Set the level of the filter.
      *
-     * @param string $message
+     * @param int|null $level New level or null to disable filtering
      */
-    protected function log($message)
+    public function setLevel($level)
     {
-        $logger = $this->getLogger();
-        $logger->info(__CLASS__ . ": $message");
+        if ($level === null) {
+            // Filter disabled by setting lowest level and altering comparison operator.
+            $this->_operator = '>=';
+            $this->_priority = \Zend_Log::EMERG;
+            $this->disabled = true;
+        } elseif (! is_numeric($level) or $level < 0) {
+            throw new \InvalidArgumentException('Level needs to be an integer and cannot be negative');
+        } else {
+            $this->_operator = $this->operator;
+            $this->_priority = $level;
+            $this->disabled = false;
+        }
+    }
+
+    /**
+     * Returns level of the filter.
+     *
+     * @return int|null
+     */
+    public function getLevel()
+    {
+        if ($this->disabled) {
+            return null;
+        }
+        return $this->_priority;
     }
 }

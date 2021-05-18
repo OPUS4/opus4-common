@@ -24,54 +24,94 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus
+ * @category    Application
+ * @package     Application_Console
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace Opus\Console\Helper;
 
-trait LoggingTrait
+use Symfony\Component\Console\Output\OutputInterface;
+
+/**
+ * Base class for ProgressOutput helper.
+ *
+ * @package Opus\Console\Helper
+ *
+ * TODO do we need to get time as float?
+ */
+abstract class BaseProgressOutput implements ProgressOutputInterface
 {
-    /**
-     * Logger for class.
-     */
-    private $logger;
 
     /**
-     * Returns logger for this class.
-     * @return \Zend_Log
-     * @throws \Zend_Exception
+     * @var int Maximum number of steps (progress)
      */
-    public function getLogger()
+    protected $max;
+
+    /**
+     * @var int Number of digits to display maximum number of steps
+     */
+    protected $maxDigits;
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    /**
+     * @var float Time progress started
+     */
+    protected $startTime;
+
+    /**
+     * @var float Time progress ended
+     */
+    protected $endTime;
+
+    protected $progress = 0;
+
+    public function __construct(OutputInterface $output, $max = 0)
     {
-        if (is_null($this->logger)) {
-            $this->logger = Log::get();
-            // TODO what happens if no logger is found?
-        }
-
-        return $this->logger;
+        $this->output = $output;
+        $this->max = $max;
+        $this->maxDigits = strlen(( string )$max);
     }
 
     /**
-     * Sets logger for this class.
-     * @param $logger Zend_Log
+     * Starts progress.
      */
-    public function setLogger($logger)
+    public function start()
     {
-        $this->logger = $logger;
+        $this->startTime = microtime(true);
+        $this->progress = 0;
     }
 
     /**
-     *  Debugging helper.  Sends the given message to Zend_Log.
-     *
-     * @param string $message
+     * Finishes progress.
      */
-    protected function log($message)
+    public function finish()
     {
-        $logger = $this->getLogger();
-        $logger->info(__CLASS__ . ": $message");
+        $this->endTime = microtime(true);
+    }
+
+    /**
+     * Returns complete time for running progress.
+     * @return float Runtime of progress
+     */
+    public function getRuntime()
+    {
+        return $this->endTime - $this->startTime;
+    }
+
+    public function advance($step = 1, $status = null)
+    {
+        $this->setProgress($this->progress + $step, $status);
+    }
+
+    public function setProgress($progress, $status = null)
+    {
+        $this->progress = $progress;
     }
 }

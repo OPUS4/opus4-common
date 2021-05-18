@@ -38,55 +38,51 @@ abstract class AbstractPlugin implements PluginInterface
 {
 
     /**
-     * @see {Opus_Model_Plugin_Interface::preStore}
+     * @see {PluginInterface::preStore}
      */
     public function preStore(ModelInterface $model)
     {
     }
 
     /**
-     * @see {Opus_Model_Plugin_Interface::preFetch}
+     * @see {PluginInterface::preFetch}
      */
     public function preFetch(ModelInterface $model)
     {
     }
 
     /**
-     * @see {Opus_Model_Plugin_Interface::postStore}
+     * @see {PluginInterface::postStore}
      */
     public function postStore(ModelInterface $model)
     {
     }
 
     /**
-     * @see {Opus_Model_Plugin_Interface::postStoreInternal}
+     * @see {PluginInterface::postStoreInternal}
      */
     public function postStoreInternal(ModelInterface $model)
     {
     }
 
     /**
-     * @see {Opus_Model_Plugin_Interface::postStoreExternal}
+     * @see {PluginInterface::postStoreExternal}
      */
     public function postStoreExternal(ModelInterface $model)
     {
     }
 
     /**
-     * @see {Opus_Model_Plugin_Interface::preDelete}
+     * @see {PluginInterface::preDelete}
      */
     public function preDelete(ModelInterface $model)
     {
     }
 
     /**
-     * @see {Opus_Model_Plugin_Interface::postDelete}
+     * @see {PluginInterface::postDelete}
      */
     public function postDelete($modelId)
-    {
-    }
-
-    public function postDeletePermanent($modelId)
     {
     }
 }

@@ -24,54 +24,41 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus
+ * @category    Application
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace Opus\Console\Helper;
 
-trait LoggingTrait
+/**
+ * Interface for progress output in OPUS 4 commands like index:index, or index:extract.
+ *
+ * Using this interface the commands can switch between different implementations depending
+ * on the desired verbosity.
+ *
+ * The levels are:
+ * - ProgressBar as default output
+ * - ProgressOutput for verbose output (-v), this is the old output after each block of documents
+ * - ProgressMatrix for more verbose output (-vv), this is like PHPUnit (".....F..")
+ * - ProgressDetail for maximum verbosity (-vvv), printing out detailed information after each document (or block)
+ *
+ * TODO ProgressMatrix not implemented yet
+ * TODO ProgressDetail not implemented yet
+ *
+ * @package Opus\Console\Helper
+ */
+interface ProgressOutputInterface
 {
-    /**
-     * Logger for class.
-     */
-    private $logger;
 
-    /**
-     * Returns logger for this class.
-     * @return \Zend_Log
-     * @throws \Zend_Exception
-     */
-    public function getLogger()
-    {
-        if (is_null($this->logger)) {
-            $this->logger = Log::get();
-            // TODO what happens if no logger is found?
-        }
+    public function start();
 
-        return $this->logger;
-    }
+    public function finish();
 
-    /**
-     * Sets logger for this class.
-     * @param $logger Zend_Log
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
-    }
+    public function advance($steps = 1, $status = null);
 
-    /**
-     *  Debugging helper.  Sends the given message to Zend_Log.
-     *
-     * @param string $message
-     */
-    protected function log($message)
-    {
-        $logger = $this->getLogger();
-        $logger->info(__CLASS__ . ": $message");
-    }
+    public function setProgress($progress, $status = null);
+
+    public function getRuntime();
 }

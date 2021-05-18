@@ -24,54 +24,59 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus
+ * @category    Application
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace Opus\Console\Helper;
 
-trait LoggingTrait
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\ProgressBar as SymfonyProgressBar;
+
+/**
+ * Adapter for Symfoy class ProgressBar in order to use it interchangeably with other
+ * OPUS 4 ProgressOutput classes.
+ *
+ * @package Opus\Console\Helper
+ */
+class ProgressBar extends BaseProgressOutput
 {
-    /**
-     * Logger for class.
-     */
-    private $logger;
 
     /**
-     * Returns logger for this class.
-     * @return \Zend_Log
-     * @throws \Zend_Exception
+     * @var \Symfony\Component\Console\Helper\ProgressBar
      */
-    public function getLogger()
+    private $progressBar;
+
+    public function __construct(OutputInterface $output, $max)
     {
-        if (is_null($this->logger)) {
-            $this->logger = Log::get();
-            // TODO what happens if no logger is found?
-        }
+        parent::__construct($output, $max);
 
-        return $this->logger;
+        $this->progressBar = new SymfonyProgressBar($output, $max);
+        $this->progressBar->setBarWidth(69 - 2 * $this->maxDigits); // TODO use get functions
     }
 
-    /**
-     * Sets logger for this class.
-     * @param $logger Zend_Log
-     */
-    public function setLogger($logger)
+    public function start()
     {
-        $this->logger = $logger;
+        parent::start();
+        $this->progressBar->start();
     }
 
-    /**
-     *  Debugging helper.  Sends the given message to Zend_Log.
-     *
-     * @param string $message
-     */
-    protected function log($message)
+    public function finish()
     {
-        $logger = $this->getLogger();
-        $logger->info(__CLASS__ . ": $message");
+        $this->progressBar->finish();
+        parent::finish();
+        $this->output->writeln('');
+    }
+
+    public function advance($step = 1, $status = null)
+    {
+        $this->progressBar->advance($step);
+    }
+
+    public function setProgress($step, $status = null)
+    {
+        $this->progressBar->setProgress($step);
     }
 }

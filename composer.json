@@ -8,14 +8,16 @@
   ],
   "homepage": "http://www.opus-repository.org",
   "require": {
-    "zendframework/zendframework1": "1.12.*"
+    "zendframework/zendframework1": "1.12.*",
+    "symfony/console": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "4.8.24",
     "zendframework/zend-coding-standard": "~1.0.0",
     "phpmd/phpmd": "@stable",
     "phploc/phploc": "@stable",
-    "sebastian/phpcpd": "*"
+    "sebastian/phpcpd": "*",
+    "phpmetrics/phpmetrics": "*"
   },
   "autoload": {
     "psr-4": {
@@ -31,8 +33,8 @@
     "check": [
       "Composer\\Config::disableProcessTimeout",
       "@prepare",
-      "@cs-check",
-      "@test"
+      "@test",
+      "@cs-check"
     ],
     "check-full": [
       "Composer\\Config::disableProcessTimeout",
@@ -42,14 +44,24 @@
       "@phpcpd",
       "@test-coverage"
     ],
-    "prepare": "mkdir -p build",
-    "test": "phpunit --colors=always --log-junit build/phpunit.xml",
+    "analyse": [
+      "@prepare",
+      "Composer\\Config::disableProcessTimeout",
+      "@cs-report",
+      "@phpmd"
+    ],
+    "test": [
+      "@prepare",
+      "phpunit --colors=always --log-junit build/phpunit.xml"
+    ],
     "test-coverage": "phpunit --log-junit build/phpunit.xml --colors=always --coverage-html build/ --coverage-clover build/clover.xml",
+    "prepare": "mkdir -p build",
     "cs-check": "phpcs -n",
     "cs-report": "phpcs -n --report=checkstyle --report-file=build/checkstyle.xml",
     "cs-fix": "phpcbf",
     "phpmd": "phpmd src xml cleancode,unusedcode,design,naming --reportfile build/phpmd.xml --ignore-violations-on-exit",
     "phpcpd": "phpcpd . --min-lines 3 --min-tokens 30 --log-pmd build/pmd-cpd.xml --progress || true",
-    "phploc": "phploc --log-xml build/phploc.xml src"
+    "phploc": "phploc --log-xml build/phploc.xml src",
+    "metrics": "phpmetrics --report-html=build/metrics --junit=build/phpunit.xml ."
   }
 }

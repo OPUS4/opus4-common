@@ -7,11 +7,12 @@
  *
  * OPUS 4 is a complete rewrite of the original OPUS software and was developed
  * by the Stuttgart University Library, the Library Service Center
- * Baden-Wuerttemberg, the Cooperative Library Network Berlin-Brandenburg,
- * the Saarland University and State Library, the Saxon State Library -
- * Dresden State and University Library, the Bielefeld University Library and
- * the University Library of Hamburg University of Technology with funding from
- * the German Research Foundation and the European Regional Development Fund.
+ * Baden-Wuerttemberg, the North Rhine-Westphalian Library Service Center,
+ * the Cooperative Library Network Berlin-Brandenburg, the Saarland University
+ * and State Library, the Saxon State Library - Dresden State and University
+ * Library, the Bielefeld University Library and the University Library of
+ * Hamburg University of Technology with funding from the German Research
+ * Foundation and the European Regional Development Fund.
  *
  * LICENCE
  * OPUS is free software; you can redistribute it and/or modify it under the
@@ -24,50 +25,34 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus
+ * @category    Application
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest;
+namespace OpusTest\Console\Helper;
 
-use Opus\Log;
-use Opus\LoggingTrait;
+use Opus\Console\Helper\BaseProgressOutput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Tests\Output\TestOutput;
 
-class LoggingTraitTest extends \PHPUnit_Framework_TestCase
+class BaseProgressOutputTest extends \PHPUnit_Framework_TestCase
 {
 
-    private $logger;
-
-    public function setUp()
+    public function testGetRuntime()
     {
-        $log = new \Zend_Log();
+        $output = new NullOutput();
 
-        Log::set($log);
-        $this->logger = $log;
-    }
+        $progress = $this->getMockForAbstractClass(BaseProgressOutput::class, [$output, 100]);
 
-    public function testGetLogger()
-    {
-        $mock = $this->getMockForTrait(LoggingTrait::class);
+        $progress->start();
+        sleep(2);
+        $progress->finish();
 
-        $this->assertSame($this->logger, $mock->getLogger());
-    }
+        $runtime = $progress->getRuntime();
 
-    public function testSetLogger()
-    {
-        $mock = $this->getMockForTrait(LoggingTrait::class);
-
-        $newLog = new \Zend_Log();
-
-        $mock->setLogger($newLog);
-
-        $this->assertSame($newLog, $mock->getLogger());
-
-        $mock->setLogger(null);
-
-        $this->assertSame($this->logger, $mock->getLogger());
+        $this->assertTrue($runtime >= 2); // should be a little more than 2 seconds
+        $this->assertTrue(($runtime - 2.0) <= 0.01); // check that it is not just bigger than 2
     }
 }
