@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,51 +25,58 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2011, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
+ *
+ * @category    Tests
+ * @package     Opus\Mail
+ * @author      Thoralf Klein <thoralf.klein@zib.de>
  */
 
-namespace OpusTest;
+namespace OpusTest\Mail;
 
-use Opus\Log;
-use Opus\LoggingTrait;
+use Opus\Config;
+use Opus\Mail\Transport;
 use OpusTest\TestAsset\TestCase;
+use Zend_Config;
 
-class LoggingTraitTest extends TestCase
+/**
+ * Test cases for class Opus\Mail\Transport.
+ *
+ * @category Tests
+ * @package  Opus\Mail
+ * @group    MailSendMailTest
+ */
+class TransportTest extends TestCase
 {
-
-    private $logger;
-
+    /**
+     * No cleanup needed.
+     */
     public function setUp()
     {
-        $log = new \Zend_Log();
+        parent::setUp();
 
-        Log::set($log);
-        $this->logger = $log;
+        Config::set(new Zend_Config([
+            'workspacePath' => dirname(__FILE__, 3) . '/build'
+        ]));
     }
 
-    public function testGetLogger()
+    public function tearDown()
     {
-        $mock = $this->getMockForTrait(LoggingTrait::class);
-
-        $this->assertSame($this->logger, $mock->getLogger());
     }
 
-    public function testSetLogger()
+    public function testConstructorWoConfig()
     {
-        $mock = $this->getMockForTrait(LoggingTrait::class);
+        $transport = new Transport();
+    }
 
-        $newLog = new \Zend_Log();
+    public function testConstructorWithConfig()
+    {
+        $config = new Zend_Config([
+            'smtp' => 'foobar',
+            'port' => 25252,
+        ]);
 
-        $mock->setLogger($newLog);
-
-        $this->assertSame($newLog, $mock->getLogger());
-
-        $mock->setLogger(null);
-
-        $this->assertSame($this->logger, $mock->getLogger());
+        $transport = new Transport($config);
     }
 }

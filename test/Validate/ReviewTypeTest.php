@@ -36,6 +36,7 @@
 namespace OpusTest\Validate;
 
 use Opus\Validate\ReviewType;
+use OpusTest\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_ReviewType.
@@ -44,7 +45,7 @@ use Opus\Validate\ReviewType;
  * @package     Opus_Validate
  *
  */
-class ReviewTypeTest extends \PHPUnit_Framework_TestCase
+class ReviewTypeTest extends TestCase
 {
 
     /**

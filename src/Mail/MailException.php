@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,51 +25,21 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2009-2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
+ *
+ * @category    Common
+ * @package     Opus\Mail
+ * @author      Eva Kranz <s9evkran@stud.uni-saarland.de>
  */
 
-namespace OpusTest;
+namespace Opus\Mail;
 
-use Opus\Log;
-use Opus\LoggingTrait;
-use OpusTest\TestAsset\TestCase;
+use Exception;
 
-class LoggingTraitTest extends TestCase
+/**
+ * Extends default Exception class.
+ */
+class MailException extends Exception
 {
-
-    private $logger;
-
-    public function setUp()
-    {
-        $log = new \Zend_Log();
-
-        Log::set($log);
-        $this->logger = $log;
-    }
-
-    public function testGetLogger()
-    {
-        $mock = $this->getMockForTrait(LoggingTrait::class);
-
-        $this->assertSame($this->logger, $mock->getLogger());
-    }
-
-    public function testSetLogger()
-    {
-        $mock = $this->getMockForTrait(LoggingTrait::class);
-
-        $newLog = new \Zend_Log();
-
-        $mock->setLogger($newLog);
-
-        $this->assertSame($newLog, $mock->getLogger());
-
-        $mock->setLogger(null);
-
-        $this->assertSame($this->logger, $mock->getLogger());
-    }
 }

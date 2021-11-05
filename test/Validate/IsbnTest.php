@@ -36,6 +36,7 @@
 namespace OpusTest\Validate;
 
 use Opus\Validate\Isbn;
+use OpusTest\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_Isbn.
@@ -46,7 +47,7 @@ use Opus\Validate\Isbn;
  * @group       IsbnTest
  *
  */
-class IsbnTest extends \PHPUnit_Framework_TestCase
+class IsbnTest extends TestCase
 {
 
     /**

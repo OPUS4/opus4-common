@@ -34,10 +34,11 @@
 namespace OpusTest\Console\Helper;
 
 use Opus\Console\Helper\ProgressMatrix;
+use OpusTest\TestAsset\TestCase;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class ProgressMatrixTest extends \PHPUnit_Framework_TestCase
+class ProgressMatrixTest extends TestCase
 {
 
     public function testAdvance()

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -36,6 +37,7 @@ namespace OpusTest\Log;
 
 use Opus\Exception;
 use Opus\Log\LogService;
+use OpusTest\TestAsset\TestCase;
 
 /**
  * Class LogServiceTest
@@ -44,7 +46,7 @@ use Opus\Log\LogService;
  * TODO move generic test utility functions so they can be used in other test classes,
  *      current maybe into a helper class, later perhaps into a opus4-test library
  */
-class LogServiceTest extends \PHPUnit_Framework_TestCase
+class LogServiceTest extends TestCase
 {
 
     const DEFAULT_FORMAT = '%timestamp% %priorityName% (ID %runId%): %message%';
@@ -62,6 +64,7 @@ class LogServiceTest extends \PHPUnit_Framework_TestCase
         $this->createFolder('log');
 
         $this->logService = LogService::getInstance();
+        $this->logService->setPath(null);
         $this->logService->setConfig(new \Zend_Config([
             'workspacePath' => $tempFolder,
             'log' => [

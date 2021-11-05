@@ -34,8 +34,9 @@
 namespace OpusTest\Log;
 
 use Opus\Log\LevelFilter;
+use OpusTest\TestAsset\TestCase;
 
-class LevelFilterTest extends \PHPUnit_Framework_TestCase
+class LevelFilterTest extends TestCase
 {
     public function testConstructor()
     {

@@ -35,6 +35,7 @@
 namespace OpusTest\Validate;
 
 use Opus\Validate\MateDecorator;
+use OpusTest\TestAsset\TestCase;
 
 /**
  * Test cases for application of Opus_Validate_MateDecorator.
@@ -45,7 +46,7 @@ use Opus\Validate\MateDecorator;
  * @group       MateDecoratorTest
  *
  */
-class MateDecoratorTest extends \PHPUnit_Framework_TestCase
+class MateDecoratorTest extends TestCase
 {
 
     /**

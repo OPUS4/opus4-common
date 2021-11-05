@@ -36,6 +36,7 @@
 namespace OpusTest\Validate;
 
 use Opus\Validate\NoteVisibility;
+use OpusTest\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_NoteVisibility.
@@ -44,7 +45,7 @@ use Opus\Validate\NoteVisibility;
  * @package     Opus_Validate
  *
  */
-class NoteVisibilityTest extends \PHPUnit_Framework_TestCase
+class NoteVisibilityTest extends TestCase
 {
 
     /**

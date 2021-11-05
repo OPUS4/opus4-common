@@ -34,13 +34,14 @@
 namespace OpusTest\Console;
 
 use Opus\Console\BaseDocumentCommand;
+use OpusTest\TestAsset\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class BaseDocumentCommandTest
  * @package OpusTest\Console
  */
-class BaseDocumentCommandTest extends \PHPUnit_Framework_TestCase
+class BaseDocumentCommandTest extends TestCase
 {
 
     /**

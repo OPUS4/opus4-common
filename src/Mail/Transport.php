@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,51 +25,54 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2011-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
+ *
+ * @category    Framework
+ * @package     Opus\Mail
+ * @author      Thoralf Klein <thoralf.klein@zib.de>
+ * @author      Jens Schwidder <schwidder@zib.de>
  */
 
-namespace OpusTest;
+namespace Opus\Mail;
 
 use Opus\Log;
-use Opus\LoggingTrait;
-use OpusTest\TestAsset\TestCase;
+use Zend_Config;
+use Zend_Mail_Transport_Smtp;
 
-class LoggingTraitTest extends TestCase
+/**
+ * Override
+ *
+ * @category    Framework
+ * @package     Opus\Mail\Transport
+ */
+class Transport extends Zend_Mail_Transport_Smtp
 {
-
-    private $logger;
-
-    public function setUp()
+    /**
+     * Create a new \Zend_Mail_Transport instance.
+     *
+     * @param null|Zend_Config $config
+     */
+    public function __construct($config = null)
     {
-        $log = new \Zend_Log();
+        $smtp = null;
 
-        Log::set($log);
-        $this->logger = $log;
-    }
+        if (isset($config->smtp)) {
+            $smtp = $config->smtp;
+        }
 
-    public function testGetLogger()
-    {
-        $mock = $this->getMockForTrait(LoggingTrait::class);
+        if ($smtp === null || $smtp === 'localhost') {
+            $smtp = '127.0.0.1';
+        }
 
-        $this->assertSame($this->logger, $mock->getLogger());
-    }
+        $port = 25;
 
-    public function testSetLogger()
-    {
-        $mock = $this->getMockForTrait(LoggingTrait::class);
+        if (isset($config->port)) {
+            $port = $config->port;
+        }
 
-        $newLog = new \Zend_Log();
+        Log::get()->info(self::class . " Using mail server {$smtp}:{$port}");
 
-        $mock->setLogger($newLog);
-
-        $this->assertSame($newLog, $mock->getLogger());
-
-        $mock->setLogger(null);
-
-        $this->assertSame($this->logger, $mock->getLogger());
+        parent::__construct($smtp, ['port' => $port]);
     }
 }

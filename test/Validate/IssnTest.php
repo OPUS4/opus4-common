@@ -35,12 +35,13 @@
 namespace OpusTest\Validate;
 
 use Opus\Validate\Issn;
+use OpusTest\TestAsset\TestCase;
 
 /**
  * Unit tests for Opus\Validate\Issn.
  * @coversDefaultClass \Opus\Validate\Issn
  */
-class IssnTest extends \PHPUnit_Framework_TestCase
+class IssnTest extends TestCase
 {
 
     /**

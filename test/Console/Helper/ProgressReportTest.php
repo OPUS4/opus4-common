@@ -35,9 +35,10 @@ namespace OpusTest\Console\Helper;
 
 use Opus\Console\Helper\ProgressReport;
 use Opus\Console\Helper\ProgressReportEntry;
+use OpusTest\TestAsset\TestCase;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class ProgressReportTest extends \PHPUnit_Framework_TestCase
+class ProgressReportTest extends TestCase
 {
 
     public function testAddExceptionCreatesEntry()
