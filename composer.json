@@ -56,7 +56,7 @@
       "phpunit --colors=always --log-junit build/phpunit.xml"
     ],
     "test-coverage": "phpunit --log-junit build/phpunit.xml --colors=always --coverage-html build/ --coverage-clover build/clover.xml",
-    "prepare": "mkdir -p build",
+    "prepare": "mkdir -p build/log",
     "cs-check": "phpcs -n",
     "cs-report": "phpcs -n --report=checkstyle --report-file=build/checkstyle.xml",
     "cs-fix": "phpcbf",
