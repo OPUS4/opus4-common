@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,9 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @package     Application_Console
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -35,48 +33,39 @@ namespace Opus\Console\Helper;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function microtime;
+use function strlen;
+
 /**
  * Base class for ProgressOutput helper.
- *
- * @package Opus\Console\Helper
- *
- * TODO do we need to get time as float?
  */
-abstract class BaseProgressOutput implements ProgressOutputInterface
+abstract class AbstractBaseProgressOutput implements ProgressOutputInterface
 {
-
-    /**
-     * @var int Maximum number of steps (progress)
-     */
+    /** @var int Maximum number of steps (progress) */
     protected $max;
 
-    /**
-     * @var int Number of digits to display maximum number of steps
-     */
+    /** @var int Number of digits to display maximum number of steps */
     protected $maxDigits;
 
-    /**
-     * @var OutputInterface
-     */
+    /** @var OutputInterface */
     protected $output;
 
-    /**
-     * @var float Time progress started
-     */
+    /** @var float Time progress started */
     protected $startTime;
 
-    /**
-     * @var float Time progress ended
-     */
+    /** @var float Time progress ended */
     protected $endTime;
 
     protected $progress = 0;
 
+    /**
+     * @param int $max
+     */
     public function __construct(OutputInterface $output, $max = 0)
     {
-        $this->output = $output;
-        $this->max = $max;
-        $this->maxDigits = strlen(( string )$max);
+        $this->output    = $output;
+        $this->max       = $max;
+        $this->maxDigits = strlen((string) $max);
     }
 
     /**
@@ -85,7 +74,7 @@ abstract class BaseProgressOutput implements ProgressOutputInterface
     public function start()
     {
         $this->startTime = microtime(true);
-        $this->progress = 0;
+        $this->progress  = 0;
     }
 
     /**
@@ -98,6 +87,7 @@ abstract class BaseProgressOutput implements ProgressOutputInterface
 
     /**
      * Returns complete time for running progress.
+     *
      * @return float Runtime of progress
      */
     public function getRuntime()
@@ -105,11 +95,19 @@ abstract class BaseProgressOutput implements ProgressOutputInterface
         return $this->endTime - $this->startTime;
     }
 
+    /**
+     * @param int        $step
+     * @param null|mixed $status
+     */
     public function advance($step = 1, $status = null)
     {
         $this->setProgress($this->progress + $step, $status);
     }
 
+    /**
+     * @param int        $progress
+     * @param null|mixed $status
+     */
     public function setProgress($progress, $status = null)
     {
         $this->progress = $progress;

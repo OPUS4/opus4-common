@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,8 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -34,35 +33,28 @@ namespace Opus\Console\Helper;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function count;
+use function sprintf;
+
 /**
  * Collects messages for steps in order to generate a report after processing is finished.
- *
- * @package Opus\Console\Helper
- *
- * TODO maybe this can only a base class that needs to be extended for the concrete purpose like ExtractionReport
- * TODO need to be able to add multiple messages for each step (separately, like for each file of a document)
- * TODO need to support categories (Failure, Error) - see PHPUnit
- * TODO find a better name
- * TODO messages added without entry have global scope
- * TODO customize report output for commands (child classes?)
  */
 class ProgressReport
 {
-
     private $reportTitle = "<bg=red>There were %d documents with problems:</>";
 
     private $reportTitleSingular = "<bg=red>There was 1 document with problems:</>";
 
-    /**
-     * @var ProgressReportEntry[]
-     */
+    /** @var ProgressReportEntry[] */
     private $entries = [];
 
-    /**
-     * @var ProgressReportEntry
-     */
+    /** @var ProgressReportEntry */
     private $currentEntry;
 
+    /**
+     * @param string      $title
+     * @param null|string $category
+     */
     public function startEntry($title, $category = null)
     {
         $this->currentEntry = new ProgressReportEntry();
@@ -75,6 +67,10 @@ class ProgressReport
         $this->currentEntry = null;
     }
 
+    /**
+     * @param Exception   $e
+     * @param null|string $message
+     */
     public function addException($e, $message = null)
     {
         if ($this->currentEntry === null) {
@@ -84,6 +80,9 @@ class ProgressReport
         $this->currentEntry->addException($e);
     }
 
+    /**
+     * @param OutputInterface $output
+     */
     public function write($output)
     {
         $entryCount = count($this->entries);
@@ -114,6 +113,10 @@ class ProgressReport
         }
     }
 
+    /**
+     * @param string      $title
+     * @param null|string $category
+     */
     public function setEntryInfo($title, $category = null)
     {
         if ($this->currentEntry !== null) {
@@ -122,6 +125,9 @@ class ProgressReport
         }
     }
 
+    /**
+     * @return ProgressReportEntry
+     */
     public function getCurrentEntry()
     {
         return $this->currentEntry;
@@ -129,7 +135,7 @@ class ProgressReport
 
     public function clear()
     {
-        $this->entries = [];
+        $this->entries      = [];
         $this->currentEntry = null;
     }
 }

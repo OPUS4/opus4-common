@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LICENCE
  * This code is free software: you can redistribute it and/or modify
@@ -11,11 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @category    Framework
- * @package     Opus
- * @subpackage  Model
- * @author      Ralf Claußnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2009-2010
  *              Saechsische Landesbibliothek - Staats- und Universitaetsbibliothek Dresden (SLUB)
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
@@ -34,19 +30,13 @@ use Opus\Model\ModelInterface;
  * in the database.
  *
  * TODO Should preYYY functions be able to cancel operation like a delete for instance?
- *
- * @category    Framework
- * @package     Opus
- * @subpackage  Model
  */
 interface PluginInterface
 {
-
     /**
      * Gets called just before a store() is performed.
      *
      * @param ModelInterface $model The database model that triggered the event.
-     * @return void
      */
     public function preStore(ModelInterface $model);
 
@@ -54,7 +44,6 @@ interface PluginInterface
      * Gets called just before a fetchValues() is performed.
      *
      * @param ModelInterface $model The database model that triggered the event.
-     * @return void
      */
     public function preFetch(ModelInterface $model);
 
@@ -62,7 +51,6 @@ interface PluginInterface
      * Gets called just after a store() is performed.
      *
      * @param ModelInterface $model The database model that triggered the event.
-     * @return void
      */
     public function postStore(ModelInterface $model);
 
@@ -70,7 +58,6 @@ interface PluginInterface
      * Gets called just after a _storeInternalFields() is performed.
      *
      * @param ModelInterface $model The database model that triggered the event.
-     * @return void
      */
     public function postStoreInternal(ModelInterface $model);
 
@@ -78,7 +65,6 @@ interface PluginInterface
      * Gets called just after a _storeExternalFields() is performed.
      *
      * @param ModelInterface $model The database model that triggered the event.
-     * @return void
      */
     public function postStoreExternal(ModelInterface $model);
 
@@ -89,7 +75,6 @@ interface PluginInterface
      * can not be performed and preDelete is not called.
      *
      * @param ModelInterface $model The database model that triggered the event.
-     * @return void
      */
     public function preDelete(ModelInterface $model);
 
@@ -100,7 +85,6 @@ interface PluginInterface
      * not be performed and postDelete is not called.
      *
      * @param mixed $modelId The database model id.
-     * @return void
      */
     public function postDelete($modelId);
 }

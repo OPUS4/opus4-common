@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,36 +25,37 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Common
- * @package     Opus\Bootstrap
- * @author      Ralf Claussnitzer (ralf.claussnitzer@slub-dresden.de)
- * @author      Kaustabh Barman <barman@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Bootstrap;
 
-/**
- * Provide basic workflow of setting up an application.
- *
- * @category    Framework
- * @package     Opus_Bootstrap
- *
- */
-
+use Exception;
 use Opus\Config;
 use Opus\Log;
 use Opus\Log\LogService;
+use Zend_Application_Bootstrap_Bootstrap;
+use Zend_Cache;
+use Zend_Config;
+use Zend_Db_Table_Abstract;
+use Zend_Locale;
+use Zend_Locale_Data;
+use Zend_Log;
+use Zend_Registry;
+use Zend_Translate;
 
-class Base extends \Zend_Application_Bootstrap_Bootstrap
+use function array_key_exists;
+
+/**
+ * Provide basic workflow of setting up an application.
+ *
+ * phpcs:disable
+ */
+class Base extends Zend_Application_Bootstrap_Bootstrap
 {
-
     /**
      * Override this to do custom backend setup.
-     *
-     * @return void
      */
     protected function _initBackend()
     {
@@ -62,20 +64,17 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
 
     /**
      * Initializes the location for temporary files.
-     *
      */
     protected function _initTemp()
     {
         $this->bootstrap('Configuration');
-        $config = $this->getResource('Configuration');
+        $config        = $this->getResource('Configuration');
         $tempDirectory = $config->workspacePath . '/tmp/';
         Config::getInstance()->setTempPath($tempDirectory);
     }
 
     /**
      * Setup zend cache directory.
-     *
-     * @return void
      */
     protected function _initZendCache()
     {
@@ -83,26 +82,26 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         $config = $this->getResource('Configuration');
 
         $frontendOptions = [
-            'lifetime' => 600, // in seconds
+            'lifetime'                => 600, // in seconds
             'automatic_serialization' => true,
         ];
 
         $backendOptions = [
             // Directory where to put the cache files. Must be writeable for
             // application server
-            'cache_dir' => $config->workspacePath . '/cache/'
+            'cache_dir' => $config->workspacePath . '/cache/',
         ];
 
         if ($this->isConsoleScript()) {
             $backendOptions['file_name_prefix'] = 'zend_cache_console';
         }
 
-        $cache = \Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
+        $cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
 
-        \Zend_Translate::setCache($cache);
-        \Zend_Locale::setCache($cache);
-        \Zend_Locale_Data::setCache($cache);
-        \Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
+        Zend_Translate::setCache($cache);
+        Zend_Locale::setCache($cache);
+        Zend_Locale_Data::setCache($cache);
+        Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
 
         return $cache;
     }
@@ -110,13 +109,14 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
     /**
      * Load application configuration file and register the configuration
      * object with the Zend registry under 'Zend_Config'.
-     **
-     * @throws \Exception          Exception is thrown if configuration level is invalid.
-     * @return \Zend_Config
+     * *
+     *
+     * @throws Exception          Exception is thrown if configuration level is invalid.
+     * @return Zend_Config
      */
     protected function _initConfiguration()
     {
-        $config = new \Zend_Config($this->getOptions());
+        $config = new Zend_Config($this->getOptions());
         Config::set($config);
 
         return $config;
@@ -125,12 +125,11 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
     /**
      * Setup Logging
      *
-     * @throws \Exception If logging file couldn't be opened.
-     * @return \Zend_Log
+     * @throws Exception If logging file couldn't be opened.
+     * @return Zend_Log
      *
      * Use LogService API for calling different logs with their names
      * e.g., getLog('opus')
-     *
      */
     protected function _initLogging()
     {
@@ -151,7 +150,7 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
         $logService = LogService::getInstance();
 
         // TODO could make sure priority is definitely correct by setting it here
-        $logger = $logService->createLog(LogService::DEFAULT_LOG, null, null, $logFilename);
+        $logger   = $logService->createLog(LogService::DEFAULT_LOG, null, null, $logFilename);
         $logLevel = $logService->getDefaultPriority();
 
         Log::set($logger);
@@ -165,8 +164,6 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
      * Setup timezone and default locale.
      *
      * Registers locale with key Zend_Locale as mentioned in the ZF documentation.
-     *
-     * @return void
      */
     protected function _initOpusLocale()
     {
@@ -175,8 +172,8 @@ class Base extends \Zend_Application_Bootstrap_Bootstrap
 
         // This avoids an exception if the locale cannot be determined automatically.
         // TODO setup in config, still put in registry?
-        $locale = new \Zend_Locale("de");
-        \Zend_Registry::set('Zend_Locale', $locale); // TODO switch to Laminas mechanism
+        $locale = new Zend_Locale("de");
+        Zend_Registry::set('Zend_Locale', $locale); // TODO switch to Laminas mechanism
     }
 
     protected function isConsoleScript()

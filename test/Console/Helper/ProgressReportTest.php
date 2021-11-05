@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -25,29 +26,34 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Console\Helper;
 
+use Exception;
 use Opus\Console\Helper\ProgressReport;
 use Opus\Console\Helper\ProgressReportEntry;
 use OpusTest\TestAsset\TestCase;
 use Symfony\Component\Console\Output\StreamOutput;
 
+use function fopen;
+use function rewind;
+use function stream_get_contents;
+use function strlen;
+
+use const PHP_EOL;
+
 class ProgressReportTest extends TestCase
 {
-
     public function testAddExceptionCreatesEntry()
     {
         $report = new ProgressReport();
 
         $this->assertNull($report->getCurrentEntry());
 
-        $ex = new \Exception('test');
+        $ex = new Exception('test');
 
         $report->addException($ex);
 
@@ -65,7 +71,7 @@ class ProgressReportTest extends TestCase
     {
         $report = new ProgressReport();
 
-        $ex = new \Exception('TestException');
+        $ex = new Exception('TestException');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle', 'Test');
@@ -83,7 +89,7 @@ class ProgressReportTest extends TestCase
 
         $report = new ProgressReport();
 
-        $ex = new \Exception('TestException');
+        $ex = new Exception('TestException');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle', 'Test');
@@ -104,13 +110,13 @@ class ProgressReportTest extends TestCase
 
         $report = new ProgressReport();
 
-        $ex = new \Exception('TestException');
+        $ex = new Exception('TestException');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle', 'Test');
         $report->finishEntry();
 
-        $ex = new \Exception('TestException2');
+        $ex = new Exception('TestException2');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle2', 'Test');
@@ -148,8 +154,8 @@ class ProgressReportTest extends TestCase
 
         $report = new ProgressReport();
 
-        $report->addException(new \Exception('TestException'));
-        $report->addException(new \Exception('TestException2'));
+        $report->addException(new Exception('TestException'));
+        $report->addException(new Exception('TestException2'));
         $report->setEntryInfo('TestTitle', 'Test');
 
         $report->write($outputInterface);
@@ -168,7 +174,7 @@ class ProgressReportTest extends TestCase
 
         $report = new ProgressReport();
 
-        $ex = new \Exception('TestException');
+        $ex = new Exception('TestException');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle', 'Test');

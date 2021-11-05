@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,54 +25,49 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @author      Maximilian Salomon <salomon@zib.de>
  * @copyright   Copyright (c) 2008-2019, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
 
+use function count;
+use function end;
+use function preg_match;
+use function strlen;
+
 /**
  * Defines an validator for ISBN-10 numbers.
- *
- * @category    Framework
- * @package     Opus_Validate
  */
 class Isbn10 extends Isbn
 {
-
     /**
      * Error message key for invalid check digit.
-     *
      */
     const MSG_CHECK_DIGIT = 'checkdigit';
 
-
     /**
      * Error message key for malformed ISBN.
-     *
      */
     const MSG_FORM = 'form';
 
     /**
      * Error message templates.
      *
+     * phpcs:disable
+     *
      * @var array
      */
     protected $_messageTemplates = [
         self::MSG_CHECK_DIGIT => "The check digit of '%value%' is not valid",
-        self::MSG_FORM => "'%value%' is malformed"
+        self::MSG_FORM        => "'%value%' is malformed",
     ];
 
     /**
      * Validate the given ISBN-10 string.
      *
      * @param string $value An ISBN-10 number.
-     * @return boolean True if the given ISBN string is valid.
+     * @return bool True if the given ISBN string is valid.
      */
     public function isValid($value)
     {
@@ -121,12 +117,12 @@ class Isbn10 extends Isbn
      */
     protected function calculateCheckDigit(array $digits)
     {
-        $z = $digits;
+        $z     = $digits;
         $z[10] = 0;
         for ($i = 1; $i < 10; $i++) {
-            $z[10] += ($i * $z[($i - 1)]);
+            $z[10] += $i * $z[$i - 1];
         }
-        $z[10] = ($z[10] % 11);
+        $z[10] %= 11;
         if ($z[10] == 10) {
             $z[10] = 'X';
         }

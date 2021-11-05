@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,40 +25,35 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
 
+use Zend_Validate_Interface;
+
 /**
  * Defines an extension for validators so that the interface and functionality
  * of Opus_Validate_AbstractMate is provided.
  *
  * @see AbstractMate
- * @category    Framework
- * @package     Opus_Validate
  */
 class MateDecorator extends AbstractMate
 {
-
     /**
      * Validator object that is decorated.
      *
-     * @var \Zend_Validate_Interface
+     * @var Zend_Validate_Interface
      */
-    protected $decorated = null;
+    protected $decorated;
 
     /**
      * Create decoration for given validator.
      *
-     * @param \Zend_Validate_Interface $validator Validator to be decorated.
+     * @param Zend_Validate_Interface $validator Validator to be decorated.
      */
-    public function __construct(\Zend_Validate_Interface $validator)
+    public function __construct(Zend_Validate_Interface $validator)
     {
         $this->decorated = $validator;
     }
@@ -65,10 +61,10 @@ class MateDecorator extends AbstractMate
     /**
      * Create and return a decorated validator.
      *
-     * @param \Zend_Validate_Interface $validator Validator to be decorated.
-     * @return MateDecorator Decorator instance.
+     * @param Zend_Validate_Interface $validator Validator to be decorated.
+     * @return self Decorator instance.
      */
-    public static function decorate(\Zend_Validate_Interface $validator)
+    public static function decorate(Zend_Validate_Interface $validator)
     {
         return new MateDecorator($validator);
     }
@@ -77,7 +73,7 @@ class MateDecorator extends AbstractMate
      * Call the decorated validator. This method is called by Opus_Validate_AbstractMate::isValid().
      *
      * @param mixed $value Value to validate.
-     * @return boolean Whatever the decorated validators isValid() method returns.
+     * @return bool Whatever the decorated validators isValid() method returns.
      */
     protected function isValidCheck($value)
     {

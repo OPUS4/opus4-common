@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,11 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2010-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -37,25 +33,23 @@ namespace Opus\Validate;
 
 /**
  * Defines an validator for possible publication visibility of notes.
- *
- * @category    Framework
- * @package     Opus_Validate
  */
 class NoteVisibility extends AbstractEnum
 {
     /**
      * Error message key.
-     *
      */
     const MSG_NOTEVISIBILITY = 'notevisibility';
 
     /**
      * Error message templates.
      *
+     * phpcs:disable
+     *
      * @var array
      */
     protected $_messageTemplates = [
-        self::MSG_NOTEVISIBILITY => "'%value%' is not a valid note visibility"
+        self::MSG_NOTEVISIBILITY => "'%value%' is not a valid note visibility",
     ];
 
     /**

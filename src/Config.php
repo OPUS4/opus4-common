@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,24 +25,19 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    opus4-common
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus;
 
-/**
- * Class Config
- * @package Opus
- *
- * TODO revisit using get() for Laminas\Config object
- *      should Opus\Config extend Laminas\Config?
- * TODO replace singleton by dependency injection in Laminas
- * TODO in general review this stuff and think about it !!!
- */
+use InvalidArgumentException;
+
+use function substr;
+use function trim;
+
+use const DIRECTORY_SEPARATOR;
+
 class Config
 {
     use LoggingTrait;
@@ -57,6 +53,7 @@ class Config
     /**
      * Returns the path to the application workspace.
      *
+     * @return string
      * @throws Exception
      */
     public function getWorkspacePath()
@@ -79,12 +76,13 @@ class Config
 
     /**
      * Returns path to temporary files folder.
+     *
      * @return string Path for temporary files.
      * @throws Exception
      */
     public function getTempPath()
     {
-        if (is_null($this->tempPath)) {
+        if ($this->tempPath === null) {
             $this->tempPath = trim($this->getWorkspacePath() . 'tmp' . DIRECTORY_SEPARATOR);
         }
 
@@ -93,23 +91,33 @@ class Config
 
     /**
      * Set path to folder for temporary files.
-     * @param $tempPath
+     *
+     * @param string $tempPath
      */
     public function setTempPath($tempPath)
     {
         $this->tempPath = $tempPath;
     }
 
+    /**
+     * @return string[]
+     */
     public function getAvailableLanguages()
     {
         return $this->availableLanguages;
     }
 
+    /**
+     * @param string[] $availableLanguages
+     */
     public function setAvailableLanguages($availableLanguages)
     {
         $this->availableLanguages = $availableLanguages;
     }
 
+    /**
+     * @return self
+     */
     public static function getInstance()
     {
         if (self::$instance === null) {
@@ -119,20 +127,29 @@ class Config
         return self::$instance;
     }
 
+    /**
+     * @param self $config
+     */
     public static function setInstance($config)
     {
         if ($config !== null && ! $config instanceof Config) {
-            throw new \InvalidArgumentException('Argument must be instance of Opus\Config or null');
+            throw new InvalidArgumentException('Argument must be instance of Opus\Config or null');
         }
 
         self::$instance = $config;
     }
 
+    /**
+     * @param self $config
+     */
     public static function set($config)
     {
         self::$config = $config;
     }
 
+    /**
+     * @return self
+     */
     public static function get()
     {
         return self::$config;

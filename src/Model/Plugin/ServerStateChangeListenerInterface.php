@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,7 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @author      Sascha Szott <opus-development@saschaszott.de>
  * @copyright   Copyright (c) 2010-2019, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -35,9 +35,8 @@ namespace Opus\Model\Plugin;
  * Interface kann von einem Plugin implementiert werden, wenn es nur bei einer Änderung des Wertes
  * von serverState aufgerufen werden soll (bedingter Aufruf).
  */
-interface ServerStateChangeListener
+interface ServerStateChangeListenerInterface
 {
-
     /**
      * Called when the state of a document is changed.
      *
@@ -45,8 +44,7 @@ interface ServerStateChangeListener
      *
      * TODO would it be better to isolate state changes from data changes?
      *
-     * @param $event
-     * @return mixed
+     * @param mixed $document
      *
      * TODO review and refine API - ServerStateEvent extends OpusEvent ?
      */

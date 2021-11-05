@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,14 +25,14 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus;
+
+use Zend_Exception;
+use Zend_Log;
 
 trait LoggingTrait
 {
@@ -42,12 +43,13 @@ trait LoggingTrait
 
     /**
      * Returns logger for this class.
-     * @return \Zend_Log
-     * @throws \Zend_Exception
+     *
+     * @return Zend_Log
+     * @throws Zend_Exception
      */
     public function getLogger()
     {
-        if (is_null($this->logger)) {
+        if ($this->logger === null) {
             $this->logger = Log::get();
             // TODO what happens if no logger is found?
         }
@@ -57,7 +59,8 @@ trait LoggingTrait
 
     /**
      * Sets logger for this class.
-     * @param $logger Zend_Log
+     *
+     * @param Zend_Log $logger
      */
     public function setLogger($logger)
     {
@@ -72,6 +75,6 @@ trait LoggingTrait
     protected function log($message)
     {
         $logger = $this->getLogger();
-        $logger->info(__CLASS__ . ": $message");
+        $logger->info(self::class . ": $message");
     }
 }

@@ -27,11 +27,6 @@
  *
  * @copyright   Copyright (c) 2011-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
- *
- * @category    Framework
- * @package     Opus\Mail
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  */
 
 namespace Opus\Mail;
@@ -42,9 +37,6 @@ use Zend_Mail_Transport_Smtp;
 
 /**
  * Override
- *
- * @category    Framework
- * @package     Opus\Mail\Transport
  */
 class Transport extends Zend_Mail_Transport_Smtp
 {

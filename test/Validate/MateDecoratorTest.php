@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,10 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -36,27 +33,23 @@ namespace OpusTest\Validate;
 
 use Opus\Validate\MateDecorator;
 use OpusTest\TestAsset\TestCase;
+use Zend_Validate_NotEmpty;
+
+use function round;
 
 /**
  * Test cases for application of Opus_Validate_MateDecorator.
  *
- * @category    Tests
- * @package     Opus_Validate
- *
  * @group       MateDecoratorTest
- *
  */
 class MateDecoratorTest extends TestCase
 {
-
     /**
      * Test if a decorated validator works as normal.
-     *
-     * @return void
      */
     public function testDecoratingSingleValidator()
     {
-        $validator = new \Zend_Validate_NotEmpty();
+        $validator = new Zend_Validate_NotEmpty();
         $decorated = MateDecorator::decorate($validator);
 
         $this->assertEquals(
@@ -69,12 +62,10 @@ class MateDecoratorTest extends TestCase
     /**
      * Test if the validator sticks to its first decision as an effect of
      * the shared common result among all validator mates.
-     *
-     * @return void
      */
     public function testDecoratedValidatorSticksToValidationResult()
     {
-        $validator = new \Zend_Validate_NotEmpty();
+        $validator = new Zend_Validate_NotEmpty();
         $decorated = MateDecorator::decorate($validator);
 
         $decision1 = $decorated->isValid('content');
@@ -90,13 +81,11 @@ class MateDecoratorTest extends TestCase
     /**
      * Test if a group of mate validators really decide for "valid" if
      * only one of them actually got a valid value.
-     *
-     * @return void
      */
     public function testMateGroupDecidesCommon()
     {
-        $decorated1 = MateDecorator::decorate(new \Zend_Validate_NotEmpty());
-        $decorated2 = MateDecorator::decorate(new \Zend_Validate_NotEmpty());
+        $decorated1 = MateDecorator::decorate(new Zend_Validate_NotEmpty());
+        $decorated2 = MateDecorator::decorate(new Zend_Validate_NotEmpty());
 
         $decorated1->addMate($decorated2);
 
@@ -112,16 +101,14 @@ class MateDecoratorTest extends TestCase
 
     /**
      * Test if a larger group of mates agrees to a common validation result.
-     *
-     * @return void
      */
     public function testLargeMateGroupDecidesCommon()
     {
         // Create decorated validators.
         $decorated = [];
-        $count = 10;
+        $count     = 10;
         for ($i = 0; $i < $count; $i++) {
-            $decorated[$i] = MateDecorator::decorate(new \Zend_Validate_NotEmpty());
+            $decorated[$i] = MateDecorator::decorate(new Zend_Validate_NotEmpty());
         }
 
         // Link them together in a group of mates.
@@ -132,7 +119,7 @@ class MateDecoratorTest extends TestCase
         // Let all but one in the middle decide for invalidity.
         $decision = $decorated[round($count / 2)]->isValid('notempty');
         for ($i = 0; $i < $count; $i++) {
-            $decision = ($decision and $decorated[$i]->isValid(''));
+            $decision = $decision && $decorated[$i]->isValid('');
         }
 
         $this->assertTrue($decision, 'Group of mates agreed to wrong validation result');

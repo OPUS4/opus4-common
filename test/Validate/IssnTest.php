@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,10 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Tests
- * @package     Opus_Validate
- * @author      Maximilian Salomon (salomom@zib.de)
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2017-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -39,11 +36,11 @@ use OpusTest\TestAsset\TestCase;
 
 /**
  * Unit tests for Opus\Validate\Issn.
+ *
  * @coversDefaultClass \Opus\Validate\Issn
  */
 class IssnTest extends TestCase
 {
-
     /**
      * @return array with valid issn's
      */
@@ -95,6 +92,8 @@ class IssnTest extends TestCase
 
     /**
      * Unittest for isValid with valid Arguments.
+     *
+     * @param string $arg
      * @covers ::isValid
      * @covers ::calculateCheckDigit
      * @dataProvider validIssnProvider
@@ -107,6 +106,8 @@ class IssnTest extends TestCase
 
     /**
      * Unittest for isValid with invalid Arguments.
+     *
+     * @param string $arg
      * @covers ::isValid
      * @covers ::calculateCheckDigit
      * @dataProvider invalidIssnProvider
@@ -119,6 +120,10 @@ class IssnTest extends TestCase
 
     /**
      * Unittest to check the error-messages for an invalid ISSN.
+     *
+     * @param string $arg
+     * @param string $err
+     * @param string $msg
      * @covers ::isValid
      * @covers ::calculateCheckDigit
      * @dataProvider MessageIssnProvider

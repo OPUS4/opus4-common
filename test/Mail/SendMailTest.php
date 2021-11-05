@@ -27,10 +27,6 @@
  *
  * @copyright   Copyright (c) 2009-2011, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
- *
- * @category    Tests
- * @package     Opus\Mail
- * @author      Thoralf Klein <thoralf.klein@zib.de>
  */
 
 namespace OpusTest\Mail;
@@ -44,8 +40,6 @@ use Zend_Config;
 /**
  * Test cases for class Opus\Mail.
  *
- * @category Tests
- * @package  Opus\Mail
  * @group    MailSendMailTest
  */
 class SendMailTest extends TestCase
@@ -64,7 +58,7 @@ class SendMailTest extends TestCase
                     'smtp' => 'host.does.not.exists.hopefully',
                     'port' => 22,
                 ],
-            ]
+            ],
         ]);
     }
 

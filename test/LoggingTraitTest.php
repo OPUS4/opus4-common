@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,9 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -36,15 +34,15 @@ namespace OpusTest;
 use Opus\Log;
 use Opus\LoggingTrait;
 use OpusTest\TestAsset\TestCase;
+use Zend_Log;
 
 class LoggingTraitTest extends TestCase
 {
-
     private $logger;
 
     public function setUp()
     {
-        $log = new \Zend_Log();
+        $log = new Zend_Log();
 
         Log::set($log);
         $this->logger = $log;
@@ -61,7 +59,7 @@ class LoggingTraitTest extends TestCase
     {
         $mock = $this->getMockForTrait(LoggingTrait::class);
 
-        $newLog = new \Zend_Log();
+        $newLog = new Zend_Log();
 
         $mock->setLogger($newLog);
 

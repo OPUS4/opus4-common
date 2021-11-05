@@ -25,30 +25,42 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus
- * @author      Kaustabh Barman <barman@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Log;
 
-use Opus\Exception;
+use Exception;
+use FilesystemIterator;
+use InvalidArgumentException;
+use Opus\Exception as OpusException;
 use Opus\Log\LogService;
 use OpusTest\TestAsset\TestCase;
+use RecursiveDirectoryIterator;
+use ReflectionClass;
+use ReflectionException;
+use Zend_Config;
+use Zend_Log;
 
-/**
- * Class LogServiceTest
- * @package OpusTest\Log
- *
- * TODO move generic test utility functions so they can be used in other test classes,
- *      current maybe into a helper class, later perhaps into a opus4-test library
- */
+use function file_exists;
+use function file_get_contents;
+use function fopen;
+use function is_dir;
+use function mkdir;
+use function preg_replace;
+use function rmdir;
+use function rtrim;
+use function sys_get_temp_dir;
+use function trim;
+use function uniqid;
+use function unlink;
+
+use const DIRECTORY_SEPARATOR;
+use const PHP_EOL;
+
 class LogServiceTest extends TestCase
 {
-
     const DEFAULT_FORMAT = '%timestamp% %priorityName% (ID %runId%): %message%';
 
     private $logService;
@@ -59,27 +71,27 @@ class LogServiceTest extends TestCase
     {
         parent::setUp();
 
-        $tempFolder = $this->createTempFolder();
+        $tempFolder       = $this->createTempFolder();
         $this->tempFolder = $tempFolder;
         $this->createFolder('log');
 
         $this->logService = LogService::getInstance();
         $this->logService->setPath(null);
-        $this->logService->setConfig(new \Zend_Config([
+        $this->logService->setConfig(new Zend_Config([
             'workspacePath' => $tempFolder,
-            'log' => [
+            'log'           => [
                 'format' => self::DEFAULT_FORMAT,
-                'level' => 'WARN'
-            ]
+                'level'  => 'WARN',
+            ],
         ], true));
     }
 
     public function tearDown()
     {
         // reset singleton, because otherwise settings will carry over to next test
-        $singleton = LogService::getInstance();
-        $reflection = new \ReflectionClass($singleton);
-        $instance = $reflection->getProperty('instance');
+        $singleton  = LogService::getInstance();
+        $reflection = new ReflectionClass($singleton);
+        $instance   = $reflection->getProperty('instance');
         $instance->setAccessible(true);
         $instance->setValue(null, null);
         $instance->setAccessible(false);
@@ -114,9 +126,9 @@ class LogServiceTest extends TestCase
     public function testGetPathNotConfigured()
     {
         $logService = LogService::getInstance();
-        $logService->setConfig(new \Zend_Config([]));
+        $logService->setConfig(new Zend_Config([]));
 
-        $this->setExpectedException(Exception::class, 'Workspace path not found in configuration.');
+        $this->setExpectedException(OpusException::class, 'Workspace path not found in configuration.');
 
         $logService->getPath();
     }
@@ -153,7 +165,7 @@ class LogServiceTest extends TestCase
 
         $level = $logService->getDefaultPriority();
 
-        $this->assertEquals(\Zend_Log::WARN, $level);
+        $this->assertEquals(Zend_Log::WARN, $level);
     }
 
     /**
@@ -163,8 +175,8 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $logService->getConfig()->merge(new \Zend_Config([
-            'log' => ['level' => null]
+        $logService->getConfig()->merge(new Zend_Config([
+            'log' => ['level' => null],
         ]));
 
         $priority = $logService->getDefaultPriorityAsString();
@@ -176,9 +188,9 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $logService->setDefaultPriority(\Zend_Log::EMERG);
+        $logService->setDefaultPriority(Zend_Log::EMERG);
 
-        $this->assertEquals(\Zend_Log::EMERG, $logService->getDefaultPriority());
+        $this->assertEquals(Zend_Log::EMERG, $logService->getDefaultPriority());
     }
 
     /**
@@ -214,8 +226,8 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $logService->getConfig()->merge(new \Zend_Config([
-            'log' => ['format' => null]
+        $logService->getConfig()->merge(new Zend_Config([
+            'log' => ['format' => null],
         ]));
 
         $format = $logService->getDefaultFormat();
@@ -289,7 +301,7 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'Format must not be null');
+        $this->setExpectedException(InvalidArgumentException::class, 'Format must not be null');
 
         $logService->prepareFormat(null);
     }
@@ -329,32 +341,32 @@ class LogServiceTest extends TestCase
         $logger = $logService->getDefaultLog();
 
         $this->assertNotNull($logger);
-        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertInstanceOf(Zend_Log::class, $logger);
         $this->assertSame($logger, $logService->getDefaultLog());
     }
 
     /**
      * Test logger created by createLogger().
      *
-     * @throws Exception
-     * @throws \ReflectionException
+     * @throws OpusException
+     * @throws ReflectionException
      */
     public function testCreateLogger()
     {
         $logService = $this->getLogService();
 
         $logFilePath = $logService->getPath() . 'test.log';
-        $logFile = @fopen($logFilePath, 'a', false);
+        $logFile     = @fopen($logFilePath, 'a', false);
 
-        $reflection = new \ReflectionClass($logService);
+        $reflection = new ReflectionClass($logService);
 
         $createLogger = $reflection->getMethod('createLogger');
         $createLogger->setAccessible(true);
-        $logger = $createLogger->invokeArgs($logService, ['%message% ID %runId%', \Zend_Log::INFO, $logFile]);
+        $logger = $createLogger->invokeArgs($logService, ['%message% ID %runId%', Zend_Log::INFO, $logFile]);
 
         $this->assertNotNull($logger);
 
-        $warnMessage = 'WARN Message';
+        $warnMessage  = 'WARN Message';
         $debugMessage = 'DEBUG Message';
         $logger->warn($warnMessage);
         $logger->debug($debugMessage);
@@ -365,7 +377,7 @@ class LogServiceTest extends TestCase
 
         $content = $this->readLogFile('test.log');
 
-        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertInstanceOf(Zend_Log::class, $logger);
         $this->assertContains($warnMessage, $content);
         $this->assertContains($runId, $content);
         $this->assertEquals($expected, $content);
@@ -379,7 +391,7 @@ class LogServiceTest extends TestCase
         $logger = $logService->getLog(LogService::DEFAULT_LOG);
 
         $this->assertNotNull($logger);
-        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertInstanceOf(Zend_Log::class, $logger);
         $this->assertSame($logger, $logService->getDefaultLog());
     }
 
@@ -387,14 +399,16 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $logService->getConfig()->merge(new \Zend_Config([
-            'logging' => ['log' => [
-                'translation' => [
-                    'format' => '%message%',
-                    'file' => 'translation.log',
-                    'level' => 'INFO'
-                ]
-            ]]
+        $logService->getConfig()->merge(new Zend_Config([
+            'logging' => [
+                'log' => [
+                    'translation' => [
+                        'format' => '%message%',
+                        'file'   => 'translation.log',
+                        'level'  => 'INFO',
+                    ],
+                ],
+            ],
         ]));
 
         $logger = $logService->getLog('translation');
@@ -425,7 +439,7 @@ class LogServiceTest extends TestCase
         $logger = $logService->getLog('unknownLogger');
 
         $this->assertNotNull($logger);
-        $this->assertInstanceOf('\Zend_Log', $logger);
+        $this->assertInstanceOf(Zend_Log::class, $logger);
 
         $message = 'UNKNOWN LOGGER TEST';
 
@@ -457,14 +471,16 @@ class LogServiceTest extends TestCase
 
         $doiLogConfig = [
             'format' => '%timestamp% %message%',
-            'file' => 'doi.log',
-            'level' => 'warn'
+            'file'   => 'doi.log',
+            'level'  => 'warn',
         ];
 
-        $logService->getConfig()->merge(new \Zend_Config([
-            'logging' => ['log' => [
-                'doi' => $doiLogConfig
-            ]]
+        $logService->getConfig()->merge(new Zend_Config([
+            'logging' => [
+                'log' => [
+                    'doi' => $doiLogConfig,
+                ],
+            ],
         ]));
 
         $config = $logService->getLogConfig('doi');
@@ -479,20 +495,22 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $logService->getConfig()->merge(new \Zend_Config([
-            'logging' => ['log' => [
-                'error' => [
-                    'file' => 'error.log'
-                ]
-            ]]
+        $logService->getConfig()->merge(new Zend_Config([
+            'logging' => [
+                'log' => [
+                    'error' => [
+                        'file' => 'error.log',
+                    ],
+                ],
+            ],
         ]));
 
         $logConfig = $logService->getLogConfig('error');
 
         $this->assertEquals([
             'format' => $logService->getDefaultFormat(),
-            'level' => $logService->getDefaultPriorityAsString(),
-            'file' => 'error.log'
+            'level'  => $logService->getDefaultPriorityAsString(),
+            'file'   => 'error.log',
         ], $logConfig->toArray());
     }
 
@@ -505,8 +523,8 @@ class LogServiceTest extends TestCase
 
         $doiLogConfig = [
             'format' => $logService->getDefaultFormat(),
-            'file' => 'doi.log',
-            'level' => $logService->getDefaultPriorityAsString()
+            'file'   => 'doi.log',
+            'level'  => $logService->getDefaultPriorityAsString(),
         ];
 
         $config = $logService->getLogConfig('doi');
@@ -520,7 +538,7 @@ class LogServiceTest extends TestCase
 
         $logger = $logService->createLog('translation');
 
-        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertInstanceOf(Zend_Log::class, $logger);
 
         $message = 'TRANSLATION LOG TEST MESSAGE';
 
@@ -537,7 +555,7 @@ class LogServiceTest extends TestCase
 
         $logger = $logService->createLog('error', 'ERR', 'ERROR %message%', 'opus-error.log');
 
-        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertInstanceOf(Zend_Log::class, $logger);
 
         $message = 'error test message';
 
@@ -554,7 +572,7 @@ class LogServiceTest extends TestCase
 
         $logger = $logService->createLog('error', 'fehler', 'ERROR %message%');
 
-        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertInstanceOf(Zend_Log::class, $logger);
 
         $message = 'error test message';
 
@@ -570,9 +588,9 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $logger = $logService->createLog('error', \Zend_Log::ERR, 'ERROR %message%');
+        $logger = $logService->createLog('error', Zend_Log::ERR, 'ERROR %message%');
 
-        $this->assertInstanceOf(\Zend_Log::class, $logger);
+        $this->assertInstanceOf(Zend_Log::class, $logger);
 
         $message = 'error test message';
 
@@ -600,13 +618,11 @@ class LogServiceTest extends TestCase
         $this->assertSame($logger, $logService->getDefaultLog());
     }
 
-    /**
-     */
     public function testAddLog()
     {
         $logService = $this->getLogService();
 
-        $logger = new \Zend_Log();
+        $logger = new Zend_Log();
 
         $logService->addLog('mylog', $logger);
 
@@ -617,9 +633,9 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $object = new \Zend_Config([]);
+        $object = new Zend_Config([]);
 
-        $this->setExpectedException(Exception::class, 'must be of type Zend_Log');
+        $this->setExpectedException(OpusException::class, 'must be of type Zend_Log');
 
         $logService->addLog('myLog', $object);
     }
@@ -628,9 +644,9 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $this->assertEquals(\Zend_Log::INFO, $logService->convertPriorityFromString('INFO'));
-        $this->assertEquals(\Zend_Log::INFO, $logService->convertPriorityFromString('info'));
-        $this->assertEquals(\Zend_Log::DEBUG, $logService->convertPriorityFromString('DEBUG'));
+        $this->assertEquals(Zend_Log::INFO, $logService->convertPriorityFromString('INFO'));
+        $this->assertEquals(Zend_Log::INFO, $logService->convertPriorityFromString('info'));
+        $this->assertEquals(Zend_Log::DEBUG, $logService->convertPriorityFromString('DEBUG'));
     }
 
     public function testConvertPriorityFromStringUnknownPriority()
@@ -644,9 +660,9 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $this->assertEquals('INFO', $logService->convertPriorityToString(\Zend_Log::INFO));
-        $this->assertEquals('ERR', $logService->convertPriorityToString(\Zend_Log::ERR));
-        $this->assertEquals('EMERG', $logService->convertPriorityToString(\Zend_Log::EMERG));
+        $this->assertEquals('INFO', $logService->convertPriorityToString(Zend_Log::INFO));
+        $this->assertEquals('ERR', $logService->convertPriorityToString(Zend_Log::ERR));
+        $this->assertEquals('EMERG', $logService->convertPriorityToString(Zend_Log::EMERG));
     }
 
     public function testConvertPriorityToStringUnknownPriority()
@@ -696,17 +712,20 @@ class LogServiceTest extends TestCase
     }
 
     /**
-     * @return \Opus\Log\LogService
+     * @return LogService
      */
     protected function getLogService()
     {
         return $this->logService;
     }
 
+    /**
+     * @return string
+     */
     protected function createTempFolder()
     {
-        $path = sys_get_temp_dir();
-        $path = $path . DIRECTORY_SEPARATOR . uniqid('opus4-common_test_');
+        $path  = sys_get_temp_dir();
+        $path .= DIRECTORY_SEPARATOR . uniqid('opus4-common_test_');
         mkdir($path, 0777, true);
         return $path;
     }
@@ -714,7 +733,9 @@ class LogServiceTest extends TestCase
     /**
      * TODO Move it from here for use in other tests as well.
      * TODO fix - has a generic name, but very specific function relying on a class variable (bad feeling here)
-     * @return String path to log folder.
+     *
+     * @param string $folderName
+     * @return string path to log folder.
      */
     protected function createFolder($folderName)
     {
@@ -723,11 +744,14 @@ class LogServiceTest extends TestCase
         return $path;
     }
 
+    /**
+     * @param string $path
+     */
     protected function removeFolder($path)
     {
-        if (! is_null($path) && file_exists($path)) {
+        if ($path !== null && file_exists($path)) {
             if (is_dir($path)) {
-                $iterator = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
+                $iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
                 foreach ($iterator as $file) {
                     if ($file->isDir()) {
                         $this->removeFolder($file->getPathname());
@@ -740,13 +764,18 @@ class LogServiceTest extends TestCase
         }
     }
 
+    /**
+     * @param string $name
+     * @return false|string
+     * @throws Exception
+     */
     protected function readLogFile($name)
     {
         $path = $this->tempFolder . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . $name;
         if (file_exists($path)) {
             return file_get_contents($path);
         } else {
-            throw new \Exception("log file '$name' not found");
+            throw new Exception("log file '$name' not found");
         }
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,19 +25,40 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    opus4-common
- * @Package     Opus\Log
- * @author      Kaustabh Barman <barman@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Log;
 
+use Exception as PhpException;
+use InvalidArgumentException;
 use Opus\Config;
 use Opus\Exception;
 use Opus\Log;
+use ReflectionClass;
+use Zend_Config;
+use Zend_Exception;
+use Zend_Log;
+use Zend_Log_Exception;
+use Zend_Log_Formatter_Simple;
+use Zend_Log_Writer_Stream;
+
+use function array_flip;
+use function array_key_exists;
+use function ctype_alpha;
+use function dirname;
+use function fopen;
+use function is_dir;
+use function is_int;
+use function is_string;
+use function preg_replace;
+use function rtrim;
+use function strtoupper;
+use function uniqid;
+
+use const DIRECTORY_SEPARATOR;
+use const PHP_EOL;
 
 /**
  * Class for managing multiple loggers.
@@ -60,18 +82,9 @@ use Opus\Log;
  * Normally the default log output would go into `default.log`, however the name
  * is being customized during bootstrapping, so it becomes `opus.log` or
  * `opus-console.log` for regular runs of OPUS 4.
- *
- * @package     Opus\Log
- *
- * TODO we should configure the default options the same way like for other loggers
- *      logging.log.default.format instead of 'log.format', but I would leave a decision until the end
- * TODO should logger names be case insensitive (?)
- * TODO protection against creating multiple loggers for same file (?)
- * TODO protection against adding loggers for existing name (?)
  */
 class LogService
 {
-
     /**
      * Default format used if nothing has been provided or configured.
      */
@@ -87,16 +100,16 @@ class LogService
      */
     const DEFAULT_LOG = 'default';
 
-    /** @var LogService Singleton instance of LogService. */
+    /** @var self Singleton instance of LogService. */
     private static $instance;
 
-    /** @var \Zend_Config Global configuration. */
+    /** @var Zend_Config Global configuration. */
     private $config;
 
     /** @var string Path to the folder for log files. */
-    private $logPath = null;
+    private $logPath;
 
-    /** @var \Zend_Log[] All log objects with log names as keys. */
+    /** @var Zend_Log[] All log objects with log names as keys. */
     private $loggers = [];
 
     /** @var string Default format of log output. */
@@ -117,7 +130,8 @@ class LogService
 
     /**
      * Creates singleton instance of LogService.
-     * @return LogService
+     *
+     * @return self
      */
     public static function getInstance()
     {
@@ -130,11 +144,11 @@ class LogService
     /**
      * Creates a new logger and returns it.
      *
-     * @param string $name Name of the log.
+     * @param string      $name Name of the log.
      * @param null|string $priority Name of log level.
      * @param null|string $format Format for log output.
      * @param null|string $filename Optional name of the log file.
-     * @return \Zend_Log
+     * @return Zend_Log
      *
      * TODO what if logger already exists (name, file)
      */
@@ -147,14 +161,14 @@ class LogService
         }
 
         $logFilePath = $this->getPath() . $filename;
-        $logFile = @fopen($logFilePath, 'a', false);
+        $logFile     = @fopen($logFilePath, 'a', false);
         if ($logFile === false) {
             $path = dirname($logFilePath);
 
             if (! is_dir($path)) {
-                throw new \Exception('Directory for logging does not exist');
+                throw new PhpException('Directory for logging does not exist');
             } else {
-                throw new \Exception('Failed to open logging file:' . $logFilePath);
+                throw new PhpException('Failed to open logging file:' . $logFilePath);
             }
         }
 
@@ -186,13 +200,13 @@ class LogService
     /**
      * To add log from external modules to loggers array.
      *
-     * @param string $name Name of log
-     * @param \Zend_Log $logger
+     * @param string   $name Name of log
+     * @param Zend_Log $logger
      * @throws Exception
      */
     public function addLog($name, $logger)
     {
-        if (! $logger instanceof \Zend_Log) {
+        if (! $logger instanceof Zend_Log) {
             throw new Exception('Logger added must be of type Zend_Log.');
         }
         $this->loggers[$name] = $logger;
@@ -200,8 +214,9 @@ class LogService
 
     /**
      * Returns configuration.
-     * @throws \Zend_Exception
-     * @return null|\Zend_Config
+     *
+     * @throws Zend_Exception
+     * @return null|Zend_Config
      */
     public function getConfig()
     {
@@ -213,7 +228,8 @@ class LogService
 
     /**
      * Sets configuration.
-     * @param \Zend_Config $config
+     *
+     * @param Zend_Config $config
      */
     public function setConfig($config)
     {
@@ -260,7 +276,7 @@ class LogService
     /**
      * Returns the default log or creates new default log if one doesn't exist already.
      *
-     * @return \Zend_Log
+     * @return Zend_Log
      */
     public function getDefaultLog()
     {
@@ -278,16 +294,16 @@ class LogService
      * default values are used.
      *
      * @param string $name
-     * @return \Zend_Config
+     * @return Zend_Config
      */
     public function getLogConfig($name)
     {
         $config = $this->getConfig();
 
-        $defaultConfig = new \Zend_Config([
+        $defaultConfig = new Zend_Config([
             'format' => $this->getDefaultFormat(),
-            'file' => $name . '.log',
-            'level' => $this->getDefaultPriorityAsString()
+            'file'   => $name . '.log',
+            'level'  => $this->getDefaultPriorityAsString(),
         ], true);
 
         if (isset($config->logging->log->$name)) {
@@ -314,7 +330,6 @@ class LogService
      * log level.
      *
      * @param int|string $priority Value or name of log level.
-     *
      */
     public function setDefaultPriority($priority)
     {
@@ -361,11 +376,11 @@ class LogService
      * Get a log or create one if not already exists.
      *
      * @param null|string $name Name of log
-     * @return \Zend_Log
+     * @return Zend_Log
      */
     public function getLog($name = null)
     {
-        if ($name === null || $name == self::DEFAULT_LOG) {
+        if ($name === null || $name === self::DEFAULT_LOG) {
             return $this->getDefaultLog();
         }
 
@@ -380,17 +395,17 @@ class LogService
      * Creates a new, configured Zend_Log object.
      *
      * @param string $format
-     * @param int $priority
+     * @param int    $priority
      * @param string $file
-     * @return \Zend_Log
-     * @throws \Zend_Log_Exception
+     * @return Zend_Log
+     * @throws Zend_Log_Exception
      */
     protected function createLogger($format, $priority, $file)
     {
         $preparedFormat = $this->prepareFormat($format);
-        $formatter = new \Zend_Log_Formatter_Simple($preparedFormat);
+        $formatter      = new Zend_Log_Formatter_Simple($preparedFormat);
 
-        $writer = new \Zend_Log_Writer_Stream($file);
+        $writer = new Zend_Log_Writer_Stream($file);
         $writer->setFormatter($formatter);
 
         $logger = new Log($writer);
@@ -422,7 +437,7 @@ class LogService
      */
     public function getDefaultFormat()
     {
-        if ($this->defaultFormat == null) {
+        if ($this->defaultFormat === null) {
             $config = $this->getConfig();
 
             $format = self::DEFAULT_FORMAT;
@@ -440,13 +455,13 @@ class LogService
     /**
      * Add RunId to format string.
      *
-     * @param $format string
-     * @returns string
+     * @param string $format
+     * @return string
      */
     public function prepareFormat($format)
     {
         if ($format === null) {
-            throw new \InvalidArgumentException('Format must not be null.');
+            throw new InvalidArgumentException('Format must not be null.');
         }
 
         $runId = $this->getRunId();
@@ -455,6 +470,7 @@ class LogService
 
     /**
      * Set the run ID to identify/match individual runs.
+     *
      * @param string $runId
      */
     public function setRunId($runId)
@@ -469,7 +485,7 @@ class LogService
      */
     public function getRunId()
     {
-        if ($this->runId == null) {
+        if ($this->runId === null) {
             $this->runId = uniqid();
         }
 
@@ -478,12 +494,14 @@ class LogService
 
     /**
      * Converts priority int into string.
-     * @param $priority
+     *
+     * @param int $priority
+     * @return null|string
      */
     public function convertPriorityToString($priority)
     {
-        $zendLogRefl = new \ReflectionClass('Zend_Log');
-        $constants = $zendLogRefl->getConstants();
+        $zendLogRefl = new ReflectionClass('Zend_Log');
+        $constants   = $zendLogRefl->getConstants();
 
         $levels = array_flip($constants);
 
@@ -496,13 +514,14 @@ class LogService
 
     /**
      * Converts priority string into int.
-     * @param $priority
-     * @return mixed
+     *
+     * @param string $priorityName
+     * @return null|int
      */
     public function convertPriorityFromString($priorityName)
     {
-        $zendLogRefl = new \ReflectionClass('Zend_Log');
-        $priority = $zendLogRefl->getConstant(strtoupper($priorityName));
+        $zendLogRefl = new ReflectionClass('Zend_Log');
+        $priority    = $zendLogRefl->getConstant(strtoupper($priorityName));
 
         if ($priority !== false) {
             return $priority;

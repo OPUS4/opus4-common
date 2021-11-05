@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,30 +25,35 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    opus4-common
- * @package     Opus\Log
- * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Log;
 
+use InvalidArgumentException;
+use Zend_Log;
+use Zend_Log_Exception;
+use Zend_Log_Filter_Priority;
+
+use function is_numeric;
+
 /**
  * Filter with adjustable log level allowing manipulation of filtering.
  */
-class LevelFilter extends \Zend_Log_Filter_Priority
+class LevelFilter extends Zend_Log_Filter_Priority
 {
-    /**
-     * @var string Original operator to restore filtering when enabling filter again.
-     */
+    /** @var string Original operator to restore filtering when enabling filter again. */
     private $operator;
 
-    /**
-     * @var bool Flag to determine if filter is disabled.
-     */
+    /** @var bool Flag to determine if filter is disabled. */
     private $disabled;
 
+    /**
+     * @param int         $level
+     * @param null|string $operator
+     * @throws Zend_Log_Exception
+     */
     public function __construct($level, $operator = null)
     {
         parent::__construct($level, $operator);
@@ -65,14 +71,14 @@ class LevelFilter extends \Zend_Log_Filter_Priority
         if ($level === null) {
             // Filter disabled by setting lowest level and altering comparison operator.
             $this->_operator = '>=';
-            $this->_priority = \Zend_Log::EMERG;
-            $this->disabled = true;
-        } elseif (! is_numeric($level) or $level < 0) {
-            throw new \InvalidArgumentException('Level needs to be an integer and cannot be negative');
+            $this->_priority = Zend_Log::EMERG;
+            $this->disabled  = true;
+        } elseif (! is_numeric($level) || $level < 0) {
+            throw new InvalidArgumentException('Level needs to be an integer and cannot be negative');
         } else {
             $this->_operator = $this->operator;
             $this->_priority = $level;
-            $this->disabled = false;
+            $this->disabled  = false;
         }
     }
 

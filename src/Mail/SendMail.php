@@ -27,12 +27,6 @@
  *
  * @copyright   Copyright (c) 2011-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
- *
- * @category    Framework
- * @package     Opus\Mail
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Eva Kranz <s9evkran@stud.uni-saarland.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  */
 
 namespace Opus\Mail;
@@ -49,9 +43,6 @@ use function trim;
 
 /**
  * Methods to send e-mails via \Zend_Mail, but with mail server from config.ini.
- *
- * @category    Framework
- * @package     Opus\Mail
  */
 class SendMail
 {

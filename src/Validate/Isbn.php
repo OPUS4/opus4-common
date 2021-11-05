@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,28 +25,22 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus\Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @author      Maximilian Salomon <salomon@zib.de>
  * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
 
+use Zend_Validate_Abstract;
+
+use function count;
+use function preg_split;
+use function str_split;
+
 /**
  * Validator for ISBN values.
- *
- * @category    Framework
- * @package     Opus\Validate
- *
- * TODO better class design? circular dependency between Isbn and its child classes (Isbn10, Isbn13)
- *      The three classes could be merged, however we didn't want to eliminate the option of allowing
- *      only ISBN-10 or only ISBN-13 values.
  */
-class Isbn extends \Zend_Validate_Abstract
+class Isbn extends Zend_Validate_Abstract
 {
     /**
      * Error message key for invalid check digit.
@@ -54,37 +49,39 @@ class Isbn extends \Zend_Validate_Abstract
 
     /**
      * Error message key for malformed ISBN.
-     *
      */
     const MSG_FORM = 'form';
 
     /**
      * Error message templates.
      *
+     * phpcs:disable
+     *
      * @var array
      */
     protected $_messageTemplates = [
         self::MSG_CHECK_DIGIT => "The check digit of '%value%' is not valid.",
-        self::MSG_FORM => "'%value%' is malformed."
+        self::MSG_FORM        => "'%value%' is malformed.",
     ];
+    // phpcs:enable
 
     /**
      * Validate the given ISBN string using ISBN-10 or ISBN-13 validators respectivly.
      *
      * @param string $value An ISBN number.
-     * @return boolean True if the given ISBN string is valid.
+     * @return bool True if the given ISBN string is valid.
      */
     public function isValid($value)
     {
         $this->_setValue($value);
 
-        $isbn_validator = null;
+        $isbnValidator = null;
         switch (count($this->extractDigits($value))) {
             case 10:
-                $isbn_validator = new Isbn10();
+                $isbnValidator = new Isbn10();
                 break;
             case 13:
-                $isbn_validator = new Isbn13();
+                $isbnValidator = new Isbn13();
                 break;
             default:
                 $this->_error(self::MSG_FORM);
@@ -92,9 +89,9 @@ class Isbn extends \Zend_Validate_Abstract
                 break;
         }
 
-        if (is_null($isbn_validator) === false) {
-            $result = $isbn_validator->isValid($value);
-            foreach ($isbn_validator->getErrors() as $error) {
+        if ($isbnValidator !== null) {
+            $result = $isbnValidator->isValid($value);
+            foreach ($isbnValidator->getErrors() as $error) {
                 $this->_error($error);
             }
         }
@@ -103,17 +100,17 @@ class Isbn extends \Zend_Validate_Abstract
     }
 
     /**
-     * @param $value
+     * @param string $value
      * @return array with seperated character except the seperators
      */
     public function extractDigits($value)
     {
-        $isbn_parts = preg_split('/(-|\s)/', $value);
+        $isbnParts = preg_split('/(-|\s)/', $value);
 
         // Separate digits for checkdigit calculation
         $digits = [];
-        for ($i = 0; $i < count($isbn_parts); $i++) {
-            foreach (str_split($isbn_parts[$i]) as $digit) {
+        for ($i = 0; $i < count($isbnParts); $i++) {
+            foreach (str_split($isbnParts[$i]) as $digit) {
                 $digits[] = $digit;
             }
         }
