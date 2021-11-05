@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,11 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -41,15 +37,10 @@ use OpusTest\TestAsset\TestCase;
 /**
  * Test cases for class Opus_Validate_Boolean.
  *
- * @category    Tests
- * @package     Opus_Validate
- *
  * @group       BooleanTest
- *
  */
 class BooleanTest extends TestCase
 {
-
     /**
      * Data provider for valid arguments.
      *
@@ -59,7 +50,7 @@ class BooleanTest extends TestCase
     {
         return [
             [true],
-            [false]
+            [false],
         ];
     }
 
@@ -73,23 +64,20 @@ class BooleanTest extends TestCase
         return [
             [null, 'Null value not rejected'],
             ['',   'Empty string not rejected'],
-            [4711, 'Integer not rejected']
+            [4711, 'Integer not rejected'],
         ];
     }
-
 
     /**
      * Test validation of correct arguments.
      *
      * @param mixed $arg Value to check given by the data provider.
-     * @return void
-     *
      * @dataProvider validDataProvider
      */
     public function testValidArguments($arg)
     {
         $validator = new Boolean();
-        $result = $validator->isValid($arg);
+        $result    = $validator->isValid($arg);
 
         $codes = $validator->getErrors();
         $msgs  = $validator->getMessages();
@@ -106,8 +94,6 @@ class BooleanTest extends TestCase
      *
      * @param mixed  $arg Invalid value to check given by the data provider.
      * @param string $msg Error message.
-     * @return void
-     *
      * @dataProvider invalidDataProvider
      */
     public function testInvalidArguments($arg, $msg)

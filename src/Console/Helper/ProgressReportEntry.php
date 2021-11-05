@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,43 +25,57 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Console\Helper;
 
+use Exception;
+
 class ProgressReportEntry
 {
-
     protected $title;
 
     protected $category;
 
     protected $exceptions;
 
+    /**
+     * @param string $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
+    /**
+     * @param string $category
+     */
     public function setCategory($category)
     {
         $this->category = $category;
     }
 
+    /**
+     * @return string
+     */
     public function getCategory()
     {
         return $this->category;
     }
 
+    /**
+     * @param Exception $e
+     */
     public function addException($e)
     {
         if ($this->exceptions === null) {
@@ -70,6 +85,9 @@ class ProgressReportEntry
         $this->exceptions[] = $e;
     }
 
+    /**
+     * @return Exception[]
+     */
     public function getExceptions()
     {
         return $this->exceptions;

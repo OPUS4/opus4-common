@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,14 +25,13 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Common
- * @package     Opus\Model\Xml
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Model\Xml;
+
+use DOMDocument;
 
 /**
  * Interface for object caching XML representation of documents.
@@ -39,67 +39,69 @@ namespace Opus\Model\Xml;
  * The XML is used for generating output using XSLT, for instance by the
  * frontdoor implementation and exports. Using the cache, the performance
  * can be improved significantly.
- *
- * @package Opus\Model\Xml
  */
 interface XmlCacheInterface
 {
-
     /**
      * Returns DOMDocument for document if found in cache.
      *
-     * @param $documentId
-     * @param $xmlVersion
-     * @return null|\DOMDocument
+     * @param int    $documentId
+     * @param string $xmlVersion
+     * @return null|DOMDocument
      */
     public function get($documentId, $xmlVersion);
 
     /**
      * Returns XML for document from cache.
      *
-     * @param $documentId
-     * @param $xmlVersion
+     * @param int    $documentId
+     * @param string $xmlVersion
      * @return mixed
      */
     public function getData($documentId, $xmlVersion);
 
     /**
      * Returns entire cache as array.
+     *
      * @return mixed
      */
     public function getAllEntries();
 
     /**
      * Check if cache has entry for document and format.
-     * @param $documentId
-     * @param $xmlVersion
+     *
+     * @param int    $documentId
+     * @param string $xmlVersion
      * @return mixed
      */
     public function hasCacheEntry($documentId, $xmlVersion);
 
     /**
      * Check if cache has current entry for document and format.
-     * @param $documentId
-     * @param $xmlVersion
-     * @param $serverDateModified
-     * @return mixed
+     *
+     * @param int    $documentId
+     * @param string $xmlVersion
+     * @param mixed  $serverDateModified
+     * @return bool
      */
     public function hasValidEntry($documentId, $xmlVersion, $serverDateModified);
 
     /**
      * Puts document XML into cache.
-     * @param $documentId
-     * @param $xmlVersion
-     * @param $serverDateModified
-     * @param $xmlData
+     *
+     * @param int         $documentId
+     * @param string      $xmlVersion
+     * @param mixed       $serverDateModified
+     * @param DOMDocument $xmlData
      * @return mixed
      */
-    public function put($documentId, $xmlVersion, $serverDateModified, \DOMDocument $xmlData);
+    public function put($documentId, $xmlVersion, $serverDateModified, $xmlData);
 
     /**
      * Removes document entries from cache.
-     * @param $documentId
-     * @param null $xmlVersion
+     *
+     * @param int         $documentId
+     * @param null|string $xmlVersion
      * @return mixed
      */
     public function remove($documentId, $xmlVersion = null);
@@ -110,15 +112,14 @@ interface XmlCacheInterface
     public function clear();
 
     /**
-     * @param $select
-     * @return mixed
+     * @param string $select
      *
      * TODO database dependent - move out of interface and implementation
      */
     public function removeAllEntriesWhereSubSelect($select);
 
     /**
-     * @return mixed
+     * @param mixed $model
      *
      * TODO database dependent - move out of interface and implementation
      */

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -25,27 +26,22 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest\Console;
 
-use Opus\Console\BaseDocumentCommand;
+use InvalidArgumentException;
+use Opus\Console\AbstractBaseDocumentCommand;
 use OpusTest\TestAsset\TestCase;
+use ReflectionClass;
 use Symfony\Component\Console\Tester\CommandTester;
 
-/**
- * Class BaseDocumentCommandTest
- * @package OpusTest\Console
- */
 class BaseDocumentCommandTest extends TestCase
 {
-
     /**
-     * @return array[], argStartId, argEndId, startId, endId, singleDocument
+     * @return array Columns: argStartId, argEndId, startId, endId, singleDocument
      */
     public function argumentsProvider()
     {
@@ -64,27 +60,27 @@ class BaseDocumentCommandTest extends TestCase
     }
 
     /**
-     * @param $arguments
-     * @param $startId
-     * @param $endId
-     * @param $singleDocument
-     *
+     * @param mixed    $argStartId
+     * @param mixed    $argEndId
+     * @param null|int $startId
+     * @param null|int $endId
+     * @param bool     $singleDocument
      * @dataProvider argumentsProvider
      */
     public function testDocumentRangeArguments($argStartId, $argEndId, $startId, $endId, $singleDocument)
     {
-        $commandClass = 'Opus\Console\BaseDocumentCommand';
+        $commandClass = AbstractBaseDocumentCommand::class;
 
         $stub = $this->getMockForAbstractClass($commandClass);
         $stub->setName('test');
 
         $tester = new CommandTester($stub);
         $tester->execute([
-            BaseDocumentCommand::ARGUMENT_START_ID => $argStartId,
-            BaseDocumentCommand::ARGUMENT_END_ID => $argEndId
+            AbstractBaseDocumentCommand::ARGUMENT_START_ID => $argStartId,
+            AbstractBaseDocumentCommand::ARGUMENT_END_ID   => $argEndId,
         ]);
 
-        $ref = new \ReflectionClass($commandClass);
+        $ref = new ReflectionClass($commandClass);
 
         $refStartId = $ref->getProperty('startId');
         $refStartId->setAccessible(true);
@@ -100,6 +96,9 @@ class BaseDocumentCommandTest extends TestCase
         $this->assertEquals($singleDocument, $refSingleDocument->getValue($stub));
     }
 
+    /**
+     * @return array
+     */
     public function invalidArgumentProvider()
     {
         return [
@@ -112,26 +111,25 @@ class BaseDocumentCommandTest extends TestCase
     }
 
     /**
-     * @param $startId
-     * @param $endId
-     * @param $message
-     *
+     * @param int    $argStartId
+     * @param int    $argEndId
+     * @param string $message
      * @dataProvider invalidArgumentProvider
      */
     public function testInvalidArguments($argStartId, $argEndId, $message)
     {
-        $commandClass = 'Opus\Console\BaseDocumentCommand';
+        $commandClass = AbstractBaseDocumentCommand::class;
 
         $stub = $this->getMockForAbstractClass($commandClass);
         $stub->setName('test');
 
         $tester = new CommandTester($stub);
 
-        $this->setExpectedException(\InvalidArgumentException::class, $message);
+        $this->setExpectedException(InvalidArgumentException::class, $message);
 
         $tester->execute([
-            BaseDocumentCommand::ARGUMENT_START_ID => $argStartId,
-            BaseDocumentCommand::ARGUMENT_END_ID => $argEndId
+            AbstractBaseDocumentCommand::ARGUMENT_START_ID => $argStartId,
+            AbstractBaseDocumentCommand::ARGUMENT_END_ID   => $argEndId,
         ]);
     }
 }

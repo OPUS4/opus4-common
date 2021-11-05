@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,33 +25,30 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
 
+use Zend_Validate_Abstract;
+
+use function is_bool;
+
 /**
  * Defines an validator for boolean values.
- *
- * @category    Framework
- * @package     Opus_Validate
  */
-class Boolean extends \Zend_Validate_Abstract
+class Boolean extends Zend_Validate_Abstract
 {
-
     /**
      * Error message key for invalid type.
-     *
      */
     const MSG_TYPE = 'invalid';
 
     /**
      * Error message templates.
+     *
+     * phpcs:disable
      *
      * @var array
      */
@@ -62,7 +60,7 @@ class Boolean extends \Zend_Validate_Abstract
      * Validate the given boolean value.
      *
      * @param mixed $value An value.
-     * @return boolean True if the given value is of type boolean.
+     * @return bool True if the given value is of type Boolean.
      */
     public function isValid($value)
     {

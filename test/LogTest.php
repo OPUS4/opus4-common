@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,21 +25,33 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     OpusTest
- * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace OpusTest;
 
+use InvalidArgumentException;
 use Opus\Log;
 use OpusTest\TestAsset\TestCase;
+use Zend_Exception;
+use Zend_Log;
+use Zend_Log_Exception;
+use Zend_Log_Filter_Priority;
+use Zend_Log_Formatter_Simple;
+use Zend_Log_Writer_Stream;
+
+use function fclose;
+use function fgets;
+use function fopen;
+use function is_resource;
+use function rewind;
+use function sys_get_temp_dir;
+
+use const PHP_EOL;
 
 class LogTest extends TestCase
 {
-
     private $logFile;
 
     public function tearDown()
@@ -53,13 +66,13 @@ class LogTest extends TestCase
     public function testSetLevel()
     {
         $opusLog = $this->getOpusLog();
-        $opusLog->setLevel(\Zend_Log::DEBUG);
+        $opusLog->setLevel(Zend_Log::DEBUG);
 
         $debugMessage = 'Debug level message from testSetLevel';
         $opusLog->debug($debugMessage);
 
         $this->assertContains($debugMessage, $this->readLog());
-        $this->assertEquals(\Zend_Log::DEBUG, $opusLog->getLevel());
+        $this->assertEquals(Zend_Log::DEBUG, $opusLog->getLevel());
     }
 
     public function testSetLevelForFilterDisabling()
@@ -67,7 +80,7 @@ class LogTest extends TestCase
         $opusLog = $this->getOpusLog();
 
         $debugMessage = 'Debug level message from testSetLevelWithNullLevel';
-        $infoMessage = 'Info level message';
+        $infoMessage  = 'Info level message';
 
         $opusLog->info($infoMessage);
         $opusLog->debug($debugMessage);
@@ -104,9 +117,9 @@ class LogTest extends TestCase
     public function testSetLevelNotAffectingOtherFilters()
     {
         $opusLog = $this->getOpusLog();
-        $opusLog->setLevel(\Zend_Log::INFO);
+        $opusLog->setLevel(Zend_Log::INFO);
 
-        $additionalFilter = new \Zend_Log_Filter_Priority(\Zend_Log::WARN);
+        $additionalFilter = new Zend_Log_Filter_Priority(Zend_Log::WARN);
         $opusLog->addFilter($additionalFilter);
 
         // INFO message gets rejected by additional filter
@@ -115,7 +128,7 @@ class LogTest extends TestCase
         $this->assertNotContains($infoMessage, $this->readLog());
 
         // After setting level to DEBUG the additional filter still rejects DEBUG message
-        $opusLog->setLevel(\Zend_Log::DEBUG);
+        $opusLog->setLevel(Zend_Log::DEBUG);
         $debugMessage = 'Debug Level Message';
         $opusLog->debug($debugMessage);
         $this->assertNotContains($debugMessage, $this->readLog());
@@ -131,7 +144,7 @@ class LogTest extends TestCase
         $opusLog = $this->getOpusLog();
 
         $this->setExpectedException(
-            \InvalidArgumentException::class,
+            InvalidArgumentException::class,
             'Level needs to be an integer and cannot be negative'
         );
 
@@ -143,7 +156,7 @@ class LogTest extends TestCase
         $opusLog = $this->getOpusLog();
 
         $this->setExpectedException(
-            \InvalidArgumentException::class,
+            InvalidArgumentException::class,
             'Level needs to be an integer and cannot be negative'
         );
 
@@ -156,14 +169,14 @@ class LogTest extends TestCase
 
         $opusLog->setLevel('7');
 
-        $this->assertEquals(\Zend_Log::DEBUG, $opusLog->getLevel());
+        $this->assertEquals(Zend_Log::DEBUG, $opusLog->getLevel());
     }
 
     public function testGetLevel()
     {
         $opusLog = $this->getOpusLog();
 
-        $this->assertEquals(\Zend_Log::INFO, $opusLog->getLevel());
+        $this->assertEquals(Zend_Log::INFO, $opusLog->getLevel());
     }
 
     public function testGetLevelReturnsNull()
@@ -187,12 +200,13 @@ class LogTest extends TestCase
     {
         $log = Log::get();
 
-        $this->assertEquals(\Zend_Log::INFO, $log->getLevel());
+        $this->assertEquals(Zend_Log::INFO, $log->getLevel());
     }
 
     /**
      * Check if the logger instance gets dropped and new logger is created.
-     * @throws \Zend_Exception
+     *
+     * @throws Zend_Exception
      */
     public function testDrop()
     {
@@ -209,23 +223,30 @@ class LogTest extends TestCase
         $this->assertNotSame($logger1, $logger2);
     }
 
+    /**
+     * @return Log
+     * @throws Zend_Log_Exception
+     */
     protected function getOpusLog()
     {
-        $format = '%priorityName%: %message%' . PHP_EOL;
-        $formatter = new \Zend_Log_Formatter_Simple($format);
+        $format    = '%priorityName%: %message%' . PHP_EOL;
+        $formatter = new Zend_Log_Formatter_Simple($format);
 
         $this->logFile = fopen('php://memory', 'rw');
-        $writer = new \Zend_Log_Writer_Stream($this->logFile);
+        $writer        = new Zend_Log_Writer_Stream($this->logFile);
         $writer->setFormatter($formatter);
 
         $logger = new Log($writer);
 
-        $level = \Zend_Log::INFO;
+        $level = Zend_Log::INFO;
         $logger->setLevel($level);
 
         return $logger;
     }
 
+    /**
+     * @return string
+     */
     protected function readLog()
     {
         rewind($this->logFile);

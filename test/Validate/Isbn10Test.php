@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,11 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Tests
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -41,15 +37,10 @@ use OpusTest\TestAsset\TestCase;
 /**
  * Test cases for class Opus_Validate_Isbn10.
  *
- * @category    Tests
- * @package     Opus_Validate
- *
  * @group       Isbn10Test
- *
  */
 class Isbn10Test extends TestCase
 {
-
     /**
      * Data provider for valid arguments.
      *
@@ -67,7 +58,7 @@ class Isbn10Test extends TestCase
             ['3 86680 192 0'],
             ['3 937602 69 0'],
             ['3866801920'],
-            ['3937602690']
+            ['3937602690'],
         ];
     }
 
@@ -88,23 +79,20 @@ class Isbn10Test extends TestCase
             ['3-86680-192-5',      'Wrong check digit not rejected.'],
             ['3 86680 192-0',      'Mixed separators not rejected.'],
             ['X866801920',      'Malformed string not rejected.'],
-            ['3 937602 6930', 'Malformed string not rejected.']
+            ['3 937602 6930', 'Malformed string not rejected.'],
         ];
     }
-
 
     /**
      * Test validation of correct arguments.
      *
      * @param mixed $arg Value to check given by the data provider.
-     * @return void
-     *
      * @dataProvider validDataProvider
      */
     public function testValidArguments($arg)
     {
         $validator = new Isbn10();
-        $result = $validator->isValid($arg);
+        $result    = $validator->isValid($arg);
 
         $codes = $validator->getErrors();
         $msgs  = $validator->getMessages();
@@ -121,8 +109,6 @@ class Isbn10Test extends TestCase
      *
      * @param mixed  $arg Invalid value to check given by the data provider.
      * @param string $msg Error message.
-     * @return void
-     *
      * @dataProvider invalidDataProvider
      */
     public function testInvalidArguments($arg, $msg)

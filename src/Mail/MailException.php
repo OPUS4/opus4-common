@@ -27,10 +27,6 @@
  *
  * @copyright   Copyright (c) 2009-2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
- *
- * @category    Common
- * @package     Opus\Mail
- * @author      Eva Kranz <s9evkran@stud.uni-saarland.de>
  */
 
 namespace Opus\Mail;

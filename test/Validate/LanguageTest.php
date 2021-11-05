@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,11 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Tests
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -42,15 +38,10 @@ use OpusTest\TestAsset\TestCase;
 /**
  * Test cases for class Opus_Validate_Language.
  *
- * @category    Tests
- * @package     Opus_Validate
- *
  * @group       LanguageTest
- *
  */
 class LanguageTest extends TestCase
 {
-
     /**
      * Data provider for valid arguments.
      *
@@ -64,7 +55,7 @@ class LanguageTest extends TestCase
             ['az'],
             ['es'],
             ['ar'],
-            ['zu']
+            ['zu'],
         ];
     }
 
@@ -80,15 +71,12 @@ class LanguageTest extends TestCase
             [''],
             [4711],
             [true],
-            ['not_a_valid_type']
+            ['not_a_valid_type'],
         ];
     }
 
-
     /**
      * Set up test fixture.
-     *
-     * @return void
      */
     public function setUp()
     {
@@ -109,8 +97,6 @@ class LanguageTest extends TestCase
      * Test validation of correct arguments.
      *
      * @param string $arg Name of a locale type to validate.
-     * @return void
-     *
      * @dataProvider validDataProvider
      */
     public function testValidArguments($arg)
@@ -123,8 +109,6 @@ class LanguageTest extends TestCase
      * Test validation of incorrect arguments.
      *
      * @param string $arg Name of a locale type to validate.
-     * @return void
-     *
      * @dataProvider invalidDataProvider
      */
     public function testInvalidArguments($arg)
@@ -135,8 +119,6 @@ class LanguageTest extends TestCase
 
     /**
      * Test if a error message is set if the validated field has "null" as its value.
-     *
-     * @return void
      */
     public function testErrorMessageIsSetIfNullIsGivenAsValue()
     {
@@ -153,8 +135,6 @@ class LanguageTest extends TestCase
 
     /**
      * Test  if an array of language values could be validated.
-     *
-     * @return void
      */
     public function testValidateMultiValueLanguage()
     {
@@ -165,8 +145,6 @@ class LanguageTest extends TestCase
 
     /**
      * Test if an error occurs if a list of language contains a bad language name.
-     *
-     * @return void
      */
     public function testValidateMultiValueLanguageWithInvalidData()
     {

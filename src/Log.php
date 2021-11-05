@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,35 +25,34 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    opus4-common
- * @package     Opus
- * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus;
 
+use InvalidArgumentException;
 use Opus\Log\LevelFilter;
 use Opus\Log\LogService;
+use Zend_Exception;
+use Zend_Log;
+use Zend_Log_Exception;
+use Zend_Log_Writer_Stream;
+
+use function is_numeric;
 
 /**
  * Extension of Zend_Log for manipulating a logger with additional functionalities like changing the priority level.
  */
-class Log extends \Zend_Log
+class Log extends Zend_Log
 {
-
-    /**
-     * @var LevelFilter Filter object used to control the level of the log.
-     */
+    /** @var LevelFilter Filter object used to control the level of the log. */
     private $filter;
 
-    /**
-     * @var \Zend_Log Stores the default logger.
-     */
+    /** @var parent Stores the default logger. */
     protected static $cachedReference;
 
-    public function __construct(\Zend_Log_Writer_Stream $writer = null)
+    public function __construct(?Zend_Log_Writer_Stream $writer = null)
     {
         parent::__construct($writer);
     }
@@ -65,12 +65,12 @@ class Log extends \Zend_Log
      * setLevel() sets the level for the current one.
      *
      * @param int|null $level New level of the log
-     * @throws \Zend_Log_Exception
+     * @throws Zend_Log_Exception
      */
     public function setLevel($level)
     {
-        if ($level !== null && (! is_numeric($level) or $level < 0)) {
-            throw new \InvalidArgumentException('Level needs to be an integer and cannot be negative');
+        if ($level !== null && (! is_numeric($level) || $level < 0)) {
+            throw new InvalidArgumentException('Level needs to be an integer and cannot be negative');
         }
 
         if ($this->filter === null) {
@@ -98,8 +98,8 @@ class Log extends \Zend_Log
     /**
      * Returns a default logger.
      *
-     * @return \Zend_Log
-     * @throws \Zend_Exception
+     * @return parent
+     * @throws Zend_Exception
      */
     public static function get()
     {
@@ -110,10 +110,13 @@ class Log extends \Zend_Log
         return self::$cachedReference;
     }
 
+    /**
+     * @param parent $logger
+     */
     public static function set($logger)
     {
-        if (! $logger instanceof \Zend_Log) {
-            throw new \InvalidArgumentException('Argument must be instance of Zend_Log');
+        if (! $logger instanceof Zend_Log) {
+            throw new InvalidArgumentException('Argument must be instance of Zend_Log');
         }
 
         self::$cachedReference = $logger;

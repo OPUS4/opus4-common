@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,18 +25,21 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Model
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2018-2019, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Model;
 
-use Opus\Model\Plugin\PluginInterface;
-use Opus\Model\Plugin\ServerStateChangeListener;
+use Exception;
 use Opus\Document;
+use Opus\Model\Plugin\PluginInterface;
+
+use function array_key_exists;
+use function get_class;
+use function is_array;
+use function is_object;
+use function is_string;
 
  // TODO IMPORTANT Dependency to framework class OPUSVIER-4417
 
@@ -70,15 +74,14 @@ use Opus\Document;
  */
 trait PluginsTrait
 {
-
-    private $plugins = null;
+    private $plugins;
 
     /**
      * Returns list with default plugin classes.
      *
      * This function is overwritten in model classes to provide modified list of default plugins.
      *
-     * @return null
+     * @return null|array
      */
     public function getDefaultPlugins()
     {
@@ -89,8 +92,6 @@ trait PluginsTrait
      * Instanciate and install plugins for this model.
      *
      * Copy-Paste from Qucosa-Code base.
-     *
-     * @return void
      */
     protected function loadPlugins()
     {
@@ -111,7 +112,6 @@ trait PluginsTrait
      * Copy-Paste from Qucosa-Code base.
      *
      * @param PluginInterface|string $plugin Plugin to register for this very model.
-     * @return void
      */
     public function registerPlugin($plugin)
     {
@@ -119,7 +119,7 @@ trait PluginsTrait
 
         if (true === is_string($plugin)) {
             $pluginClass = $plugin;
-            $plugin = new $pluginClass;
+            $plugin      = new $pluginClass();
         } else {
             $pluginClass = get_class($plugin);
         }
@@ -138,7 +138,6 @@ trait PluginsTrait
      *
      * @param string|object $plugin Instance or class name to unregister plugin.
      * @throw Opus_Model_Exception Thrown if specified plugin does not exist.
-     * @return void
      */
     public function unregisterPlugin($plugin)
     {
@@ -160,7 +159,9 @@ trait PluginsTrait
 
     /**
      * Return true if the given plugin was already registered; otherwise false.
+     *
      * @param string $plugin class name of the plugin
+     * @return bool
      */
     public function hasPlugin($plugin)
     {
@@ -178,7 +179,7 @@ trait PluginsTrait
      */
     public function getPlugins()
     {
-        if (is_null($this->plugins)) {
+        if ($this->plugins === null) {
             $this->loadPlugins();
         }
         return $this->plugins;
@@ -189,14 +190,14 @@ trait PluginsTrait
      *
      * Copy-Paste from Qucosa-Code base.
      *
-     * @param string $methodname Name of plugin method to call
-     * @param mixed  $parameter  Value that gets passed instead of the model instance.
+     * @param string     $methodname Name of plugin method to call
+     * @param null|mixed $parameter Value that gets passed instead of the model instance.
      */
     protected function callPluginMethod($methodname, $parameter = null)
     {
         $plugins = $this->getPlugins();
 
-        if (is_null($plugins)) {
+        if ($plugins === null) {
             return;
         }
 
@@ -208,21 +209,22 @@ trait PluginsTrait
             }
 
             foreach ($plugins as $name => $plugin) {
-                if ($plugin instanceof \Opus\Model\Plugin\ServerStateChangeListener) {
+                if ($plugin instanceof Plugin\ServerStateChangeListenerInterface) {
                     // Plugins, die das Interface implementieren, werden nur bei Änderung des serverState aufgerufen
-                    if (($param instanceof Document) && ! $param->getServerStateChanged()) {
+                    if ($param instanceof Document && ! $param->getServerStateChanged()) {
                         continue; // es erfolgt kein Aufruf des Plugins
                     }
                 }
                 $plugin->$methodname($param);
             }
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             throw new ModelException('Plugin ' . $name . ' failed in ' . $methodname . ' with ' . $ex->getMessage());
         }
     }
 
     /**
      * Function must be provided to obtain logger from trait using class.
+     *
      * @return mixed
      */
     abstract public function getLogger();

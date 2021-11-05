@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,15 +25,15 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Console\Helper;
 
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function sprintf;
 
 /**
  * Displays progress like PHPUnit with different characters to signal status for each step.
@@ -50,17 +51,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  * TODO make status options configurable with defaults
  * TODO class using ProgressMatrix should not have to worry about formatting - just provide result for step(s)
  * TODO support providing status in array for block of steps
- *
- * @package Opus\Console\Helper
  */
-class ProgressMatrix extends BaseProgressOutput
+class ProgressMatrix extends AbstractBaseProgressOutput
 {
-
     private $maxLineLength;
 
     private $currentLineLength;
 
-    public function __construct($output, $max)
+    /**
+     * @param int $max
+     */
+    public function __construct(OutputInterface $output, $max)
     {
         parent::__construct($output, $max);
 
@@ -83,8 +84,8 @@ class ProgressMatrix extends BaseProgressOutput
     }
 
     /**
-     * @param $step
-     * @param null $status
+     * @param int         $step
+     * @param null|string $status
      *
      * TODO handle going backwards?
      * TODO handle step > max

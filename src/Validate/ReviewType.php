@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,10 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -36,32 +33,30 @@ namespace Opus\Validate;
 
 /**
  * Defines an validator for available review type names.
- *
- * @category    Framework
- * @package     Opus_Validate
  */
 class ReviewType extends AbstractEnum
 {
-
     /**
      * Error message key.
-     *
      */
     const MSG_REVIEWTYPE = 'reviewtype';
 
     /**
      * Error message templates.
      *
+     * phpcs:disable
+     *
      * @var array
      */
     protected $_messageTemplates = [
-        self::MSG_REVIEWTYPE => "'%value%' is not a valid review type"
+        self::MSG_REVIEWTYPE => "'%value%' is not a valid review type",
     ];
+    // phpcs:enable
 
     /**
      * Define valid enum values.
      *
      * @var array
      */
-    protected $validEnums = ['peer','editorial','open'];
+    protected $validEnums = ['peer', 'editorial', 'open'];
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,8 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -46,19 +45,27 @@ namespace Opus\Console\Helper;
  *
  * TODO ProgressMatrix not implemented yet
  * TODO ProgressDetail not implemented yet
- *
- * @package Opus\Console\Helper
  */
 interface ProgressOutputInterface
 {
-
     public function start();
 
     public function finish();
 
+    /**
+     * @param int        $steps
+     * @param null|mixed $status
+     */
     public function advance($steps = 1, $status = null);
 
+    /**
+     * @param int        $progress
+     * @param null|mixed $status
+     */
     public function setProgress($progress, $status = null);
 
+    /**
+     * @return float
+     */
     public function getRuntime();
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,46 +25,50 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Maximilian Salomon <salomon@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2017-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Validate;
 
+use Zend_Validate_Abstract;
+
+use function preg_match;
+use function str_split;
+use function strlen;
+
 /**
  * Class Opus_Validate_Issn validates an ISSN-identifier.
  */
-class Issn extends \Zend_Validate_Abstract
+class Issn extends Zend_Validate_Abstract
 {
     /**
      * Error message key for invalid check digit.
-     *
      */
     const MSG_CHECK_DIGIT = 'checkdigit';
 
     /**
      * Error message key for malformed ISSN.
-     *
      */
     const MSG_FORM = 'form';
 
     /**
      * Error message templates.
      *
+     * phpcs:disable
+     *
      * @var array
      */
     protected $_messageTemplates = [
         self::MSG_CHECK_DIGIT => "The check digit of '%value%' is not valid.",
-        self::MSG_FORM => "'%value%' is malformed."
+        self::MSG_FORM        => "'%value%' is malformed.",
     ];
+    // phpcs:enable
 
     /**
      * Verify the input, for formal criteria of an issn.
-     * @param $value, with input to check
+     *
+     * @param string $value Input to check
      * @return bool
      */
     public function isValid($value)
@@ -71,7 +76,7 @@ class Issn extends \Zend_Validate_Abstract
         $this->_setValue($value);
 
         // check length
-        if (strlen($value) !== (8 + 1)) {
+        if (strlen($value) !== 8 + 1) {
             $this->_error(self::MSG_FORM);
             return false;
         }
@@ -103,11 +108,11 @@ class Issn extends \Zend_Validate_Abstract
      */
     protected function calculateCheckDigit(array $issn)
     {
-        $z = $issn;
-        $check = (8 * $z[0] + 7 * $z[1] + 6 * $z[2] + 5 * $z[3] + 4 * $z[5] + 3 * $z[6] + 2 * $z[7]);
+        $z     = $issn;
+        $check = 8 * $z[0] + 7 * $z[1] + 6 * $z[2] + 5 * $z[3] + 4 * $z[5] + 3 * $z[6] + 2 * $z[7];
         if ($check % 11 === 0) {
             $checkdigit = 0;
-        } elseif (11 - ($check % 11) == 10) {
+        } elseif (11 - ($check % 11) === 10) {
             $checkdigit = 'X';
         } else {
             $checkdigit = 11 - ($check % 11);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,10 +25,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus\Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2008-2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -44,32 +41,23 @@ namespace Opus\Validate;
  *
  * This behavior is used to form groups of mandatory fields in Zend_Form objects,
  * where the whole group is valid even if some of its fields are empty.
- *
- * @category    Framework
- * @package     Opus\Validate
  */
-interface Mate
+interface MateInterface
 {
-
     /**
      * Add another validator to the list of mates.
      *
-     * @param Opus_Validate_Mate $mate Validator implementing Opus_Validate_Mate.
-     * @return void
+     * @param self $mate Validator implementing Opus_Validate_Mate.
      */
-    public function addMate(Mate $mate);
+    public function addMate(self $mate);
 
     /**
      * Inform all mates that the common validation result.
-     *
-     * @return void
      */
     public function decideAllValid();
 
     /**
      * Tell a specific validator to decide for validity.
-     *
-     * @return void
      */
     public function decideValid();
 }

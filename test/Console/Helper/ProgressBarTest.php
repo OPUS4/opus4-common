@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -25,8 +26,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -37,9 +36,13 @@ use Opus\Console\Helper\ProgressBar;
 use OpusTest\TestAsset\TestCase;
 use Symfony\Component\Console\Output\StreamOutput;
 
+use function fopen;
+use function rewind;
+use function str_repeat;
+use function stream_get_contents;
+
 class ProgressBarTest extends TestCase
 {
-
     public function testProgressBarWidth()
     {
         $outputInterface = $this->createOutputInterface();
@@ -52,7 +55,7 @@ class ProgressBarTest extends TestCase
         rewind($outputInterface->getStream());
         $output = stream_get_contents($outputInterface->getStream());
 
-        $bar = '[>' . str_repeat('-', 62)  . ']'; // 62 because max = 100 (3 digits)
+        $bar = '[>' . str_repeat('-', 62) . ']'; // 62 because max = 100 (3 digits)
 
         $this->assertContains($bar, $output); // two spaces before 10
         $this->assertContains('0/100', $output);

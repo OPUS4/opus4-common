@@ -27,10 +27,6 @@
  *
  * @copyright   Copyright (c) 2011, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
- *
- * @category    Tests
- * @package     Opus\Mail
- * @author      Thoralf Klein <thoralf.klein@zib.de>
  */
 
 namespace OpusTest\Mail;
@@ -40,11 +36,11 @@ use Opus\Mail\Transport;
 use OpusTest\TestAsset\TestCase;
 use Zend_Config;
 
+use function dirname;
+
 /**
  * Test cases for class Opus\Mail\Transport.
  *
- * @category Tests
- * @package  Opus\Mail
  * @group    MailSendMailTest
  */
 class TransportTest extends TestCase
@@ -57,7 +53,7 @@ class TransportTest extends TestCase
         parent::setUp();
 
         Config::set(new Zend_Config([
-            'workspacePath' => dirname(__FILE__, 3) . '/build'
+            'workspacePath' => dirname(__FILE__, 3) . '/build',
         ]));
     }
 

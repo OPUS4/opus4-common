@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -25,8 +26,6 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -39,24 +38,20 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function count;
+use function ctype_digit;
+use function mbsplit;
+
 /**
  * Base class for all commands using StartID and EndID as arguments.
- *
- * @package Opus\Search\IndexBuilder
- *
- * TODO support multiple IDs like '10 20 30-40 51' ? Basically allow array of arguments, each an ID or range
- * TODO support providing document list in file ?
- * TODO handle this in a helper class, so Commands do not need to inherit from AbstractIndexCommand?
  */
-abstract class BaseDocumentCommand extends Command
+abstract class AbstractBaseDocumentCommand extends Command
 {
     const ARGUMENT_START_ID = 'StartID';
 
     const ARGUMENT_END_ID = 'EndID';
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $allDocuments = false;
 
     protected $startId;
@@ -83,20 +78,17 @@ abstract class BaseDocumentCommand extends Command
         );
     }
 
-    /**
-     * @param InputInterface $input
-     */
     protected function processArguments(InputInterface $input)
     {
         $startId = $input->getArgument(self::ARGUMENT_START_ID);
-        $endId = $input->getArgument(self::ARGUMENT_END_ID);
+        $endId   = $input->getArgument(self::ARGUMENT_END_ID);
 
         // handle accidental inputs like '20-' or '20-30' instead of '20 -' or '20 30'
         if ($startId !== '-') {
             $parts = mbsplit('-', $startId);
             if (count($parts) === 2) {
                 $startId = $parts[0];
-                $endId = $parts[1];
+                $endId   = $parts[1];
 
                 if ($endId === '') {
                     $endId = '-'; // otherwise only a single document will be indexed
@@ -110,7 +102,7 @@ abstract class BaseDocumentCommand extends Command
             // only activate single document indexing if startId is present and no endId
             if ($endId === '' || $endId === null) {
                 $this->singleDocument = true;
-                $endId = null;
+                $endId                = null;
             }
         }
 
@@ -132,26 +124,35 @@ abstract class BaseDocumentCommand extends Command
             $this->allDocuments = false;
 
             if ($startId !== null && $endId !== null && $startId > $endId) {
-                $tmp = $startId;
+                $tmp     = $startId;
                 $startId = $endId;
-                $endId = $tmp;
+                $endId   = $tmp;
             }
         }
 
         $this->startId = $startId;
-        $this->endId = $endId;
+        $this->endId   = $endId;
     }
 
+    /**
+     * @return int|null
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->processArguments($input);
+        return $this->processArguments($input);
     }
 
+    /**
+     * @return bool
+     */
     protected function isSingleDocument()
     {
         return $this->singleDocument;
     }
 
+    /**
+     * @return bool
+     */
     protected function isAllDocuments()
     {
         return $this->allDocuments;

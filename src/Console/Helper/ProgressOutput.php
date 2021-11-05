@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,26 +25,21 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Console\Helper;
 
-/**
- * Class ProgressOutput
- * @package Opus\Search\Console
- *
- * TODO modify interface to match ProgressBar more closely
- * TODO separate setProgress from displaying
- * TODO handle creating "blocks" here, so Command can call advance for every document (while output gets only
- *      updated every 10)
- */
-class ProgressOutput extends BaseProgressOutput
-{
+use function date;
+use function memory_get_peak_usage;
+use function memory_get_usage;
+use function microtime;
+use function round;
+use function sprintf;
 
+class ProgressOutput extends AbstractBaseProgressOutput
+{
     /**
      * @var string
      * TODO make format configurable
@@ -53,8 +49,8 @@ class ProgressOutput extends BaseProgressOutput
     /**
      * Output current processing status and performance.
      *
-     * @param $runtime long Time of start of processing
-     * @param $numOfDocs Number of processed documents
+     * @param int        $progress
+     * @param null|mixed $status
      *
      * TODO handle startTime = null, because start() was forgotten
      */
@@ -62,13 +58,13 @@ class ProgressOutput extends BaseProgressOutput
     {
         parent::setProgress($progress);
 
-        $memNow = round(memory_get_usage() / 1024 / 1024);
+        $memNow  = round(memory_get_usage() / 1024 / 1024);
         $memPeak = round(memory_get_peak_usage() / 1024 / 1024);
 
         $currentTime = microtime(true);
 
-        $deltaTime = $currentTime - $this->startTime;
-        $docPerSecond = round($deltaTime) == 0 ? 'inf' : round($progress / $deltaTime, 2);
+        $deltaTime     = $currentTime - $this->startTime;
+        $docPerSecond  = round($deltaTime) === 0 ? 'inf' : round($progress / $deltaTime, 2);
         $secondsPerDoc = round($deltaTime / $progress, 2);
 
         $message = sprintf(
@@ -91,6 +87,10 @@ class ProgressOutput extends BaseProgressOutput
     {
     }
 
+    /**
+     * @param int        $steps
+     * @param null|mixed $status
+     */
     public function advance($steps = 1, $status = null)
     {
         // TODO: Implement advance() method.

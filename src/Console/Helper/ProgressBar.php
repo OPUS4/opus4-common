@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,31 +25,27 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Console\Helper;
 
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\ProgressBar as SymfonyProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Adapter for Symfoy class ProgressBar in order to use it interchangeably with other
  * OPUS 4 ProgressOutput classes.
- *
- * @package Opus\Console\Helper
  */
-class ProgressBar extends BaseProgressOutput
+class ProgressBar extends AbstractBaseProgressOutput
 {
-
-    /**
-     * @var \Symfony\Component\Console\Helper\ProgressBar
-     */
+    /** @var SymfonyProgressBar */
     private $progressBar;
 
+    /**
+     * @param int $max
+     */
     public function __construct(OutputInterface $output, $max)
     {
         parent::__construct($output, $max);
@@ -70,11 +67,19 @@ class ProgressBar extends BaseProgressOutput
         $this->output->writeln('');
     }
 
+    /**
+     * @param int        $step
+     * @param null|mixed $status
+     */
     public function advance($step = 1, $status = null)
     {
         $this->progressBar->advance($step);
     }
 
+    /**
+     * @param int        $step
+     * @param null|mixed $status
+     */
     public function setProgress($step, $status = null)
     {
         $this->progressBar->setProgress($step);
