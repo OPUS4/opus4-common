@@ -36,6 +36,7 @@
 namespace OpusTest\Validate;
 
 use Opus\Validate\Boolean;
+use OpusTest\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_Boolean.
@@ -46,7 +47,7 @@ use Opus\Validate\Boolean;
  * @group       BooleanTest
  *
  */
-class BooleanTest extends \PHPUnit_Framework_TestCase
+class BooleanTest extends TestCase
 {
 
     /**

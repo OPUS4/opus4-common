@@ -250,7 +250,11 @@ class LogService
      */
     public function setPath($logPath)
     {
-        $this->logPath = rtrim($logPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if ($logPath !== null) {
+            $this->logPath = rtrim($logPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        } else {
+            $this->logPath = $logPath;
+        }
     }
 
     /**

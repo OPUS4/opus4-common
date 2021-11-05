@@ -37,6 +37,7 @@ namespace OpusTest\Mail;
 
 use Opus\Config;
 use Opus\Mail\Transport;
+use OpusTest\TestAsset\TestCase;
 use Zend_Config;
 
 /**
@@ -46,7 +47,7 @@ use Zend_Config;
  * @package  Opus\Mail
  * @group    MailSendMailTest
  */
-class TransportTest extends \PHPUnit_Framework_TestCase
+class TransportTest extends TestCase
 {
     /**
      * No cleanup needed.

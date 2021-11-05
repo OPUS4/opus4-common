@@ -37,6 +37,7 @@ namespace OpusTest\Validate;
 
 use Opus\Config;
 use Opus\Validate\Language;
+use OpusTest\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_Language.
@@ -47,7 +48,7 @@ use Opus\Validate\Language;
  * @group       LanguageTest
  *
  */
-class LanguageTest extends \PHPUnit_Framework_TestCase
+class LanguageTest extends TestCase
 {
 
     /**

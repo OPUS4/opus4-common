@@ -34,9 +34,10 @@
 namespace OpusTest\Console\Helper;
 
 use Opus\Console\Helper\ProgressBar;
+use OpusTest\TestAsset\TestCase;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class ProgressBarTest extends \PHPUnit_Framework_TestCase
+class ProgressBarTest extends TestCase
 {
 
     public function testProgressBarWidth()

@@ -35,8 +35,9 @@ namespace OpusTest;
 
 use Opus\Log;
 use Opus\LoggingTrait;
+use OpusTest\TestAsset\TestCase;
 
-class LoggingTraitTest extends \PHPUnit_Framework_TestCase
+class LoggingTraitTest extends TestCase
 {
 
     private $logger;

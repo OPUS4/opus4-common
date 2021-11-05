@@ -34,9 +34,10 @@
 namespace OpusTest\Console\Helper;
 
 use Opus\Console\Helper\ProgressOutput;
+use OpusTest\TestAsset\TestCase;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class ProgressOutputTest extends \PHPUnit_Framework_TestCase
+class ProgressOutputTest extends TestCase
 {
 
     public function testSetProgress()

@@ -38,6 +38,7 @@ namespace OpusTest\Mail;
 use Opus\Config;
 use Opus\Mail\MailException;
 use Opus\Mail\SendMail;
+use OpusTest\TestAsset\TestCase;
 use Zend_Config;
 
 /**
@@ -47,7 +48,7 @@ use Zend_Config;
  * @package  Opus\Mail
  * @group    MailSendMailTest
  */
-class SendMailTest extends \PHPUnit_Framework_TestCase
+class SendMailTest extends TestCase
 {
     protected $configDummy;
 
@@ -63,8 +64,7 @@ class SendMailTest extends \PHPUnit_Framework_TestCase
                     'smtp' => 'host.does.not.exists.hopefully',
                     'port' => 22,
                 ],
-            ],
-            'workspacePath' => dirname(__FILE__, 3) . '/build'
+            ]
         ]);
     }
 

@@ -33,9 +33,9 @@
 
 namespace OpusTest\Model;
 
-use Opus\Model\PluginsTrait;
+use OpusTest\TestAsset\TestCase;
 
-class PluginsTraitTest extends \PHPUnit_Framework_TestCase
+class PluginsTraitTest extends TestCase
 {
 
     public function testRegisterPlugin()

@@ -36,6 +36,7 @@
 namespace OpusTest\Validate;
 
 use Opus\Validate\DocumentType;
+use OpusTest\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_DocumentType.
@@ -44,7 +45,7 @@ use Opus\Validate\DocumentType;
  * @package     Opus_Validate
  *
  */
-class DocumentTypeTest extends \PHPUnit_Framework_TestCase
+class DocumentTypeTest extends TestCase
 {
 
     /**

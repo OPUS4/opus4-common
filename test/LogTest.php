@@ -33,10 +33,10 @@
 
 namespace OpusTest;
 
-use Opus\Config;
 use Opus\Log;
+use OpusTest\TestAsset\TestCase;
 
-class LogTest extends \PHPUnit_Framework_TestCase
+class LogTest extends TestCase
 {
 
     private $logFile;

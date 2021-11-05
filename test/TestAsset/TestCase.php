@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -7,12 +8,11 @@
  *
  * OPUS 4 is a complete rewrite of the original OPUS software and was developed
  * by the Stuttgart University Library, the Library Service Center
- * Baden-Wuerttemberg, the North Rhine-Westphalian Library Service Center,
- * the Cooperative Library Network Berlin-Brandenburg, the Saarland University
- * and State Library, the Saxon State Library - Dresden State and University
- * Library, the Bielefeld University Library and the University Library of
- * Hamburg University of Technology with funding from the German Research
- * Foundation and the European Regional Development Fund.
+ * Baden-Wuerttemberg, the Cooperative Library Network Berlin-Brandenburg,
+ * the Saarland University and State Library, the Saxon State Library -
+ * Dresden State and University Library, the Bielefeld University Library and
+ * the University Library of Hamburg University of Technology with funding from
+ * the German Research Foundation and the European Regional Development Fund.
  *
  * LICENCE
  * OPUS is free software; you can redistribute it and/or modify it under the
@@ -25,35 +25,26 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
+ * @category    Test
+ * @package     OpusTest
  * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Console\Helper;
+namespace OpusTest\TestAsset;
 
-use Opus\Console\Helper\BaseProgressOutput;
-use OpusTest\TestAsset\TestCase;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Tests\Output\TestOutput;
+use Opus\Log;
+use Opus\Log\LogService;
+use PHPUnit_Framework_TestCase;
 
-class BaseProgressOutputTest extends TestCase
+class TestCase extends PHPUnit_Framework_TestCase
 {
-
-    public function testGetRuntime()
+    public function setUp()
     {
-        $output = new NullOutput();
+        parent::setUp();
 
-        $progress = $this->getMockForAbstractClass(BaseProgressOutput::class, [$output, 100]);
-
-        $progress->start();
-        sleep(2);
-        $progress->finish();
-
-        $runtime = $progress->getRuntime();
-
-        $this->assertTrue($runtime >= 2); // should be a little more than 2 seconds
-        $this->assertTrue(($runtime - 2.0) <= 0.01); // check that it is not just bigger than 2
+        Log::drop(); // just in case there is still an old logger cached
+        LogService::getInstance()->setPath(dirname(__FILE__, 3) . '/build/log');
     }
 }
