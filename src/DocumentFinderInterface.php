@@ -111,6 +111,15 @@ interface DocumentFinderInterface
     public function getCount();
 
     /**
+     * @param string $criteria Field for sorting
+     * @param string $ascending Ascending direction for sorting, FALSE = descending
+     * @return mixed
+     *
+     * TODO use constants for criteria and direction
+     */
+    public function setOrder($criteria, $ascending = true);
+
+    /**
      * Sets ServerState condition for query.
      *
      * When multiple values for ServerState are provided, OR is used.
