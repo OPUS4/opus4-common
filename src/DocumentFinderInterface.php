@@ -212,4 +212,22 @@ interface DocumentFinderInterface
      * TODO not implemented yet, used by cron script - Does it belong here?
      */
     public function findEmbargoDateBeforeNotModifiedAfter();
+
+    /**
+     * Returns types of found documents.
+     *
+     * @param bool $includeCount TRUE Additionally Returns document count for each type
+     * @return array
+     */
+    public function getDocumentTypes($includeCount = false);
+
+    /**
+     * Returns publication years of found documents.
+     *
+     * This function returns an array of years found in ServerDatePublished of the matching documents.
+     *
+     * @return array
+     */
+    public function getYearsPublished();
+
 }
