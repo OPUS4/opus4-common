@@ -207,11 +207,20 @@ interface DocumentFinderInterface
     public function setServerDateModifiedBefore($date);
 
     /**
+     * @param string $date
      * @return mixed
-     *
-     * TODO not implemented yet, used by cron script - Does it belong here?
      */
-    public function findEmbargoDateBeforeNotModifiedAfter();
+    public function setEmbargoDateBefore($date);
+
+    /**
+     * Adds condition where ServerDateModified is earlier than EmbargoDate.
+     *
+     * This condition is used to find documents that have not been updated after the expiration of their EmbargoDate.
+     * An update of ServerDateModified is necessary to trigger harvesting in OAI for instance by DNB.
+     *
+     * @return mixed
+     */
+    public function setNotModifiedAfterEmbargoDate();
 
     /**
      * Returns types of found documents.
