@@ -94,6 +94,12 @@ namespace Opus;
  */
 interface DocumentFinderInterface
 {
+    const ORDER_ID                    = 'Id';
+    const ORDER_AUTHOR                = 'Author';
+    const ORDER_TITLE                 = 'Title';
+    const ORDER_DOCUMENT_TYPE         = 'Type';
+    const ORDER_SERVER_DATE_PUBLISHED = 'ServerDatePublished';
+
     /**
      * Returns identifier for matching documents.
      *
@@ -120,6 +126,14 @@ interface DocumentFinderInterface
     public function setOrder($criteria, $ascending = true);
 
     /**
+     * Sets subset of document IDs for matching.
+     *
+     * @param int[] $documentIds
+     * @return mixed
+     */
+    public function setDocumentIds($documentIds);
+
+    /**
      * Sets ServerState condition for query.
      *
      * When multiple values for ServerState are provided, OR is used.
@@ -128,6 +142,18 @@ interface DocumentFinderInterface
      * @return $this
      */
     public function setServerState($serverState);
+
+    /**
+     * @param bool $partOfBibliography
+     * @return mixed
+     */
+    public function setBelongsToBibliography($partOfBibliography = true);
+
+    /**
+     * @param int $collectionId Identifier for collection
+     * @return mixed
+     */
+    public function setCollectionId($collectionId);
 
     /**
      * Set link to collection in collection role as condition.
@@ -210,7 +236,19 @@ interface DocumentFinderInterface
      * @param string $date
      * @return mixed
      */
+    public function setServerDateModifiedAfter($date);
+
+    /**
+     * @param string $date
+     * @return mixed
+     */
     public function setEmbargoDateBefore($date);
+
+    /**
+     * @param string $date
+     * @return mixed
+     */
+    public function setNotEmbargoedOn($date);
 
     /**
      * Adds condition where ServerDateModified is earlier than EmbargoDate.
@@ -221,6 +259,13 @@ interface DocumentFinderInterface
      * @return mixed
      */
     public function setNotModifiedAfterEmbargoDate();
+
+    /**
+     * Add condition that requires documents to have files visible in OAI.
+     *
+     * @return mixed
+     */
+    public function setHasFilesVisibleInOai();
 
     /**
      * Returns types of found documents.
@@ -238,5 +283,4 @@ interface DocumentFinderInterface
      * @return array
      */
     public function getYearsPublished();
-
 }
