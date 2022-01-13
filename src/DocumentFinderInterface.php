@@ -268,6 +268,14 @@ interface DocumentFinderInterface
     public function setHasFilesVisibleInOai();
 
     /**
+     * Add condition for document IDs not present in XML cache.
+     * @return mixed
+     *
+     * TODO Cache specific code, move to some Cache helper class? Cache might not be implemented in database?
+     */
+    public function setNotInXmlCache();
+
+    /**
      * Returns types of found documents.
      *
      * @param bool $includeCount TRUE Additionally Returns document count for each type

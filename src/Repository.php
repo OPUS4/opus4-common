@@ -31,6 +31,8 @@
 
 namespace Opus;
 
+use Opus\Model\Xml\XmlCacheInterface;
+
 /**
  * Central OPUS 4 class for accessing document data.
  *
@@ -66,6 +68,24 @@ class Repository
         }
 
         return new $finderClass();
+    }
+
+    /**
+     * @return XmlCacheInterface
+     *
+     * TODO move out of Repository and maybe Common?
+     */
+    public function getDocumentXmlCache()
+    {
+        $config = $this->getConfig();
+
+        if (isset($config->documentXmlCacheClass)) {
+            $cacheClass = $config->documentXmlCacheClass;
+        } else {
+            return null;
+        }
+
+        return new $cacheClass;
     }
 
     /**
