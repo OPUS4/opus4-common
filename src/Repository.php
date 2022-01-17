@@ -71,7 +71,7 @@ class Repository
     }
 
     /**
-     * @return XmlCacheInterface
+     * @return XmlCacheInterface|null
      *
      * TODO move out of Repository and maybe Common?
      */
@@ -85,7 +85,7 @@ class Repository
             return null;
         }
 
-        return new $cacheClass;
+        return new $cacheClass();
     }
 
     /**

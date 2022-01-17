@@ -106,6 +106,7 @@ interface DocumentFinderInterface
      * @return int[] Identifier for documents
      *
      * TODO rename to fetch?
+     * TODO rename to getDocumentId?
      */
     public function getIds();
 
@@ -132,6 +133,15 @@ interface DocumentFinderInterface
      * @return mixed
      */
     public function setDocumentIds($documentIds);
+
+    /**
+     * Set range of document IDs as condition.
+     *
+     * @param int|null $start
+     * @param int|null $end
+     * @return mixed
+     */
+    public function setDocumentIdRange($start = null, $end = null);
 
     /**
      * Sets ServerState condition for query.
@@ -269,6 +279,7 @@ interface DocumentFinderInterface
 
     /**
      * Add condition for document IDs not present in XML cache.
+     *
      * @return mixed
      *
      * TODO Cache specific code, move to some Cache helper class? Cache might not be implemented in database?
