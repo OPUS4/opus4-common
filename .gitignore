@@ -1,5 +1,6 @@
 # ignore any third-party library
 vendor
+.vagrant
 
 # ignore composer runtime
 composer.phar
