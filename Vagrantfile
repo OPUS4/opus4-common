@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$setup = <<SCRIPT
+$software = <<SCRIPT
 # Downgrade to PHP 7.1
 apt-add-repository -y ppa:ondrej/php
 apt-get -yq update
@@ -15,8 +15,15 @@ apt-get -yq install php7.1-mbstring
 apt-get -yq install composer
 SCRIPT
 
+$environment = <<SCRIPT
+if ! grep "cd /vagrant" /home/vagrant/.profile > /dev/null; then
+  echo "cd /vagrant" >> /home/vagrant/.profile
+fi
+SCRIPT
+
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-20.04"
 
-  config.vm.provision 'shell', inline: $setup
+  config.vm.provision 'shell', inline: $software
+  config.vm.provision 'shell', inline: $environment
 end
