@@ -46,8 +46,10 @@ use Zend_Log_Writer_Stream;
 
 use function array_flip;
 use function array_key_exists;
+use function chmod;
 use function ctype_alpha;
 use function dirname;
+use function file_exists;
 use function fopen;
 use function is_dir;
 use function is_int;
@@ -165,7 +167,8 @@ class LogService
         // check if new file
         $fileExists = file_exists($logFilePath);
 
-        $logFile     = @fopen($logFilePath, 'a', false);
+        $logFile = @fopen($logFilePath, 'a', false);
+
         if ($logFile === false) {
             $path = dirname($logFilePath);
 
@@ -174,8 +177,7 @@ class LogService
             } else {
                 throw new PhpException('Failed to open logging file:' . $logFilePath);
             }
-        }
-        else if (! $fileExists) {
+        } elseif (! $fileExists) {
             // only set permissions for newly created files
             chmod($logFilePath, 0660);
         }
