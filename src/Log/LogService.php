@@ -161,6 +161,10 @@ class LogService
         }
 
         $logFilePath = $this->getPath() . $filename;
+
+        // check if new file
+        $fileExists = file_exists($logFilePath);
+
         $logFile     = @fopen($logFilePath, 'a', false);
         if ($logFile === false) {
             $path = dirname($logFilePath);
@@ -170,6 +174,10 @@ class LogService
             } else {
                 throw new PhpException('Failed to open logging file:' . $logFilePath);
             }
+        }
+        else if (! $fileExists) {
+            // only set permissions for newly created files
+            chmod($logFilePath, 0660);
         }
 
         if ($priority === null) {
