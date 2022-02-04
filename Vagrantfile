@@ -8,22 +8,42 @@ apt-get -yq update
 apt-get -yq install php7.1
 
 # Install required PHP packages
+apt-get -yq install php7.1-curl
 apt-get -yq install php7.1-dom
 apt-get -yq install php7.1-mbstring
 
-# Install Composer for running tests
-apt-get -yq install composer
+# Install tools
+apt-get -yq install unzip
+SCRIPT
+
+$composer = <<SCRIPT
+cd /vagrant
+bin/install-composer.sh
 SCRIPT
 
 $environment = <<SCRIPT
 if ! grep "cd /vagrant" /home/vagrant/.profile > /dev/null; then
   echo "cd /vagrant" >> /home/vagrant/.profile
 fi
+if ! grep "PATH=/vagrant/bin" /home/vagrant/.bashrc > /dev/null; then
+  echo "export PATH=/vagrant/bin:$PATH" >> /home/vagrant/.bashrc
+fi
+SCRIPT
+
+$help = <<SCRIPT
+echo "Use 'vagrant ssh' to log into VM and 'logout' to leave it."
+echo "In VM use:"
+echo "'composer test' for running tests"
+echo "'composer update' to update dependencies"
+echo "'composer cs-check' to check coding style"
+echo "'composer cs-fix' to automatically fix basic style problems"
 SCRIPT
 
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-20.04"
 
   config.vm.provision 'shell', inline: $software
+  config.vm.provision 'shell', privileged: false, inline: $composer
   config.vm.provision 'shell', inline: $environment
+  config.vm.provision 'shell', run: 'always', privileged: false, inline: $help
 end

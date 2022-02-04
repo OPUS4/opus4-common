@@ -3,6 +3,7 @@ vendor
 .vagrant
 
 # ignore composer runtime
+bin/composer
 composer.phar
 composer.lock
 
