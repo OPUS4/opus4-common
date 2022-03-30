@@ -27,10 +27,6 @@
  *
  * @copyright   Copyright (c) 2011, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
- *
- * @category    Tests
- * @package     Opus\Util
- * @author      Jens Schwidder <schwidder@zib.de>
  */
 
 namespace OpusTest\Util;
@@ -38,6 +34,7 @@ namespace OpusTest\Util;
 use Opus\Util\File;
 use OpusTest\TestAsset\TestCase;
 
+use function dirname;
 use function file_exists;
 use function mkdir;
 use function touch;
@@ -56,7 +53,7 @@ class FileTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->srcPath = dirname(__FILE__, 3) . '/build/'. uniqid() . '/src';
+        $this->srcPath = dirname(__FILE__, 3) . '/build/' . uniqid() . '/src';
     }
 
     /**
