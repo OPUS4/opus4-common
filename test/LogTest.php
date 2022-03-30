@@ -144,7 +144,7 @@ class LogTest extends TestCase
         $opusLog = $this->getOpusLog();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage( 'Level needs to be an integer and cannot be negative');
+        $this->expectExceptionMessage('Level needs to be an integer and cannot be negative');
 
         $opusLog->setLevel(-1);
     }
