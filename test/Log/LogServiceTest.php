@@ -128,7 +128,8 @@ class LogServiceTest extends TestCase
         $logService = LogService::getInstance();
         $logService->setConfig(new Zend_Config([]));
 
-        $this->setExpectedException(OpusException::class, 'Workspace path not found in configuration.');
+        $this->expectException(OpusException::class);
+        $this->expectExceptionMessage('Workspace path not found in configuration.');
 
         $logService->getPath();
     }
@@ -301,7 +302,8 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $this->setExpectedException(InvalidArgumentException::class, 'Format must not be null');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Format must not be null');
 
         $logService->prepareFormat(null);
     }
@@ -635,7 +637,8 @@ class LogServiceTest extends TestCase
 
         $object = new Zend_Config([]);
 
-        $this->setExpectedException(OpusException::class, 'must be of type Zend_Log');
+        $this->expectException(OpusException::class);
+        $this->expectExceptionMessage('must be of type Zend_Log');
 
         $logService->addLog('myLog', $object);
     }

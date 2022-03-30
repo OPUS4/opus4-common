@@ -114,7 +114,8 @@ class LevelFilterTest extends TestCase
 
         $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
-        $this->setExpectedException(InvalidArgumentException::class, $exceptionMessage);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($exceptionMessage);
 
         $filter->setLevel(-1);
     }
@@ -125,7 +126,8 @@ class LevelFilterTest extends TestCase
 
         $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
-        $this->setExpectedException(InvalidArgumentException::class, $exceptionMessage);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($exceptionMessage);
 
         $filter->setLevel('TestLevel');
     }

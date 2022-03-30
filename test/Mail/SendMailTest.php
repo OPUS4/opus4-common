@@ -69,6 +69,10 @@ class SendMailTest extends TestCase
     {
         Config::set($this->configDummy);
         $mail = new SendMail();
+
+        $this->assertTrue($mail instanceof SendMail);
+
+        // TODO: What else do we espect here?
     }
 
     /**
@@ -78,6 +82,10 @@ class SendMailTest extends TestCase
     {
         Config::set(new Zend_Config([]));
         $mail = new SendMail();
+
+        $this->assertTrue($mail instanceof SendMail);
+
+        // TODO: What else do we espect here?
     }
 
     /**
@@ -87,7 +95,7 @@ class SendMailTest extends TestCase
     {
         Config::set(new Zend_Config([]));
         $mail = new SendMail();
-        $this->setExpectedException(MailException::class);
+        $this->expectException(MailException::class);
         $mail->sendMail(null, null, null, null, null);
     }
 
@@ -97,7 +105,7 @@ class SendMailTest extends TestCase
     public function testSendmailRemoteHostDoesNotExist()
     {
         $mail = new SendMail();
-        $this->setExpectedException(MailException::class);
+        $this->expectException(MailException::class);
         $mail->sendMail(
             'Sender',
             'sender@does.not.exists.hopefully.mil',
@@ -120,7 +128,7 @@ class SendMailTest extends TestCase
         $mail      = new SendMail();
         $recipient = ['recipients' => ['address' => 'recipient@testmail.de', 'name' => 'John R. Public']];
 
-        $this->setExpectedException(MailException::class);
+        $this->expectException(MailException::class);
         $mail->sendMail('', 'John S. Public', 'My subject', 'My Text', $recipient);
     }
 
@@ -132,7 +140,7 @@ class SendMailTest extends TestCase
         $mail      = new SendMail();
         $recipient = ['recipients' => ['address' => 'recipient@testmail.de', 'name' => 'John R. Public']];
 
-        $this->setExpectedException(MailException::class);
+        $this->expectException(MailException::class);
         $mail->sendMail('recipient@testmail.de', 'John S. Public', '', 'My Text', $recipient);
     }
 
