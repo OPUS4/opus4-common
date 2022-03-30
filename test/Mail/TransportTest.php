@@ -64,6 +64,10 @@ class TransportTest extends TestCase
     public function testConstructorWoConfig()
     {
         $transport = new Transport();
+
+        $this->assertTrue($transport instanceof Transport);
+
+        // TODO: What else do we espect here?
     }
 
     public function testConstructorWithConfig()
@@ -74,5 +78,9 @@ class TransportTest extends TestCase
         ]);
 
         $transport = new Transport($config);
+
+        $this->assertTrue($transport instanceof Transport);
+
+        // TODO: What else do we espect here?
     }
 }

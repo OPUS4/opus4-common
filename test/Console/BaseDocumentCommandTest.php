@@ -125,7 +125,8 @@ class BaseDocumentCommandTest extends TestCase
 
         $tester = new CommandTester($stub);
 
-        $this->setExpectedException(InvalidArgumentException::class, $message);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
 
         $tester->execute([
             AbstractBaseDocumentCommand::ARGUMENT_START_ID => $argStartId,
