@@ -35,7 +35,5 @@ interface DocumentInterface
 {
     public function getId();
 
-    public function getIdentifier();
-
     public function getServerStateChanged();
 }
