@@ -29,11 +29,11 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest;
+namespace OpusTest\Common;
 
 use InvalidArgumentException;
-use Opus\Log;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Log;
+use OpusTest\Common\TestAsset\TestCase;
 use Zend_Exception;
 use Zend_Log;
 use Zend_Log_Exception;

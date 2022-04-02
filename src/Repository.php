@@ -29,9 +29,9 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace Opus\Common;
 
-use Opus\Model\Xml\XmlCacheInterface;
+use Opus\Common\Model\Xml\XmlCacheInterface;
 
 /**
  * Central OPUS 4 class for accessing document data.

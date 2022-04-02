@@ -30,11 +30,11 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Console;
+namespace OpusTest\Common\Console;
 
 use InvalidArgumentException;
-use Opus\Console\AbstractBaseDocumentCommand;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Console\AbstractBaseDocumentCommand;
+use OpusTest\Common\TestAsset\TestCase;
 use ReflectionClass;
 use Symfony\Component\Console\Tester\CommandTester;
 

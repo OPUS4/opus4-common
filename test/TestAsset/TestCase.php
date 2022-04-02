@@ -29,10 +29,10 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\TestAsset;
+namespace OpusTest\Common\TestAsset;
 
-use Opus\Log;
-use Opus\Log\LogService;
+use Opus\Common\Log;
+use Opus\Common\Log\LogService;
 use PHPUnit\Framework\TestCase as PHPUnitFrameworkTestCase;
 
 use function dirname;

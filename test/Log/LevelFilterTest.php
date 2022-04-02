@@ -29,11 +29,11 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Log;
+namespace OpusTest\Common\Log;
 
 use InvalidArgumentException;
-use Opus\Log\LevelFilter;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Log\LevelFilter;
+use OpusTest\Common\TestAsset\TestCase;
 use Zend_Log;
 
 class LevelFilterTest extends TestCase

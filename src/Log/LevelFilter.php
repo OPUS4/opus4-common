@@ -29,7 +29,7 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Log;
+namespace Opus\Common\Log;
 
 use InvalidArgumentException;
 use Zend_Log;

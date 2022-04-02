@@ -29,7 +29,7 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Console\Helper;
+namespace Opus\Common\Console\Helper;
 
 use function date;
 use function memory_get_peak_usage;

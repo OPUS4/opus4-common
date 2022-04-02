@@ -29,7 +29,7 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Console;
+namespace Opus\Common\Console;
 
 use Exception;
 

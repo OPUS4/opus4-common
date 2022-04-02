@@ -29,10 +29,10 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Validate;
+namespace OpusTest\Common\Validate;
 
-use Opus\Validate\NoteVisibility;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Validate\NoteVisibility;
+use OpusTest\Common\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_NoteVisibility.

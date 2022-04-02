@@ -29,12 +29,12 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Mail;
+namespace OpusTest\Common\Mail;
 
-use Opus\Config;
-use Opus\Mail\MailException;
-use Opus\Mail\SendMail;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Config;
+use Opus\Common\Mail\MailException;
+use Opus\Common\Mail\SendMail;
+use OpusTest\Common\TestAsset\TestCase;
 use Zend_Config;
 
 /**

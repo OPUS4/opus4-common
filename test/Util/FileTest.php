@@ -29,10 +29,10 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Util;
+namespace OpusTest\Common\Util;
 
-use Opus\Util\File;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Util\File;
+use OpusTest\Common\TestAsset\TestCase;
 
 use function dirname;
 use function file_exists;

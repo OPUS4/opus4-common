@@ -29,9 +29,9 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Validate;
+namespace Opus\Common\Validate;
 
-use Opus\Config;
+use Opus\Common\Config;
 use Zend_Locale;
 use Zend_Validate_Abstract;
 

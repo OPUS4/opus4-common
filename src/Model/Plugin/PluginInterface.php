@@ -17,9 +17,9 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Model\Plugin;
+namespace Opus\Common\Model\Plugin;
 
-use Opus\Model\ModelInterface;
+use Opus\Common\Model\ModelInterface;
 
 /**
  * Interface for plugin mechanism of Opus_Model_AbstractDb. Defines hook

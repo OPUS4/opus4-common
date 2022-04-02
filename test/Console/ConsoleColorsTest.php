@@ -1,10 +1,10 @@
 <?php
 
-namespace OpusTest\Console;
+namespace OpusTest\Common\Console;
 
 use Exception;
-use Opus\Console\ConsoleColors;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Console\ConsoleColors;
+use OpusTest\Common\TestAsset\TestCase;
 
 class ConsoleColorsTest extends TestCase
 {

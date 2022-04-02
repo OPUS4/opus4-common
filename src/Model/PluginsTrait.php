@@ -29,11 +29,11 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Model;
+namespace Opus\Common\Model;
 
 use Exception;
-use Opus\Document;
-use Opus\Model\Plugin\PluginInterface;
+use Opus\Common\Document;
+use Opus\Common\Model\Plugin\PluginInterface;
 
 use function array_key_exists;
 use function get_class;

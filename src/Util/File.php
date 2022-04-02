@@ -29,7 +29,7 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Util;
+namespace Opus\Common\Util;
 
 use function file_exists;
 use function is_dir;

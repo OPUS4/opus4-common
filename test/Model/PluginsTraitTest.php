@@ -29,9 +29,9 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Model;
+namespace OpusTest\Common\Model;
 
-use OpusTest\TestAsset\TestCase;
+use OpusTest\Common\TestAsset\TestCase;
 
 class PluginsTraitTest extends TestCase
 {

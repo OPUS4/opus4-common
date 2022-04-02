@@ -29,13 +29,13 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Log;
+namespace Opus\Common\Log;
 
 use Exception as PhpException;
 use InvalidArgumentException;
-use Opus\Config;
-use Opus\Exception;
-use Opus\Log;
+use Opus\Common\Config;
+use Opus\Common\Exception;
+use Opus\Common\Log;
 use ReflectionClass;
 use Zend_Config;
 use Zend_Exception;
