@@ -31,19 +31,54 @@
 
 namespace OpusTest\TestAsset;
 
+use Opus\Config;
 use Opus\Log;
 use Opus\Log\LogService;
 use PHPUnit\Framework\TestCase as PHPUnitFrameworkTestCase;
 
+use Zend_Config;
 use function dirname;
 
 class TestCase extends PHPUnitFrameworkTestCase
 {
+    private $baseConfig;
+
     public function setUp()
     {
         parent::setUp();
 
         Log::drop(); // just in case there is still an old logger cached
         LogService::getInstance()->setPath(dirname(__FILE__, 3) . '/build/log');
+    }
+
+    /**
+     * Overwrites selected properties of current configuration.
+     *
+     * @note A test doesn't need to backup and recover replaced configuration as
+     *       this is done in setup and tear-down phases.
+     *
+     * @param array $overlay properties to overwrite existing values in configuration
+     * @param callable $callback callback to invoke with adjusted configuration before enabling e.g. to delete some options
+     * @return Zend_Config reference on updated configuration
+     */
+    protected function adjustConfiguration($overlay, $callback = null)
+    {
+        $previous = Config::get();
+
+        if ($this->baseConfig === null) {
+            $this->baseConfig = $previous;
+        }
+
+        $updated  = new Zend_Config($previous->toArray(), true);
+
+        $updated->merge(new Zend_Config($overlay));
+
+        if (is_callable($callback)) {
+            $updated = call_user_func($callback, $updated);
+        }
+
+        Config::set($updated);
+
+        return $updated;
     }
 }
