@@ -38,6 +38,7 @@
 namespace Opus\Common\Config;
 
 use Opus\Config;
+
 use function in_array;
 use function is_array;
 use function strtolower;
