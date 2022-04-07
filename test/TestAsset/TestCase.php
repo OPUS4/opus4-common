@@ -35,9 +35,11 @@ use Opus\Config;
 use Opus\Log;
 use Opus\Log\LogService;
 use PHPUnit\Framework\TestCase as PHPUnitFrameworkTestCase;
-
 use Zend_Config;
+
+use function call_user_func;
 use function dirname;
+use function is_callable;
 
 class TestCase extends PHPUnitFrameworkTestCase
 {
@@ -56,9 +58,8 @@ class TestCase extends PHPUnitFrameworkTestCase
      *
      * @note A test doesn't need to backup and recover replaced configuration as
      *       this is done in setup and tear-down phases.
-     *
-     * @param array $overlay properties to overwrite existing values in configuration
-     * @param callable $callback callback to invoke with adjusted configuration before enabling e.g. to delete some options
+     * @param array         $overlay properties to overwrite existing values in configuration
+     * @param null|callable $callback callback to invoke with adjusted configuration before enabling e.g. to delete some options
      * @return Zend_Config reference on updated configuration
      */
     protected function adjustConfiguration($overlay, $callback = null)
@@ -69,7 +70,7 @@ class TestCase extends PHPUnitFrameworkTestCase
             $this->baseConfig = $previous;
         }
 
-        $updated  = new Zend_Config($previous->toArray(), true);
+        $updated = new Zend_Config($previous->toArray(), true);
 
         $updated->merge(new Zend_Config($overlay));
 
