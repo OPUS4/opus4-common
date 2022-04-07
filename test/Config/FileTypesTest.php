@@ -31,8 +31,8 @@
 
 namespace OpusTest\Config;
 
-use Opus\Common\Config\FileTypes;
 use Opus\Config;
+use Opus\Config\FileTypes;
 use OpusTest\TestAsset\TestCase;
 use Zend_Config;
 
@@ -86,16 +86,29 @@ class FileTypesTest extends TestCase
 
     public function testMimeTypeAddedToBaseConfigurationFromApplicationIni()
     {
-        $this->adjustConfiguration([
+        Config::set(new Zend_Config([
             'filetypes' => [
-                'xml' => [
+                'pdf'  => [
+                    'mimeType'           => 'application/pdf',
+                    'contentDisposition' => 'inline',
+                ],
+                'txt'  => [
+                    'mimeType' => 'text/plain',
+                ],
+                'htm'  => [
+                    'mimeType' => 'text/html',
+                ],
+                'html' => [
+                    'mimeType' => 'text/html',
+                ],
+                'xml'  => [
                     'mimeType' => [
                         'text/xml',
                         'application/xml',
                     ],
                 ],
             ],
-        ]);
+        ]));
 
         $types = $this->helper->getValidMimeTypes();
 
@@ -127,7 +140,7 @@ class FileTypesTest extends TestCase
 
     public function testIsValidMimeTypeForExtensionWithMultipleTypes()
     {
-        $this->adjustConfiguration([
+        Config::set(new Zend_Config([
             'filetypes' => [
                 'xml' => [
                     'mimeType' => [
@@ -136,7 +149,7 @@ class FileTypesTest extends TestCase
                     ],
                 ],
             ],
-        ]);
+        ]));
 
         $this->assertTrue($this->helper->isValidMimeType('application/xml'));
         $this->assertTrue($this->helper->isValidMimeType('text/xml'));
@@ -144,8 +157,15 @@ class FileTypesTest extends TestCase
 
     public function testIsValidMimeTypeForExtension()
     {
-        $this->adjustConfiguration([
+        Config::set(new Zend_Config([
             'filetypes' => [
+                'pdf' => [
+                    'mimeType'           => 'application/pdf',
+                    'contentDisposition' => 'inline',
+                ],
+                'txt' => [
+                    'mimeType' => 'text/plain',
+                ],
                 'xml' => [
                     'mimeType' => [
                         'text/xml',
@@ -153,7 +173,7 @@ class FileTypesTest extends TestCase
                     ],
                 ],
             ],
-        ]);
+        ]));
 
         $this->assertTrue($this->helper->isValidMimeType('application/xml', 'xml'));
         $this->assertTrue($this->helper->isValidMimeType('text/xml', 'xml'));
@@ -174,9 +194,9 @@ class FileTypesTest extends TestCase
 
     public function testExtensionCaseInsensitive()
     {
-        $this->adjustConfiguration([
+        Config::set(new Zend_Config([
             'filetypes' => ['XML' => ['mimeType' => 'text/xml']],
-        ]);
+        ]));
 
         $this->assertTrue($this->helper->isValidMimeType('text/xml', 'xml'));
         $this->assertTrue($this->helper->isValidMimeType('text/xml', 'XML'));

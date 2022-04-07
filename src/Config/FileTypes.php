@@ -35,7 +35,7 @@
  * TODO different configuration structure might be more efficient
  */
 
-namespace Opus\Common\Config;
+namespace Opus\Config;
 
 use Opus\Config;
 
