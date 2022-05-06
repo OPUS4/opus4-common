@@ -25,22 +25,36 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2018-2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Model;
 
 /**
- * Interface for Document model objects.
- *
- * TODO add missing functions
- * TODO add documentation
+ * Interface for class creating model objects.
  */
-interface DocumentInterface
+interface ModelFactoryInterface
 {
+    /**
+     * @param string $type
+     * @return mixed
+     */
+    public function create($type);
 
-    public function getId();
+    /**
+     *
+     * TODO $modelId just int values or strings as well?
+     *
+     * @param string $type
+     * @param mixed $modelId
+     * @return mixed
+     */
+    public function get($type, $modelId);
 
-    public function getServerStateChanged();
+    /**
+     * @param string $modelType
+     * @return mixed
+     */
+    public function getRepository($modelType);
 }

@@ -25,22 +25,35 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2018-2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Common;
 
-/**
- * Interface for Document model objects.
- *
- * TODO add missing functions
- * TODO add documentation
- */
-interface DocumentInterface
+use Opus\Common\Model\AbstractModel;
+
+class EnrichmentKey extends AbstractModel
 {
+    public static function fetchByName($name)
+    {
+        $modelFactory = static::getModelFactory();
 
-    public function getId();
+        $modelType = self::getModelType();
 
-    public function getServerStateChanged();
+        $repository = $modelFactory->getRepository($modelType);
+
+        return $repository->fetchByName($name);
+    }
+
+    public static function getKeys()
+    {
+        $modelFactory = static::getModelFactory();
+
+        $modelType = self::getModelType();
+
+        $repository = $modelFactory->getRepository($modelType);
+
+        return $repository->getKeys();
+    }
 }

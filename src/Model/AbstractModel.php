@@ -25,22 +25,73 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2018-2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Model;
+
+use Opus\Common\Repository;
 
 /**
- * Interface for Document model objects.
- *
- * TODO add missing functions
- * TODO add documentation
+ * Base class for all model classes.
  */
-interface DocumentInterface
+abstract class AbstractModel
 {
 
-    public function getId();
+    public static function new()
+    {
+        return static::create();
+    }
 
-    public function getServerStateChanged();
+    /**
+     * Creates a new model object.
+     *
+     * @return mixed
+     */
+    public static function create()
+    {
+        $modelFactory = self::getModelFactory();
+
+        $modelType = self::getModelType();
+
+        return $modelFactory->create($modelType);
+    }
+
+    /**
+     * Retrieve model object for id.
+     *
+     * @param $modelId
+     * @return mixed
+     * @throws NotFoundException
+     */
+    public static function get($modelId)
+    {
+        $modelFactory = self::getModelFactory();
+
+        $modelType = self::getModelType();
+
+        return $modelFactory->get($modelType, $modelId);
+    }
+
+    /**
+     * Returns name of model type.
+     * @return string
+     */
+    public static function getModelType()
+    {
+        $modelClass = get_called_class();
+
+        $pos = strrpos($modelClass, '\\');
+
+        return substr($modelClass, $pos + 1);
+    }
+
+    /**
+     * @return ModelFactoryInterface|null
+     */
+    protected static function getModelFactory()
+    {
+        return Repository::getInstance()->getModelFactory();
+    }
 }

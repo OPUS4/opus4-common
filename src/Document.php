@@ -25,22 +25,20 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2018-2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Common;
 
+use Opus\Common\Model\AbstractModel;
+
 /**
- * Interface for Document model objects.
+ * Base model class for documents.
  *
- * TODO add missing functions
- * TODO add documentation
+ * TODO model description (properties, types, validation, ...)
  */
-interface DocumentInterface
+class Document extends AbstractModel implements ServerStateConstants
 {
 
-    public function getId();
-
-    public function getServerStateChanged();
 }

@@ -31,6 +31,7 @@
 
 namespace Opus\Common;
 
+use Opus\Common\Model\ModelFactoryInterface;
 use Opus\Common\Model\Xml\XmlCacheInterface;
 
 /**
@@ -86,6 +87,23 @@ class Repository
         }
 
         return new $cacheClass();
+    }
+
+    /**
+     * @return ModelFactoryInterface|null
+     */
+    public function getModelFactory()
+    {
+        $config = $this->getConfig();
+
+        if (isset($config->modelFactory)) {
+            $modelFactoryClass = $config->modelFactory;
+        } else {
+            // TODO throw exception
+            return null;
+        }
+
+        return new $modelFactoryClass;
     }
 
     /**
