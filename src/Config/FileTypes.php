@@ -35,9 +35,9 @@
  * TODO different configuration structure might be more efficient
  */
 
-namespace Opus\Config;
+namespace Opus\Common\Config;
 
-use Opus\Config;
+use Opus\Common\Config;
 
 use function in_array;
 use function is_array;
@@ -79,7 +79,7 @@ class FileTypes
     /**
      * Checks if a MIME-type is allowed for OPUS 4 files.
      *
-     * @param array       $mimeType
+     * @param string      $mimeType
      * @param string|null $extension
      * @return bool
      *

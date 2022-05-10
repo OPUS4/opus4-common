@@ -30,10 +30,10 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Console\Helper;
+namespace OpusTest\Common\Console\Helper;
 
-use Opus\Console\Helper\ProgressBar;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Console\Helper\ProgressBar;
+use OpusTest\Common\TestAsset\TestCase;
 use Symfony\Component\Console\Output\StreamOutput;
 
 use function fopen;

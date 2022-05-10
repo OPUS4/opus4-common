@@ -29,14 +29,14 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Log;
+namespace OpusTest\Common\Log;
 
 use Exception;
 use FilesystemIterator;
 use InvalidArgumentException;
-use Opus\Exception as OpusException;
-use Opus\Log\LogService;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Exception as OpusException;
+use Opus\Common\Log\LogService;
+use OpusTest\Common\TestAsset\TestCase;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
 use ReflectionException;

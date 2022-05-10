@@ -29,11 +29,11 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Config;
+namespace OpusTest\Common\Config;
 
-use Opus\Config;
-use Opus\Config\FileTypes;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Config;
+use Opus\Common\Config\FileTypes;
+use OpusTest\Common\TestAsset\TestCase;
 use Zend_Config;
 
 class FileTypesTest extends TestCase

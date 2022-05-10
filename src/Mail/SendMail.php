@@ -29,10 +29,10 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Mail;
+namespace Opus\Common\Mail;
 
-use Opus\Config;
-use Opus\Log;
+use Opus\Common\Config;
+use Opus\Common\Log;
 use Zend_Mail;
 use Zend_Mail_Transport_File;
 use Zend_Validate_EmailAddress;

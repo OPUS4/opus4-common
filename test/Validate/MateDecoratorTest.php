@@ -29,10 +29,10 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Validate;
+namespace OpusTest\Common\Validate;
 
-use Opus\Validate\MateDecorator;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Validate\MateDecorator;
+use OpusTest\Common\TestAsset\TestCase;
 use Zend_Validate_NotEmpty;
 
 use function round;

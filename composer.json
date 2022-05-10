@@ -23,12 +23,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Opus\\": "src/"
+      "Opus\\Common\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "OpusTest\\": "test/"
+      "OpusTest\\Common\\": "test/"
     }
   },
   "scripts": {

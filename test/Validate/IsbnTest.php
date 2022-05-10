@@ -29,10 +29,10 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Validate;
+namespace OpusTest\Common\Validate;
 
-use Opus\Validate\Isbn;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Validate\Isbn;
+use OpusTest\Common\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_Isbn.

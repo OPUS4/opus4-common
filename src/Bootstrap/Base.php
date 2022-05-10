@@ -29,12 +29,12 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Bootstrap;
+namespace Opus\Common\Bootstrap;
 
 use Exception;
-use Opus\Config;
-use Opus\Log;
-use Opus\Log\LogService;
+use Opus\Common\Config;
+use Opus\Common\Log;
+use Opus\Common\Log\LogService;
 use Zend_Application_Bootstrap_Bootstrap;
 use Zend_Cache;
 use Zend_Config;

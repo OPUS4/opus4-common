@@ -29,7 +29,7 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Console\Helper;
+namespace Opus\Common\Console\Helper;
 
 /**
  * Interface for progress output in OPUS 4 commands like index:index, or index:extract.

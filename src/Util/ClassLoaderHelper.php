@@ -29,7 +29,7 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Util;
+namespace Opus\Common\Util;
 
 use Zend_Loader_Autoloader;
 

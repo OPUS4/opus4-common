@@ -29,11 +29,11 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest;
+namespace OpusTest\Common;
 
-use Opus\Log;
-use Opus\LoggingTrait;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Log;
+use Opus\Common\LoggingTrait;
+use OpusTest\Common\TestAsset\TestCase;
 use Zend_Log;
 
 class LoggingTraitTest extends TestCase

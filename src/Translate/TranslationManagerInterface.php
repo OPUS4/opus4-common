@@ -29,7 +29,7 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Translate;
+namespace Opus\Common\Translate;
 
 /**
  * Interface for modifying translations in OPUS 4.

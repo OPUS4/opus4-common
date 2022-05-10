@@ -29,7 +29,7 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Model\Xml;
+namespace Opus\Common\Model\Xml;
 
 use DOMDocument;
 

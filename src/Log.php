@@ -29,11 +29,11 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace Opus\Common;
 
 use InvalidArgumentException;
-use Opus\Log\LevelFilter;
-use Opus\Log\LogService;
+use Opus\Common\Log\LevelFilter;
+use Opus\Common\Log\LogService;
 use Zend_Exception;
 use Zend_Log;
 use Zend_Log_Exception;

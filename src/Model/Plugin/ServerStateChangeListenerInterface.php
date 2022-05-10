@@ -29,7 +29,7 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Model\Plugin;
+namespace Opus\Common\Model\Plugin;
 
 /**
  * Interface kann von einem Plugin implementiert werden, wenn es nur bei einer Änderung des Wertes
