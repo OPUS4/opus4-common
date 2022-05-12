@@ -28,11 +28,6 @@
  * @copyright   Copyright (c) 2008-2010, OPUS 4 development team
  * @copyright   Copyright (c) 2010 Saechsische Landesbibliothek - Staats- und Universitaetsbibliothek Dresden (SLUB)
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
- *
- * @category    Framework
- * @package     Opus\Model
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Henning Gerhardt <henning.gerhardt@slub-dresden.de>
  */
 
 namespace Opus\Common\Storage;

@@ -27,10 +27,6 @@
  *
  * @copyright   Copyright (c) 2011-2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
- *
- * @category    Tests
- * @package     Opus\Common\Storage
- * @author      Jens Schwidder <schwidder@zib.de>
  */
 
 namespace OpusTest\Common\Storage;

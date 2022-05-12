@@ -27,20 +27,15 @@
  *
  * @copyright   Copyright (c) 2011, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
- *
- * @category    Tests
- * @package     Opus\File
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  */
 
 namespace OpusTest\Common\Storage;
 
 use Opus\Common\Config;
-use Opus\Common\Util\File as FileUtil;
 use Opus\Common\Storage\File;
 use Opus\Common\Storage\FileNotFoundException;
 use Opus\Common\Storage\StorageException;
+use Opus\Common\Util\File as FileUtil;
 use OpusTest\Common\TestAsset\TestCase;
 
 use function fclose;
@@ -58,8 +53,6 @@ use const DIRECTORY_SEPARATOR;
 /**
  * Test cases for class Opus\Common\Storage\File.
  *
- * @package  Opus\File
- * @category Tests
  * @group FileTest
  */
 class FileTest extends TestCase
