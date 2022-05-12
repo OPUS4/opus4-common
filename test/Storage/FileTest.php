@@ -72,7 +72,7 @@ class FileTest extends TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
 
@@ -103,12 +103,13 @@ class FileTest extends TestCase
      */
     public function testConstructorFail()
     {
-        $this->setExpectedException(StorageException::class);
+        $this->expectException(StorageException::class);
+
         $storage = new File();
     }
 
     /**
-     * Tests getting the working directory of a Opus\Storage\File object.
+     * Tests getting the working directory of a Opus\Common\Storage\File object.
      */
     public function testGetWorkingDirectory()
     {
@@ -168,7 +169,7 @@ class FileTest extends TestCase
     {
         $storage = new File($this->destPath, 'subdir');
         $storage->createSubdirectory();
-        $this->setExpectedException(FileNotFoundException::class);
+        $this->expectException(FileNotFoundException::class);
         $storage->renameFile('test', 'test2');
     }
 
@@ -181,7 +182,7 @@ class FileTest extends TestCase
         $storage->createSubdirectory();
         $path = $storage->getWorkingDirectory() . '/testdir';
         mkdir($path);
-        $this->setExpectedException(StorageException::class);
+        $this->expectException(StorageException::class);
         $storage->renameFile('testdir', 'testdir2');
     }
 
