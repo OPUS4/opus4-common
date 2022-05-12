@@ -35,7 +35,7 @@
  * @author      Henning Gerhardt <henning.gerhardt@slub-dresden.de>
  */
 
-namespace Opus\Storage;
+namespace Opus\Common\Storage;
 
 use Exception;
 use finfo;

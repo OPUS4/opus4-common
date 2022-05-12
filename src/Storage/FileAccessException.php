@@ -33,7 +33,7 @@
  * @author      Jens Schwidder <schwidder@zib.de>
  */
 
-namespace Opus\Storage;
+namespace Opus\Common\Storage;
 
 /**
  * Thrown if a file cannot be accessed, e.g because of permission problems.

@@ -34,14 +34,14 @@
  * @author      Jens Schwidder <schwidder@zib.de>
  */
 
-namespace OpusTest\Storage;
+namespace OpusTest\Common\Storage;
 
 use Opus\Common\Config;
 use Opus\Common\Util\File as FileUtil;
-use Opus\Storage\File;
-use Opus\Storage\FileNotFoundException;
-use Opus\Storage\StorageException;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Storage\File;
+use Opus\Common\Storage\FileNotFoundException;
+use Opus\Common\Storage\StorageException;
+use OpusTest\Common\TestAsset\TestCase;
 
 use function fclose;
 use function fopen;
@@ -56,7 +56,7 @@ use function uniqid;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * Test cases for class Opus\Storage\File.
+ * Test cases for class Opus\Common\Storage\File.
  *
  * @package  Opus\File
  * @category Tests

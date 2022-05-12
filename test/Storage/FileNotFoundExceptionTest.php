@@ -29,14 +29,14 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  *
  * @category    Tests
- * @package     Opus\Storage
+ * @package     Opus\Common\Storage
  * @author      Jens Schwidder <schwidder@zib.de>
  */
 
-namespace OpusTest\Storage;
+namespace OpusTest\Common\Storage;
 
-use Opus\Storage\FileNotFoundException;
-use OpusTest\TestAsset\TestCase;
+use Opus\Common\Storage\FileNotFoundException;
+use OpusTest\Common\TestAsset\TestCase;
 
 /**
  * Test Opus\Storage\FileNotFoundException class.
