@@ -33,12 +33,17 @@ namespace Opus\Common\Model;
 
 use Opus\Common\Repository;
 
+use function strrpos;
+use function substr;
+
 /**
  * Base class for all model classes.
  */
 abstract class AbstractModel
 {
-
+    /**
+     * @return mixed
+     */
     public static function new()
     {
         return static::create();
@@ -61,7 +66,7 @@ abstract class AbstractModel
     /**
      * Retrieve model object for id.
      *
-     * @param $modelId
+     * @param mixed $modelId
      * @return mixed
      * @throws NotFoundException
      */
@@ -76,11 +81,12 @@ abstract class AbstractModel
 
     /**
      * Returns name of model type.
+     *
      * @return string
      */
     public static function getModelType()
     {
-        $modelClass = get_called_class();
+        $modelClass = static::class;
 
         $pos = strrpos($modelClass, '\\');
 

@@ -35,6 +35,10 @@ use Opus\Common\Model\AbstractModel;
 
 class EnrichmentKey extends AbstractModel
 {
+    /**
+     * @param string $name
+     * @return mixed
+     */
     public static function fetchByName($name)
     {
         $modelFactory = static::getModelFactory();
@@ -46,6 +50,9 @@ class EnrichmentKey extends AbstractModel
         return $repository->fetchByName($name);
     }
 
+    /**
+     * @return array
+     */
     public static function getKeys()
     {
         $modelFactory = static::getModelFactory();

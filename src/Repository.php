@@ -103,7 +103,7 @@ class Repository
             return null;
         }
 
-        return new $modelFactoryClass;
+        return new $modelFactoryClass();
     }
 
     /**

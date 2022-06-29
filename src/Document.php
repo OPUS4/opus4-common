@@ -38,7 +38,6 @@ use Opus\Common\Model\AbstractModel;
  *
  * TODO model description (properties, types, validation, ...)
  */
-class Document extends AbstractModel implements ServerStateConstants
+class Document extends AbstractModel implements ServerStateConstantsInterface
 {
-
 }

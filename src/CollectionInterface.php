@@ -33,5 +33,4 @@ namespace Opus\Common;
 
 interface CollectionInterface
 {
-
 }

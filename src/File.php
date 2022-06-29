@@ -35,5 +35,4 @@ use Opus\Common\Model\AbstractModel;
 
 class File extends AbstractModel
 {
-
 }

@@ -43,11 +43,10 @@ interface ModelFactoryInterface
     public function create($type);
 
     /**
-     *
      * TODO $modelId just int values or strings as well?
      *
      * @param string $type
-     * @param mixed $modelId
+     * @param mixed  $modelId
      * @return mixed
      */
     public function get($type, $modelId);

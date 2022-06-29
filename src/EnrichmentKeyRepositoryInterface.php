@@ -33,7 +33,14 @@ namespace Opus\Common;
 
 interface EnrichmentKeyRepositoryInterface
 {
+    /**
+     * @param string $name
+     * @return mixed
+     */
     public function fetchByName($name);
 
+    /**
+     * @return array
+     */
     public function getKeys();
 }

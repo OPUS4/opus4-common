@@ -2,9 +2,8 @@
 
 namespace Opus\Common;
 
-interface ServerStateConstants
+interface ServerStateConstantsInterface
 {
-
     public const STATE_DELETED     = 'deleted';
     public const STATE_INPROGRESS  = 'inprogress';
     public const STATE_RESTRICTED  = 'restricted';
@@ -12,5 +11,4 @@ interface ServerStateConstants
     public const STATE_PUBLISHED   = 'published';
     public const STATE_TEMPORARY   = 'temporary';
     public const STATE_AUDITED     = 'audited';
-
 }

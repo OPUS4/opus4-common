@@ -39,7 +39,6 @@ namespace Opus\Common;
  */
 interface DocumentInterface
 {
-
     public function getId();
 
     public function getServerStateChanged();

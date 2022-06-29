@@ -33,5 +33,4 @@ namespace Opus\Common\Model;
 
 interface DependentModelInterface extends ModelInterface
 {
-
 }
