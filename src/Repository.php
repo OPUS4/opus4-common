@@ -31,6 +31,7 @@
 
 namespace Opus\Common;
 
+use Opus\Common\Config\ConfigException;
 use Opus\Common\Model\ModelFactoryInterface;
 use Opus\Common\Model\Xml\XmlCacheInterface;
 
@@ -65,7 +66,7 @@ class Repository
         if (isset($config->documentFinderClass)) {
             $finderClass = $config->documentFinderClass;
         } else {
-            throw new Exception('DocumentFinder not configured');
+            throw new ConfigException('Missing configuration parameter: documentFinderClass');
         }
 
         return new $finderClass();
@@ -99,8 +100,7 @@ class Repository
         if (isset($config->modelFactory)) {
             $modelFactoryClass = $config->modelFactory;
         } else {
-            // TODO throw exception
-            return null;
+            throw new ConfigException('Missing configuration parameter: modelFactory');
         }
 
         return new $modelFactoryClass();

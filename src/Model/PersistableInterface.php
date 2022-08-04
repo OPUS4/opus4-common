@@ -25,14 +25,40 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Model;
 
-use Exception as PhpException;
-
-class Exception extends PhpException
+/**
+ * Interface for persistence of data model objects.
+ *
+ * In OPUS 4 data model objects are "active records", they provide functions for storing, loading, deleting objects.
+ */
+interface PersistableInterface
 {
+    /**
+     * @return mixed Return ID for model
+     *
+     * TODO LAMINAS in most cases an int value, but EnrichmentKey uses a string as ID
+     */
+    public function getId();
+
+    /**
+     * @return mixed Return ID of stored model
+     */
+    public function store();
+
+    /**
+     * @return mixed Return ID of deleted model
+     *
+     * TODO LAMINAS review return value
+     */
+    public function delete();
+
+    /**
+     * @return bool True if the model has not been stored yet (and therefore does not have an ID)
+     */
+    public function isNew();
 }

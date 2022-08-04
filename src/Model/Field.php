@@ -25,17 +25,72 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2009, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common\Mail;
+namespace Opus\Common\Model;
 
-use Exception;
+use function ucfirst;
 
 /**
- * Extends default OpusException class.
+ * TODO This class is used to keep Opus\Common\Date compatible to the old Framework implementation and the code for
+ *      generating XML. The old Field class still exists and is used by the entity classes in the Framework. For Date
+ *      the Field objects are only created on demand and not at construction of the object.
+ *
+ * TODO LAMINAS keep this?
  */
-class MailException extends Exception
+class Field implements FieldInterface
 {
+    private $model;
+
+    private $name;
+
+    private $valueModelClass;
+
+    /**
+     * @param ModelInterface $model
+     * @param string         $name
+     * @param string|null    $valueModelClass
+     */
+    public function __construct($model, $name, $valueModelClass = null)
+    {
+        $this->model           = $model;
+        $this->name            = $name;
+        $this->valueModelClass = $valueModelClass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getValueModelClass()
+    {
+        return $this->valueModelClass;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        $getter = 'get' . ucfirst($this->name);
+
+        return $this->model->$getter();
+    }
+
+    /**
+     * @return false
+     */
+    public function hasMultipleValues()
+    {
+        return false; // TODO LAMINAS get from model description
+    }
 }

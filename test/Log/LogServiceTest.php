@@ -34,8 +34,8 @@ namespace OpusTest\Common\Log;
 use Exception;
 use FilesystemIterator;
 use InvalidArgumentException;
-use Opus\Common\Exception as OpusException;
 use Opus\Common\Log\LogService;
+use Opus\Common\OpusException;
 use OpusTest\Common\TestAsset\TestCase;
 use RecursiveDirectoryIterator;
 use ReflectionClass;
@@ -61,7 +61,7 @@ use const PHP_EOL;
 
 class LogServiceTest extends TestCase
 {
-    const DEFAULT_FORMAT = '%timestamp% %priorityName% (ID %runId%): %message%';
+    public const DEFAULT_FORMAT = '%timestamp% %priorityName% (ID %runId%): %message%';
 
     private $logService;
 

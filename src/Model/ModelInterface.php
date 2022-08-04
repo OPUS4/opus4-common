@@ -31,11 +31,16 @@
 
 namespace Opus\Common\Model;
 
+/**
+ * Interface for model classes.
+ *
+ * This interface does not include methods required for persisting objects. Those methods are defined
+ * in the PersistableInterface, in order to keep the definition of the data model separate from the
+ * implementation of the persistance code.
+ *
+ * TODO LAMINAS design-in-progress For now just a marker for model classes
+ * TODO LAMINAS define methods the are required in every model
+ */
 interface ModelInterface
 {
-    public function getId();
-
-    public function store();
-
-    public function delete();
 }

@@ -54,7 +54,7 @@ class Config
      * Returns the path to the application workspace.
      *
      * @return string
-     * @throws Exception
+     * @throws OpusException
      */
     public function getWorkspacePath()
     {
@@ -62,7 +62,7 @@ class Config
 
         if (! isset($config->workspacePath)) {
             $this->getLogger()->err('missing config key workspacePath');
-            throw new Exception('missing configuration key workspacePath');
+            throw new OpusException('missing configuration key workspacePath');
         }
 
         $workspacePath = $config->workspacePath;
@@ -78,7 +78,7 @@ class Config
      * Returns path to temporary files folder.
      *
      * @return string Path for temporary files.
-     * @throws Exception
+     * @throws OpusException
      */
     public function getTempPath()
     {

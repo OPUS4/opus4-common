@@ -25,17 +25,38 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2009, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common\Mail;
-
-use Exception;
+namespace Opus\Common\Model;
 
 /**
- * Extends default OpusException class.
+ * Interface for object representing a field of a data model object.
+ *
+ * This is not a generic field descriptor, but is connected to a specific instance model object.
+ *
+ * TODO LAMINAS expand to fully duplicate old Field class functionality (add, set, ...)
  */
-class MailException extends Exception
+interface FieldInterface
 {
+    /**
+     * @return string Name of data model field
+     */
+    public function getName();
+
+    /**
+     * @return string|null Class for complex values
+     */
+    public function getValueModelClass();
+
+    /**
+     * @return mixed Value of the field in a model
+     */
+    public function getValue();
+
+    /**
+     * @return bool True, if multiple values are possible for this field
+     */
+    public function hasMultipleValues();
 }

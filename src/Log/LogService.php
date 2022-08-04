@@ -34,8 +34,8 @@ namespace Opus\Common\Log;
 use Exception as PhpException;
 use InvalidArgumentException;
 use Opus\Common\Config;
-use Opus\Common\Exception;
 use Opus\Common\Log;
+use Opus\Common\OpusException;
 use ReflectionClass;
 use Zend_Config;
 use Zend_Exception;
@@ -90,17 +90,17 @@ class LogService
     /**
      * Default format used if nothing has been provided or configured.
      */
-    const DEFAULT_FORMAT = '%timestamp% %priorityName% (%priority%, ID %runId%): %message%';
+    public const DEFAULT_FORMAT = '%timestamp% %priorityName% (%priority%, ID %runId%): %message%';
 
     /**
      * Default priority if nothings has been provided or configured.
      */
-    const DEFAULT_PRIORITY = 'INFO';
+    public const DEFAULT_PRIORITY = 'INFO';
 
     /**
      * Name of logger used as default.
      */
-    const DEFAULT_LOG = 'default';
+    public const DEFAULT_LOG = 'default';
 
     /** @var self Singleton instance of LogService. */
     private static $instance;
@@ -212,12 +212,12 @@ class LogService
      *
      * @param string   $name Name of log
      * @param Zend_Log $logger
-     * @throws Exception
+     * @throws OpusException
      */
     public function addLog($name, $logger)
     {
         if (! $logger instanceof Zend_Log) {
-            throw new Exception('Logger added must be of type Zend_Log.');
+            throw new OpusException('Logger added must be of type Zend_Log.');
         }
         $this->loggers[$name] = $logger;
     }
@@ -260,7 +260,7 @@ class LogService
             if (isset($config->workspacePath)) {
                 $this->logPath = $config->workspacePath . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR;
             } else {
-                throw new Exception('Workspace path not found in configuration.');
+                throw new OpusException('Workspace path not found in configuration.');
             }
         }
 
@@ -348,7 +348,7 @@ class LogService
         } elseif (is_string($priority)) {
             $this->defaultPriority = $this->convertPriorityFromString($priority);
         } else {
-            throw new Exception('Setting default priority with invalid parameter.');
+            throw new OpusException('Setting default priority with invalid parameter.');
         }
     }
 

@@ -33,13 +33,15 @@ namespace Opus\Common\Model;
 
 use Opus\Common\Repository;
 
+use function in_array;
 use function strrpos;
 use function substr;
+use function ucfirst;
 
 /**
  * Base class for all model classes.
  */
-abstract class AbstractModel
+abstract class AbstractModel implements ModelInterface
 {
     /**
      * @return mixed
@@ -83,6 +85,9 @@ abstract class AbstractModel
      * Returns name of model type.
      *
      * @return string
+     *
+     * TODO LAMINAS how to handle things like "getModelType" vs. "getTitle"
+     *      (getters that are/are not part of data model)
      */
     public static function getModelType()
     {
@@ -99,5 +104,85 @@ abstract class AbstractModel
     protected static function getModelFactory()
     {
         return Repository::getInstance()->getModelFactory();
+    }
+
+    /**
+     * Returns the relevant properties of the class
+     *
+     * @return array
+     *
+     * TODO abstract?
+     * TODO implement default behavior
+     */
+    protected static function describe()
+    {
+        return [];
+    }
+
+    /**
+     * TODO better way? needed?
+     * TODO How to handle boolean of integer fields?
+     */
+    public function clearFields()
+    {
+        foreach ($this->describe() as $fieldName) {
+            $setter = 'set' . ucfirst($fieldName);
+            $this->$setter(null);
+        }
+    }
+
+    /**
+     * Updates the model with the data from an array.
+     *
+     * New objects are created for values with a model class. If a link model class is specified those objects
+     * are created as well.
+     *
+     * @param array $data
+     *
+     * TODO support updateFromArray for linked model objects (e.g. update Title object when updating Document)
+     */
+    public function updateFromArray($data)
+    {
+        $validProperties = static::describe();
+
+        foreach ($data as $propertyName => $value) {
+            if (in_array($propertyName, $validProperties, true)) {
+                $this->{"set" . $propertyName}($value);
+            }
+        }
+    }
+
+    /**
+     * Creates a new object and initializes it with data.
+     *
+     * @param array $data
+     * @return mixed
+     */
+    public static function fromArray($data)
+    {
+        $model = new static();
+        $model->updateFromArray($data);
+        return $model;
+    }
+
+    /**
+     * Returns a nested associative array representation of the model data.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $result = [];
+        foreach (static::describe() as $propertyName) {
+            $value = $this->{"get" . $propertyName}();
+
+            if ($value instanceof AbstractModel) {
+                $result[$propertyName] = $value->toArray();
+            } else {
+                $result[$propertyName] = $value;
+            }
+        }
+
+        return $result;
     }
 }
