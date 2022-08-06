@@ -8,6 +8,7 @@
   ],
   "homepage": "http://www.opus-repository.org",
   "require": {
+    "ext-dom": "*",
     "ext-mbstring": "*",
     "zendframework/zendframework1": "1.12.*",
     "symfony/console": "*"
