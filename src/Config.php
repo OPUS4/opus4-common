@@ -32,6 +32,7 @@
 namespace Opus\Common;
 
 use InvalidArgumentException;
+use Zend_Config;
 
 use function substr;
 use function trim;
@@ -140,7 +141,7 @@ class Config
     }
 
     /**
-     * @param self $config
+     * @param Zend_Config $config
      */
     public static function set($config)
     {
@@ -148,7 +149,7 @@ class Config
     }
 
     /**
-     * @return self
+     * @return Zend_Config
      */
     public static function get()
     {
