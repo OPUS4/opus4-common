@@ -32,13 +32,23 @@
 namespace Opus\Common;
 
 use Opus\Common\Config\ConfigException;
+use Opus\Common\Model\ModelException;
 use Opus\Common\Model\ModelFactoryInterface;
+use Opus\Common\Model\ModelInterface;
+use Opus\Common\Model\ModelRepositoryInterface;
 use Opus\Common\Model\Xml\XmlCacheInterface;
+
+use function class_exists;
+use function strrpos;
+use function substr;
 
 /**
  * Central OPUS 4 class for accessing document data.
  *
  * TODO review design and functions (especially anything that is static)
+ * TODO cache ModelFactory?
+ * TODO use class as type?
+ * TODO converting class to type, i.e. Opus\Common\Document to Document means a flat naming structure - okay?
  */
 class Repository
 {
@@ -104,6 +114,50 @@ class Repository
         }
 
         return new $modelFactoryClass();
+    }
+
+    /**
+     * @param string $type
+     * @return ModelRepositoryInterface
+     *
+     * TODO use class as type?
+     */
+    public function getModelRepository($type)
+    {
+        if (class_exists($type)) {
+            $type = $this->getModelTypeForClass($type);
+        }
+
+        $modelFactory = $this->getModelFactory();
+
+        return $modelFactory->getRepository($type);
+    }
+
+    /**
+     * Returns model type for model class.
+     *
+     * The mapping from class to type should be centralized here. Packages implementing persistence for the data model
+     * should only map from model types to implementing classes. Code using the date model should only use the generic
+     * model classes in Opus\Common.
+     *
+     * TODO is there a need for other packages to extend the data model with new classes?
+     *
+     * @param string $modelClass
+     * @return false|string
+     *
+     * TODO this works for now, but needs to be reviewed later
+     */
+    public function getModelTypeForClass($modelClass)
+    {
+        $interfaces = class_implements($modelClass);
+
+        if (! $interfaces || ! in_array(ModelInterface::class, $interfaces)) {
+            throw new ModelException("$modelClass does not implement ModelInterface");
+        }
+
+        $pos = strrpos($modelClass, '\\');
+
+        return substr($modelClass, $pos + 1);
     }
 
     /**
