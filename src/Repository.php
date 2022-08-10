@@ -39,6 +39,8 @@ use Opus\Common\Model\ModelRepositoryInterface;
 use Opus\Common\Model\Xml\XmlCacheInterface;
 
 use function class_exists;
+use function class_implements;
+use function in_array;
 use function strrpos;
 use function substr;
 
