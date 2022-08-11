@@ -107,6 +107,14 @@ abstract class AbstractModel implements ModelInterface
     }
 
     /**
+     * @return ModelRepositoryInterface
+     */
+    protected static function getModelRepository()
+    {
+        return Repository::getInstance()->getModelRepository(self::class);
+    }
+
+    /**
      * Returns the relevant properties of the class
      *
      * @return array
