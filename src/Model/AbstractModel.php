@@ -33,6 +33,7 @@ namespace Opus\Common\Model;
 
 use Opus\Common\Repository;
 
+use function get_class;
 use function in_array;
 use function strrpos;
 use function substr;
@@ -111,7 +112,7 @@ abstract class AbstractModel implements ModelInterface
      */
     protected static function getModelRepository()
     {
-        return Repository::getInstance()->getModelRepository(self::class);
+        return Repository::getInstance()->getModelRepository(static::class);
     }
 
     /**

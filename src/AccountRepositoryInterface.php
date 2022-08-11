@@ -43,6 +43,7 @@ interface AccountRepositoryInterface extends ModelRepositoryInterface
     /**
      * @param string $login Login name
      * @return AccountInterface|null
+     * TODO throws SecurityException if login does not exist - should that be changed?
      */
     public function fetchAccountByLogin($login);
 }
