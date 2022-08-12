@@ -33,7 +33,6 @@ namespace Opus\Common\Model;
 
 use Opus\Common\Repository;
 
-use function get_class;
 use function in_array;
 use function strrpos;
 use function substr;
