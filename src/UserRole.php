@@ -31,84 +31,26 @@
 
 namespace Opus\Common;
 
-use Opus\Common\Model\ModelInterface;
+use Opus\Common\Model\AbstractModel;
 
-interface UserRoleInterface extends ModelInterface
+class UserRole extends AbstractModel
 {
     /**
-     * @return string
+     * @return UserRoleInterface[]
      */
-    public function getDisplayName();
-
-    /**
-     * @return string
-     */
-    public function getName();
+    public static function getAll()
+    {
+        $userRoles = self::getModelRepository();
+        return $userRoles->getAll();
+    }
 
     /**
      * @param string $name
-     * @return $this
+     * @return UserRoleInterface|null
      */
-    public function setName($name);
-
-    /**
-     * @return int[]
-     */
-    public function getAllAccountIds();
-
-    /**
-     * @return string[]
-     */
-    public function getAllAccountNames();
-
-    /**
-     * @return string[]
-     */
-    public function listAccessModules();
-
-    /**
-     * @param string $moduleName
-     * @return $this
-     */
-    public function appendAccessModule($moduleName);
-
-    /**
-     * @param string $moduleName
-     * @return $this
-     */
-    public function removeAccessModule($moduleName);
-
-    /**
-     * @return int[]
-     */
-    public function listAccessDocuments();
-
-    /**
-     * @param int $docId
-     * @return $this
-     */
-    public function appendAccessDocument($docId);
-
-    /**
-     * @param int $docId
-     * @return $this
-     */
-    public function removeAccessDocument($docId);
-
-    /**
-     * @return int[]
-     */
-    public function listAccessFiles();
-
-    /**
-     * @param int $fileId
-     * @return $this
-     */
-    public function appendAccessFile($fileId);
-
-    /**
-     * @param int $fileId
-     * @return $this
-     */
-    public function removeAccessFile($fileId);
+    public static function fetchByName($name)
+    {
+        $userRoles = self::getModelRepository();
+        return $userRoles->fetchByName($name);
+    }
 }
