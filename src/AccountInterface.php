@@ -35,81 +35,80 @@ use Opus\Common\Model\ModelInterface;
 
 interface AccountInterface extends ModelInterface
 {
-//    TODO LAMINAS Framework uses magic, so functions are not actually present - fix later
-//    /**
-//     * @return string
-//     */
-//    public function getLogin();
-//
-//    /**
-//     * @param string $login
-//     * TODO LAMINAS throws SecurityException If login does not meet security requirements
-//     * @return $this Fluent interface
-//     */
-//    public function setLogin($login);
-//
-//    /**
-//     * @return string
-//     */
-//    public function getPassword();
-//
-//    /**
-//     * @param string $password
-//     * @return $this Fluent interface
-//     */
-//    public function setPassword($password);
-//
-//    /**
-//     * @return string
-//     */
-//    public function getFirstName();
-//
-//    /**
-//     * @param string $firstName
-//     * @return $this Fluent interface
-//     */
-//    public function setFirstName($firstName);
-//
-//    /**
-//     * @return string
-//     */
-//    public function getLastName();
-//
-//    /**
-//     * @param string $lastName
-//     * @return $this Fluent interface
-//     */
-//    public function setLastName($lastName);
-//
-//    /**
-//     * @return string
-//     */
-//    public function getEmail();
-//
-//    /**
-//     * @param string $email
-//     * @return $this Fluent interface
-//     */
-//    public function setEmail($email);
-//
-//    /**
-//     * @param UserRoleInterface $role
-//     * @return $this Fluent interface
-//     */
-//    public function addRole($role);
-//
-//    /**
-//     * @return UserRoleInterface[]|null
-//     *
-//     * TODO rename getRoles?
-//     */
-//    public function getRole();
-//
-//    /**
-//     * TODO rename setRoles?
-//     *
-//     * @param UserRoleInterface[] $roles
-//     * @return $this Fluent interface
-//     */
-//    public function setRole($roles);
+    /**
+     * @return string
+     */
+    public function getLogin();
+
+    /**
+     * @param string $login
+     * TODO LAMINAS throws SecurityException If login does not meet security requirements
+     * @return $this Fluent interface
+     */
+    public function setLogin($login);
+
+    /**
+     * @return string
+     */
+    public function getPassword();
+
+    /**
+     * @param string $password
+     * @return $this Fluent interface
+     */
+    public function setPassword($password);
+
+    /**
+     * @return string
+     */
+    public function getFirstName();
+
+    /**
+     * @param string $firstName
+     * @return $this Fluent interface
+     */
+    public function setFirstName($firstName);
+
+    /**
+     * @return string
+     */
+    public function getLastName();
+
+    /**
+     * @param string $lastName
+     * @return $this Fluent interface
+     */
+    public function setLastName($lastName);
+
+    /**
+     * @return string
+     */
+    public function getEmail();
+
+    /**
+     * @param string $email
+     * @return $this Fluent interface
+     */
+    public function setEmail($email);
+
+    /**
+     * @param UserRoleInterface $role
+     * @return $this Fluent interface
+     */
+    public function addRole($role);
+
+    /**
+     * @return UserRoleInterface[]|null
+     *
+     * TODO rename getRoles?
+     */
+    public function getRole();
+
+    /**
+     * TODO rename setRoles?
+     *
+     * @param UserRoleInterface[] $roles
+     * @return $this Fluent interface
+     */
+    public function setRole($roles);
 }
