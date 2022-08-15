@@ -25,7 +25,7 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2011-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2011, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
@@ -35,8 +35,14 @@ use Opus\Common\Log;
 use Zend_Config;
 use Zend_Mail_Transport_Smtp;
 
+use function array_flip;
+use function array_intersect_key;
+
 /**
- * Override
+ * mail.opus.auth = ;
+ * mail.opus.username = ;
+ * main.opus.password = ;
+ * main.opus.ssl = ;
  */
 class Transport extends Zend_Mail_Transport_Smtp
 {
@@ -57,14 +63,28 @@ class Transport extends Zend_Mail_Transport_Smtp
             $smtp = '127.0.0.1';
         }
 
-        $port = 25;
-
-        if (isset($config->port)) {
-            $port = $config->port;
+        if ($config !== null) {
+            $options = $config->toArray();
+        } else {
+            $options = [];
         }
 
-        Log::get()->info(self::class . " Using mail server {$smtp}:{$port}");
+        if (! isset($options['port'])) {
+            $options['port'] = 25;
+        }
 
-        parent::__construct($smtp, ['port' => $port]);
+        $allowedOptions = [
+            'port',
+            'auth',
+            'username',
+            'password',
+            'ssl',
+        ];
+
+        $options = array_intersect_key($options, array_flip($allowedOptions));
+
+        Log::get()->info(self::class . " Using mail server {$smtp}:{$options['port']}");
+
+        parent::__construct($smtp, $options);
     }
 }
