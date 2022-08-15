@@ -25,7 +25,7 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2017-2018
+ * @copyright   Copyright (c) 2017
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  *
  * Class for handling file type configuration.
@@ -37,7 +37,7 @@
 
 namespace Opus\Common\Config;
 
-use Opus\Common\Config;
+use Opus\Common\ConfigTrait;
 
 use function in_array;
 use function is_array;
@@ -45,10 +45,10 @@ use function strtolower;
 
 class FileTypes
 {
+    use ConfigTrait;
+
     /** @var array|null */
     private $validMimeTypes;
-
-    private $config;
 
     /**
      * Returns valid MIME-Types for imports.
@@ -144,19 +144,5 @@ class FileTypes
         }
 
         return $contentDisposition;
-    }
-
-    /**
-     * Returns application configuration.
-     *
-     * @return Config
-     */
-    public function getConfig()
-    {
-        if (null === $this->config) {
-            $this->config = Config::get();
-        }
-
-        return $this->config;
     }
 }

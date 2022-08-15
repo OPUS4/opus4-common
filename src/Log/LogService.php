@@ -33,12 +33,11 @@ namespace Opus\Common\Log;
 
 use Exception as PhpException;
 use InvalidArgumentException;
-use Opus\Common\Config;
+use Opus\Common\ConfigTrait;
 use Opus\Common\Log;
 use Opus\Common\OpusException;
 use ReflectionClass;
 use Zend_Config;
-use Zend_Exception;
 use Zend_Log;
 use Zend_Log_Exception;
 use Zend_Log_Formatter_Simple;
@@ -87,6 +86,8 @@ use const PHP_EOL;
  */
 class LogService
 {
+    use ConfigTrait;
+
     /**
      * Default format used if nothing has been provided or configured.
      */
@@ -104,9 +105,6 @@ class LogService
 
     /** @var self Singleton instance of LogService. */
     private static $instance;
-
-    /** @var Zend_Config Global configuration. */
-    private $config;
 
     /** @var string Path to the folder for log files. */
     private $logPath;
@@ -220,30 +218,6 @@ class LogService
             throw new OpusException('Logger added must be of type Zend_Log.');
         }
         $this->loggers[$name] = $logger;
-    }
-
-    /**
-     * Returns configuration.
-     *
-     * @throws Zend_Exception
-     * @return null|Zend_Config
-     */
-    public function getConfig()
-    {
-        if ($this->config === null) {
-            $this->config = Config::get();
-        }
-        return $this->config;
-    }
-
-    /**
-     * Sets configuration.
-     *
-     * @param Zend_Config $config
-     */
-    public function setConfig($config)
-    {
-        $this->config = $config;
     }
 
     /**

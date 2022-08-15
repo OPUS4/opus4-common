@@ -25,13 +25,13 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2011-2018, OPUS 4 development team
+ * @copyright   Copyright (c) 2011, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Common\Mail;
 
-use Opus\Common\Config;
+use Opus\Common\ConfigTrait;
 use Opus\Common\Log;
 use Zend_Mail;
 use Zend_Mail_Transport_File;
@@ -46,6 +46,8 @@ use function trim;
  */
 class SendMail
 {
+    use ConfigTrait;
+
     /** @var Transport */
     private $transport;
 
@@ -54,7 +56,8 @@ class SendMail
      */
     public function __construct()
     {
-        $config = Config::get();
+        $config = $this->getConfig();
+
         if (isset($config, $config->mail->opus)) {
             if (isset($config->mail->opus->transport) && $config->mail->opus->transport === 'file') {
                 // erlaubt das Speichern von E-Mails in Dateien, die im Verzeichnis mail.opus.file abgelegt werden
