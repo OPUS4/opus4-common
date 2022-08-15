@@ -61,7 +61,7 @@ class TransportTest extends TestCase
     {
     }
 
-    public function testConstructorWoConfig()
+    public function testConstructorWithoutConfig()
     {
         $transport = new Transport();
     }
@@ -74,5 +74,10 @@ class TransportTest extends TestCase
         ]);
 
         $transport = new Transport($config);
+    }
+
+    public function testAuthConfig()
+    {
+        $this->markTestIncomplete('not tested');
     }
 }
