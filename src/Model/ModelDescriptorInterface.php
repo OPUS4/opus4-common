@@ -29,51 +29,13 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Model;
 
-use Opus\Common\Model\AbstractModel;
-use Opus\Common\Model\ModelDescriptor;
-
-class UserRole extends AbstractModel
+interface ModelDescriptorInterface
 {
-    /** @var string Name of field 'Name' */
-    public const FIELD_NAME = 'Name';
-
     /**
-     * @return UserRoleInterface[]
+     * @param string $fieldName
+     * @return FieldDescriptorInterface
      */
-    public static function getAll()
-    {
-        $userRoles = self::getModelRepository();
-        return $userRoles->getAll();
-    }
-
-    /**
-     * @param string $name
-     * @return UserRoleInterface|null
-     */
-    public static function fetchByName($name)
-    {
-        $userRoles = self::getModelRepository();
-        return $userRoles->fetchByName($name);
-    }
-
-    /**
-     * @return ModelDescriptor
-     */
-    public static function describeModel()
-    {
-        if (self::$modelDescriptor === null) {
-            self::$modelDescriptor = new ModelDescriptor([
-                'fields' => [
-                    'Name' => [
-                        'type'    => 'string',
-                        'maxSize' => 100,
-                    ],
-                ],
-            ]);
-        }
-
-        return self::$modelDescriptor;
-    }
+    public function getFieldDescriptor($fieldName);
 }

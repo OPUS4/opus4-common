@@ -29,51 +29,18 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace OpusTest\Common\Model;
 
-use Opus\Common\Model\AbstractModel;
-use Opus\Common\Model\ModelDescriptor;
+use Opus\Common\Model\FieldDescriptor;
+use OpusTest\Common\TestAsset\TestCase;
 
-class UserRole extends AbstractModel
+class FieldDescriptorTest extends TestCase
 {
-    /** @var string Name of field 'Name' */
-    public const FIELD_NAME = 'Name';
-
-    /**
-     * @return UserRoleInterface[]
-     */
-    public static function getAll()
+    public function testConstruct()
     {
-        $userRoles = self::getModelRepository();
-        return $userRoles->getAll();
-    }
+        $field = new FieldDescriptor('test', ['maxSize' => 90], null);
 
-    /**
-     * @param string $name
-     * @return UserRoleInterface|null
-     */
-    public static function fetchByName($name)
-    {
-        $userRoles = self::getModelRepository();
-        return $userRoles->fetchByName($name);
-    }
-
-    /**
-     * @return ModelDescriptor
-     */
-    public static function describeModel()
-    {
-        if (self::$modelDescriptor === null) {
-            self::$modelDescriptor = new ModelDescriptor([
-                'fields' => [
-                    'Name' => [
-                        'type'    => 'string',
-                        'maxSize' => 100,
-                    ],
-                ],
-            ]);
-        }
-
-        return self::$modelDescriptor;
+        $this->assertEquals('test', $field->getName());
+        $this->assertEquals(90, $field->getMaxSize());
     }
 }

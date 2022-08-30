@@ -29,51 +29,36 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace OpusTest\Common;
 
-use Opus\Common\Model\AbstractModel;
+use Opus\Common\Model\FieldDescriptor;
 use Opus\Common\Model\ModelDescriptor;
+use Opus\Common\UserRole;
+use OpusTest\Common\TestAsset\TestCase;
 
-class UserRole extends AbstractModel
+class UserRoleTest extends TestCase
 {
-    /** @var string Name of field 'Name' */
-    public const FIELD_NAME = 'Name';
-
-    /**
-     * @return UserRoleInterface[]
-     */
-    public static function getAll()
+    public function testDescribeField()
     {
-        $userRoles = self::getModelRepository();
-        return $userRoles->getAll();
+        $field = UserRole::describeField(UserRole::FIELD_NAME);
+
+        $this->assertInstanceOf(FieldDescriptor::class, $field);
+
+        $this->assertEquals(UserRole::FIELD_NAME, $field->getName());
+        $this->assertEquals(100, $field->getMaxSize());
     }
 
-    /**
-     * @param string $name
-     * @return UserRoleInterface|null
-     */
-    public static function fetchByName($name)
+    public function testDescribeModel()
     {
-        $userRoles = self::getModelRepository();
-        return $userRoles->fetchByName($name);
+        $model = UserRole::describeModel();
+
+        $this->assertInstanceOf(ModelDescriptor::class, $model);
     }
 
-    /**
-     * @return ModelDescriptor
-     */
-    public static function describeModel()
+    public function testModelDescriptorOnlyCreatedOnce()
     {
-        if (self::$modelDescriptor === null) {
-            self::$modelDescriptor = new ModelDescriptor([
-                'fields' => [
-                    'Name' => [
-                        'type'    => 'string',
-                        'maxSize' => 100,
-                    ],
-                ],
-            ]);
-        }
+        $model = UserRole::describeModel();
 
-        return self::$modelDescriptor;
+        $this->assertSame($model, UserRole::describeModel());
     }
 }

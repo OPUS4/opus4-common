@@ -29,51 +29,86 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Model;
 
-use Opus\Common\Model\AbstractModel;
-use Opus\Common\Model\ModelDescriptor;
-
-class UserRole extends AbstractModel
+/**
+ * Describes field in data model.
+ */
+class FieldDescriptor implements FieldDescriptorInterface
 {
-    /** @var string Name of field 'Name' */
-    public const FIELD_NAME = 'Name';
+    /** @var ModelDescriptor */
+    private $modelDescriptor;
+
+    /** @var string Name of field */
+    private $name;
+
+    /** @var string Type of field TODO class? */
+    private $type = 'string';
+
+    /** @var int */
+    private $maxSize;
+
+    /** @var int */
+    private $multiplicity = 1;
 
     /**
-     * @return UserRoleInterface[]
+     * @param string                   $name
+     * @param array|null               $options
+     * @param ModelDescriptorInterface $owningModel
+     *
+     * TODO default values for type and maxSize
      */
-    public static function getAll()
+    public function __construct($name, $options, $owningModel)
     {
-        $userRoles = self::getModelRepository();
-        return $userRoles->getAll();
-    }
+        $this->modelDescriptor = $owningModel;
+        $this->name            = $name;
 
-    /**
-     * @param string $name
-     * @return UserRoleInterface|null
-     */
-    public static function fetchByName($name)
-    {
-        $userRoles = self::getModelRepository();
-        return $userRoles->fetchByName($name);
-    }
-
-    /**
-     * @return ModelDescriptor
-     */
-    public static function describeModel()
-    {
-        if (self::$modelDescriptor === null) {
-            self::$modelDescriptor = new ModelDescriptor([
-                'fields' => [
-                    'Name' => [
-                        'type'    => 'string',
-                        'maxSize' => 100,
-                    ],
-                ],
-            ]);
+        if (isset($options['type'])) {
+            $this->type = $options['type'];
         }
 
-        return self::$modelDescriptor;
+        if (isset($options['maxSize'])) {
+            $this->maxSize = $options['maxSize'];
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxSize()
+    {
+        return $this->maxSize;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return ModelDescriptorInterface
+     */
+    public function getModelDescriptor()
+    {
+        return $this->modelDescriptor;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMultiplicity()
+    {
+        return $this->multiplicity;
     }
 }

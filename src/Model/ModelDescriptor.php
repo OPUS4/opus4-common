@@ -29,51 +29,77 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Model;
 
-use Opus\Common\Model\AbstractModel;
-use Opus\Common\Model\ModelDescriptor;
+use Opus\Common\Config;
+use Opus\Common\ConfigTrait;
 
-class UserRole extends AbstractModel
+class ModelDescriptor implements ModelDescriptorInterface
 {
-    /** @var string Name of field 'Name' */
-    public const FIELD_NAME = 'Name';
+    use ConfigTrait;
+
+    private $fields;
+
+    private static $fieldDescriptorClass;
 
     /**
-     * @return UserRoleInterface[]
+     * @param array|null $config
      */
-    public static function getAll()
+    public function __construct($config = null)
     {
-        $userRoles = self::getModelRepository();
-        return $userRoles->getAll();
-    }
-
-    /**
-     * @param string $name
-     * @return UserRoleInterface|null
-     */
-    public static function fetchByName($name)
-    {
-        $userRoles = self::getModelRepository();
-        return $userRoles->fetchByName($name);
-    }
-
-    /**
-     * @return ModelDescriptor
-     */
-    public static function describeModel()
-    {
-        if (self::$modelDescriptor === null) {
-            self::$modelDescriptor = new ModelDescriptor([
-                'fields' => [
-                    'Name' => [
-                        'type'    => 'string',
-                        'maxSize' => 100,
-                    ],
-                ],
-            ]);
+        if ($config === null) {
+            return; // TODO what should default configuration be?
         }
 
-        return self::$modelDescriptor;
+        // TODO move to function
+        if (isset($config['fields'])) {
+            $fields = [];
+
+            foreach ($config['fields'] as $fieldName => $fieldConfig) {
+                $field              = new FieldDescriptor($fieldName, $fieldConfig, $this);
+                $fields[$fieldName] = $field;
+            }
+
+            $this->fields = $fields;
+        }
+    }
+
+    /**
+     * @param string $fieldName
+     * @return FieldDescriptor|null
+     */
+    public function getFieldDescriptor($fieldName)
+    {
+        if (isset($this->fields[$fieldName])) {
+            return $this->fields[$fieldName];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public static function getFieldDescriptorClass()
+    {
+        if (self::$fieldDescriptorClass !== null) {
+            return self::$fieldDescriptorClass;
+        } else {
+            $config = Config::get();
+            if (isset($config->model->fieldDescriptorClass)) {
+                self::$fieldDescriptorClass = $config->model->fieldDescriptorClass;
+                return self::$fieldDescriptorClass;
+            }
+        }
+
+        return FieldDescriptor::class;
+    }
+
+    /**
+     * @param string $className
+     */
+    public static function setFieldDescriptorClass($className)
+    {
+        self::$fieldDescriptorClass = $className;
     }
 }

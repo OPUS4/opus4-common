@@ -43,6 +43,9 @@ use function ucfirst;
  */
 abstract class AbstractModel implements ModelInterface
 {
+    /** @var ModelDescriptor */
+    protected static $modelDescriptor;
+
     /**
      * @return mixed
      */
@@ -121,6 +124,7 @@ abstract class AbstractModel implements ModelInterface
      *
      * TODO abstract?
      * TODO implement default behavior
+     * TODO get from ModelDescriptor
      */
     protected static function describe()
     {
@@ -192,5 +196,27 @@ abstract class AbstractModel implements ModelInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $fieldName
+     * @return FieldDescriptor
+     * @throws ModelException
+     */
+    public static function describeField($fieldName)
+    {
+        $modelDescriptor = static::describeModel();
+        return $modelDescriptor->getFieldDescriptor($fieldName);
+    }
+
+    /**
+     * @return ModelDescriptor
+     * @throws ModelException
+     *
+     * TODO declare abstract - every model needs to implement it?
+     */
+    public static function describeModel()
+    {
+        return new ModelDescriptor();
     }
 }

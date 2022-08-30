@@ -29,51 +29,47 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace OpusTest\Common\Model;
 
-use Opus\Common\Model\AbstractModel;
 use Opus\Common\Model\ModelDescriptor;
+use OpusTest\Common\TestAsset\TestCase;
 
-class UserRole extends AbstractModel
+class ModelDescriptorTest extends TestCase
 {
-    /** @var string Name of field 'Name' */
-    public const FIELD_NAME = 'Name';
-
     /**
-     * @return UserRoleInterface[]
+     * @doesNotPerformAssertions
      */
-    public static function getAll()
+    public function testConstruct()
     {
-        $userRoles = self::getModelRepository();
-        return $userRoles->getAll();
+        new ModelDescriptor();
     }
 
-    /**
-     * @param string $name
-     * @return UserRoleInterface|null
-     */
-    public static function fetchByName($name)
+    public function testConstructWithConfig()
     {
-        $userRoles = self::getModelRepository();
-        return $userRoles->fetchByName($name);
-    }
-
-    /**
-     * @return ModelDescriptor
-     */
-    public static function describeModel()
-    {
-        if (self::$modelDescriptor === null) {
-            self::$modelDescriptor = new ModelDescriptor([
-                'fields' => [
-                    'Name' => [
-                        'type'    => 'string',
-                        'maxSize' => 100,
-                    ],
+        $model = new ModelDescriptor([
+            'fields' => [
+                'name' => [
+                    'type'    => 'string',
+                    'maxSize' => 80,
                 ],
-            ]);
-        }
+                'code' => [
+                    'type' => 'int',
+                ],
+            ],
+        ]);
 
-        return self::$modelDescriptor;
+        $field = $model->getFieldDescriptor('name');
+        $this->assertEquals('name', $field->getName());
+        $this->assertEquals('string', $field->getType());
+        $this->assertEquals(80, $field->getMaxSize());
+        $this->assertEquals(1, $field->getMultiplicity());
+        $this->assertSame($model, $field->getModelDescriptor());
+
+        $field = $model->getFieldDescriptor('code');
+        $this->assertEquals('code', $field->getName());
+        $this->assertEquals('int', $field->getType());
+        // $this->assertEquals(80, $field->getMaxSize()); TODO max value?
+        $this->assertEquals(1, $field->getMultiplicity());
+        $this->assertSame($model, $field->getModelDescriptor());
     }
 }
