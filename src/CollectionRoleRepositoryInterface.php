@@ -31,15 +31,48 @@
 
 namespace Opus\Common;
 
-use Opus\Common\Model\AbstractModel;
-
-class Collection extends AbstractModel
+/**
+ * TODO fetch OR get? It should be uniform across models OPUS4/opus4-common#80
+ */
+interface CollectionRoleRepositoryInterface
 {
     /**
-     * @return array
+     * @return CollectionRoleInterface[]
      */
-    protected static function loadModelConfig()
-    {
-        return []; // TODO implement
-    }
+    public function fetchAll();
+
+    /**
+     * @param string $name
+     * @return CollectionRoleInterface
+     */
+    public function fetchByName($name);
+
+    /**
+     * @param string $oaiName
+     * @return CollectionRoleInterface
+     */
+    public function fetchByOaiName($oaiName);
+
+    /**
+     * @return CollectionRoleInterface[]
+     */
+    public function fetchAllOaiEnabledRoles();
+
+    /**
+     * @param string $oaiSetName
+     * @return int[]
+     */
+    public function getDocumentIdsInSet($oaiSetName);
+
+    /**
+     * TODO is this Framework specific - is used in Application - should it?
+     */
+    public function fixPositions();
+
+    /**
+     * @return int
+     *
+     * TODO Framework specific - is used in Application - should it?
+     */
+    public function getLastPosition();
 }

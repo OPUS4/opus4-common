@@ -29,17 +29,18 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace OpusTest\Common;
 
-use Opus\Common\Model\AbstractModel;
+use Opus\Common\CollectionRole;
+use OpusTest\Common\TestAsset\TestCase;
 
-class Collection extends AbstractModel
+class CollectionRoleTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    protected static function loadModelConfig()
+    public function testDescribeFieldOaiName()
     {
-        return []; // TODO implement
+        $field = CollectionRole::describeField(CollectionRole::FIELD_OAI_NAME);
+
+        $this->assertNotNull($field);
+        $this->assertEquals('OaiName', $field->getName());
     }
 }

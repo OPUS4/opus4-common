@@ -35,32 +35,66 @@ use Opus\Common\Model\AbstractModel;
 
 class EnrichmentKey extends AbstractModel
 {
+    public const FIELD_NAME    = 'Name';
+    public const FIELD_TYPE    = 'Type';
+    public const FIELD_OPTIONS = 'Options';
+
+    /**
+     * @param bool $reload
+     * @return EnrichmentKeyInterface[]
+     */
+    public static function getAll($reload = true)
+    {
+        $enrichmentKeyRepository = self::getModelRepository();
+        return $enrichmentKeyRepository->getAll($reload);
+    }
+
     /**
      * @param string $name
-     * @return mixed
+     * @return EnrichmentKeyInterface
      */
     public static function fetchByName($name)
     {
-        $modelFactory = static::getModelFactory();
-
-        $modelType = self::getModelType();
-
-        $repository = $modelFactory->getRepository($modelType);
-
+        $repository = self::getModelRepository();
         return $repository->fetchByName($name);
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getKeys()
+    {
+        $repository = self::getModelRepository();
+        return $repository->getKeys();
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getAllReferenced()
+    {
+        $repository = self::getModelRepository();
+        return $repository->getAllReferenced();
     }
 
     /**
      * @return array
      */
-    public static function getKeys()
+    protected static function loadModelConfig()
     {
-        $modelFactory = static::getModelFactory();
-
-        $modelType = self::getModelType();
-
-        $repository = $modelFactory->getRepository($modelType);
-
-        return $repository->getKeys();
+        return [
+            'fields' => [
+                'Name'    => [
+                    'required' => true,
+                    'maxsize'  => 191,
+                ],
+                'Type'    => [
+                    'maxsize' => 255,
+                ],
+                'Options' => [
+                    'maxsize' => 255,
+                ],
+            ],
+        ];
     }
 }

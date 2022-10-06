@@ -31,15 +31,20 @@
 
 namespace Opus\Common;
 
-use Opus\Common\Model\AbstractModel;
+use Opus\Common\Model\ModelRepositoryInterface;
 
-class Collection extends AbstractModel
+interface LicenceRepositoryInterface extends ModelRepositoryInterface
 {
     /**
-     * @return array
+     * @return LicenceInterface[]
      */
-    protected static function loadModelConfig()
-    {
-        return []; // TODO implement
-    }
+    public function getAll();
+
+    /**
+     * @param string $name
+     * @return LicenceInterface|null
+     *
+     * TODO return null or exception?
+     */
+    public function fetchByName($name);
 }

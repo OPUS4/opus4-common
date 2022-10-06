@@ -31,6 +31,13 @@
 
 namespace Opus\Common;
 
+/**
+ * TODO interface is not complete
+ */
 interface EnrichmentKeyInterface
 {
+    /**
+     * @return string
+     */
+    public function getDisplayName();
 }

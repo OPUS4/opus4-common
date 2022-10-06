@@ -35,4 +35,11 @@ use Opus\Common\Model\AbstractModel;
 
 class File extends AbstractModel
 {
+    /**
+     * @return array
+     */
+    protected static function loadModelConfig()
+    {
+        return [];
+    }
 }

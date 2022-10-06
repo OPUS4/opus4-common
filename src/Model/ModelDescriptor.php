@@ -34,30 +34,40 @@ namespace Opus\Common\Model;
 use Opus\Common\Config;
 use Opus\Common\ConfigTrait;
 
+use function array_keys;
+use function ucfirst;
+
 class ModelDescriptor implements ModelDescriptorInterface
 {
     use ConfigTrait;
+
+    private $modelId;
 
     private $fields;
 
     private static $fieldDescriptorClass;
 
     /**
+     * @param string     $modelId
      * @param array|null $config
      */
-    public function __construct($config = null)
+    public function __construct($modelId, $config = null)
     {
+        $this->modelId = $modelId;
+
         if ($config === null) {
             return; // TODO what should default configuration be?
         }
+
+        $fieldDescriptorClass = self::getFieldDescriptorClass();
 
         // TODO move to function
         if (isset($config['fields'])) {
             $fields = [];
 
             foreach ($config['fields'] as $fieldName => $fieldConfig) {
-                $field              = new FieldDescriptor($fieldName, $fieldConfig, $this);
-                $fields[$fieldName] = $field;
+                $field                     = new $fieldDescriptorClass($fieldName, $fieldConfig, $this);
+                $fields[$field->getName()] = $field; // Using getName() makes sure upper case first letter is used
             }
 
             $this->fields = $fields;
@@ -65,16 +75,38 @@ class ModelDescriptor implements ModelDescriptorInterface
     }
 
     /**
-     * @param string $fieldName
+     * @return string
+     */
+    public function getModelId()
+    {
+        return $this->modelId;
+    }
+
+    /**
+     * Returns descriptor for model field.
+     *
+     * @param string $fieldName Name of field (automatically applies upper case to first letter)
      * @return FieldDescriptor|null
+     *
+     * TODO throw exception for unknown field?
      */
     public function getFieldDescriptor($fieldName)
     {
-        if (isset($this->fields[$fieldName])) {
-            return $this->fields[$fieldName];
+        $ucName = ucfirst($fieldName);
+
+        if (isset($this->fields[$ucName])) {
+            return $this->fields[$ucName];
         } else {
             return null;
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getFieldNames()
+    {
+        return array_keys($this->fields);
     }
 
     /**

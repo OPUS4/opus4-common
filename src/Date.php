@@ -577,4 +577,12 @@ class Date extends AbstractModel
             $this->updateValue($fieldName, $model->getValue($fieldName));
         }
     }
+
+    /**
+     * @return array
+     */
+    protected static function loadModelConfig()
+    {
+        return [];
+    }
 }

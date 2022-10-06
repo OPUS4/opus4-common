@@ -33,13 +33,68 @@ namespace Opus\Common;
 
 use Opus\Common\Model\AbstractModel;
 
-class Collection extends AbstractModel
+class DnbInstitute extends AbstractModel
 {
+    public const FIELD_NAME           = 'Name';
+    public const FIELD_DEPARTMENT     = 'Department';
+    public const FIELD_ADDRESS        = 'Address';
+    public const FIELD_CITY           = 'City';
+    public const FIELD_PHONE          = 'Phone';
+    public const FIELD_DNB_CONTACT_ID = 'DnbContactId';
+    public const FIELD_IS_GRANTOR     = 'IsGrantor';
+    public const FIELD_IS_PUBLISHER   = 'IsPublisher';
+
+    /**
+     * @return DnbInstituteInterface[]
+     */
+    public static function getAll()
+    {
+        $repository = self::getModelRepository();
+        return $repository->getAll();
+    }
+
+    /**
+     * @return DnbInstituteInterface[]
+     */
+    public static function getGrantors()
+    {
+        $repository = self::getModelRepository();
+        return $repository->getGrantors();
+    }
+
+    /**
+     * @return DnbInstituteInterface[]
+     */
+    public static function getPublishers()
+    {
+        $repository = self::getModelRepository();
+        return $repository->getPublishers();
+    }
+
     /**
      * @return array
      */
     protected static function loadModelConfig()
     {
-        return []; // TODO implement
+        return [
+            'fields' => [
+                self::FIELD_ADDRESS        => [],
+                self::FIELD_CITY           => [
+                    'required' => true,
+                ],
+                self::FIELD_DEPARTMENT     => [],
+                self::FIELD_DNB_CONTACT_ID => [],
+                self::FIELD_IS_GRANTOR     => [
+                    'type' => 'bool',
+                ],
+                self::FIELD_IS_PUBLISHER   => [
+                    'type' => 'bool',
+                ],
+                self::FIELD_NAME           => [
+                    'required' => true,
+                ],
+                self::FIELD_PHONE          => [],
+            ],
+        ];
     }
 }

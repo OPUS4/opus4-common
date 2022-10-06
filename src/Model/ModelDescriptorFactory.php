@@ -29,55 +29,58 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Model;
 
-use Opus\Common\Model\AbstractModel;
-
-class Account extends AbstractModel
+/**
+ * Manages model descriptor objects.
+ *
+ * This class is a singleton that holds the ModelDescriptor objects for all model classes. It is responsible for
+ * creating the ModelDescriptor objects based on basic configurations provided for the common model classes and
+ * additional local configurations for a specific OPUS 4 installation. The configuration of a model can also be
+ * extended by other packages or a persistence implementation of the data model.
+ *
+ * TODO create ModelDescriptor objects with basic configuration
+ * TODO support extensions by the Framework
+ * TODO support custom fields/enrichments configured in Application
+ * TODO support extensions by other packages
+ *
+ * Extensions can be
+ *
+ * - additional information stored in a model or field descriptor.
+ * - custom fields, simple or complex
+ */
+class ModelDescriptorFactory
 {
-    /**
-     * @return AccountInterface[]|null
-     */
-    public static function getAll()
-    {
-        $accounts = self::getModelRepository();
-        return $accounts->getAll();
-    }
+    /** @var array Map of model IDs and ModelDescriptor objects */
+    private $descriptors;
 
     /**
-     * @param string $login
-     * @return AccountInterface|null
-     */
-    public static function fetchAccountByLogin($login)
-    {
-        /** @var AccountRepositoryInterface $accounts */
-        $accounts = self::getModelRepository();
-        return $accounts->fetchAccountByLogin($login);
-    }
-
-    /**
-     * @return array[]
+     * Returns ModelDescriptor for model ID.
      *
-     * TODO validate login and password, email
-     * TODO cofigure Role field
+     * @param string $modelId
+     * @return ModelDescriptor|null
+     *
+     * TODO provide model object or class as parameter?
+     * TODO use callback to get data from basic model class?
      */
-    protected static function loadModelConfig()
+    public function getModelDescriptor($modelId)
     {
-        return [
-            'fields' => [
-                'Login'     => [
-                    'required' => true,
-                ],
-                'Password'  => [
-                    'required' => true,
-                ],
-                'Email'     => [],
-                'FirstName' => [],
-                'LastName'  => [],
-                'Role'      => [
-                    'multiplity' => '*',
-                ],
-            ],
-        ];
+        if (isset($this->descriptors[$modelId])) {
+            return $this->descriptors[$modelId];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $modelId
+     * @param array  $config
+     * @return ModelDescriptor
+     */
+    public function loadModelDescriptor($modelId, $config)
+    {
+        $modelDescriptor             = new ModelDescriptor($modelId, $config);
+        $this->descriptors[$modelId] = $modelDescriptor;
+        return $modelDescriptor;
     }
 }

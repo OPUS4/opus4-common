@@ -29,17 +29,17 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace OpusTest\Common\Model;
 
-use Opus\Common\Model\AbstractModel;
+use Opus\Common\Model\ModelDescriptorFactory;
+use OpusTest\Common\TestAsset\TestCase;
 
-class Collection extends AbstractModel
+class ModelDescriptorFactoryTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    protected static function loadModelConfig()
+    public function testGetModelDescriptor()
     {
-        return []; // TODO implement
+        $this->markTestIncomplete('not fully implemented');
+
+        $factory = new ModelDescriptorFactory();
     }
 }

@@ -32,7 +32,6 @@
 namespace Opus\Common;
 
 use Opus\Common\Model\AbstractModel;
-use Opus\Common\Model\ModelDescriptor;
 
 class UserRole extends AbstractModel
 {
@@ -59,21 +58,17 @@ class UserRole extends AbstractModel
     }
 
     /**
-     * @return ModelDescriptor
+     * @return array[][]
      */
-    public static function describeModel()
+    protected static function loadModelConfig()
     {
-        if (self::$modelDescriptor === null) {
-            self::$modelDescriptor = new ModelDescriptor([
-                'fields' => [
-                    'Name' => [
-                        'type'    => 'string',
-                        'maxSize' => 100,
-                    ],
+        return [
+            'fields' => [
+                self::FIELD_NAME => [
+                    'type'    => 'string',
+                    'maxSize' => 100,
                 ],
-            ]);
-        }
-
-        return self::$modelDescriptor;
+            ],
+        ];
     }
 }

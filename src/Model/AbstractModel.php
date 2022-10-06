@@ -43,8 +43,12 @@ use function ucfirst;
  */
 abstract class AbstractModel implements ModelInterface
 {
-    /** @var ModelDescriptor */
-    protected static $modelDescriptor;
+    /**
+     * TODO perhaps should be its own factory? not stored here
+     *
+     * @var ModelDescriptorFactory
+     */
+    protected static $modelDescriptorFactory;
 
     /**
      * @return mixed
@@ -112,7 +116,7 @@ abstract class AbstractModel implements ModelInterface
     /**
      * @return ModelRepositoryInterface
      */
-    protected static function getModelRepository()
+    public static function getModelRepository()
     {
         return Repository::getInstance()->getModelRepository(static::class);
     }
@@ -121,17 +125,14 @@ abstract class AbstractModel implements ModelInterface
      * Returns the relevant properties of the class
      *
      * @return array
-     *
-     * TODO abstract?
-     * TODO implement default behavior
-     * TODO get from ModelDescriptor
      */
     protected static function describe()
     {
-        return [];
+        return self::getModelDescriptor()->getFieldNames();
     }
 
     /**
+     * TODO Where is this used? Documentation!
      * TODO better way? needed?
      * TODO How to handle boolean of integer fields?
      */
@@ -172,7 +173,7 @@ abstract class AbstractModel implements ModelInterface
      */
     public static function fromArray($data)
     {
-        $model = new static();
+        $model = self::create();
         $model->updateFromArray($data);
         return $model;
     }
@@ -212,11 +213,48 @@ abstract class AbstractModel implements ModelInterface
     /**
      * @return ModelDescriptor
      * @throws ModelException
-     *
-     * TODO declare abstract - every model needs to implement it?
      */
     public static function describeModel()
     {
-        return new ModelDescriptor();
+        return self::getModelDescriptor();
     }
+
+    /**
+     * Returns ModelDescriptor for current model type.
+     *
+     * @return ModelDescriptor
+     *
+     * TODO move this into factory?
+     */
+    protected static function getModelDescriptor()
+    {
+        $descriptorFactory = self::getModelDescriptorFactory();
+        $modelType         = static::getModelType();
+
+        $modelDescriptor = $descriptorFactory->getModelDescriptor($modelType);
+
+        if ($modelDescriptor === null) {
+            $modelDescriptor = $descriptorFactory->loadModelDescriptor($modelType, static::loadModelConfig());
+        }
+
+        return $modelDescriptor;
+    }
+
+    /**
+     * @return ModelDescriptorFactory
+     */
+    protected static function getModelDescriptorFactory()
+    {
+        if (self::$modelDescriptorFactory === null) {
+            self::$modelDescriptorFactory = new ModelDescriptorFactory();
+        }
+        return self::$modelDescriptorFactory;
+    }
+
+    /**
+     * @return array
+     *
+     * TODO rename into loadDefaultModelConfig?
+     */
+    abstract protected static function loadModelConfig();
 }

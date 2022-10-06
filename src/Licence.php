@@ -33,49 +33,68 @@ namespace Opus\Common;
 
 use Opus\Common\Model\AbstractModel;
 
-class Account extends AbstractModel
+class Licence extends AbstractModel
 {
+    public const FIELD_ACTIVE           = 'Active';
+    public const FIELD_COMMENT_INTERNAL = 'CommentInternal';
+    public const FIELD_DESC_MARKUP      = 'DescMarkup';
+    public const FIELD_DESC_TEXT        = 'DescText';
+    public const FIELD_LANGUAGE         = 'Language';
+    public const FIELD_LINK_LICENCE     = 'LinkLicence';
+    public const FIELD_LINK_LOGO        = 'LinkLogo';
+    public const FIELD_LINK_SIGN        = 'LinkSign';
+    public const FIELD_MIME_TYPE        = 'MimeType';
+    public const FIELD_NAME             = 'Name';
+    public const FIELD_NAME_LONG        = 'NameLong';
+    public const FIELD_SORT_ORDER       = 'SortOrder';
+    public const FIELD_POD_ALLOWED      = 'PodAllowed';
+
     /**
-     * @return AccountInterface[]|null
+     * @return LicenceInterface[]
      */
     public static function getAll()
     {
-        $accounts = self::getModelRepository();
-        return $accounts->getAll();
+        $licenceRepository = self::getModelRepository();
+        return $licenceRepository->getAll();
     }
 
     /**
-     * @param string $login
-     * @return AccountInterface|null
+     * @param string $name
+     * @return LicenceInterface|null
      */
-    public static function fetchAccountByLogin($login)
+    public static function fetchByName($name)
     {
-        /** @var AccountRepositoryInterface $accounts */
-        $accounts = self::getModelRepository();
-        return $accounts->fetchAccountByLogin($login);
+        $licenceRepository = self::getModelRepository();
+        return $licenceRepository->fetchByName($name);
     }
 
     /**
-     * @return array[]
-     *
-     * TODO validate login and password, email
-     * TODO cofigure Role field
+     * @return array
      */
     protected static function loadModelConfig()
     {
         return [
             'fields' => [
-                'Login'     => [
+                self::FIELD_NAME             => [],
+                self::FIELD_NAME_LONG        => [
                     'required' => true,
                 ],
-                'Password'  => [
-                    'required' => true,
+                self::FIELD_ACTIVE           => [
+                    'type' => 'bool',
                 ],
-                'Email'     => [],
-                'FirstName' => [],
-                'LastName'  => [],
-                'Role'      => [
-                    'multiplity' => '*',
+                self::FIELD_COMMENT_INTERNAL => [],
+                self::FIELD_LANGUAGE         => [],
+                self::FIELD_DESC_MARKUP      => [],
+                self::FIELD_DESC_TEXT        => [],
+                self::FIELD_LINK_LICENCE     => [],
+                self::FIELD_LINK_LOGO        => [],
+                self::FIELD_LINK_SIGN        => [],
+                self::FIELD_MIME_TYPE        => [],
+                self::FIELD_SORT_ORDER       => [
+                    'type' => 'int',
+                ],
+                self::FIELD_POD_ALLOWED      => [
+                    'type' => 'bool',
                 ],
             ],
         ];

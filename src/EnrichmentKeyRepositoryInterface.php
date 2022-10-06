@@ -34,13 +34,26 @@ namespace Opus\Common;
 interface EnrichmentKeyRepositoryInterface
 {
     /**
+     * @param bool $reload
+     * @return EnrichmentKeyInterface[]
+     *
+     * TODO review reload parameter
+     */
+    public function getAll($reload = true);
+
+    /**
      * @param string $name
-     * @return mixed
+     * @return EnrichmentKeyInterface
      */
     public function fetchByName($name);
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getKeys();
+
+    /**
+     * @return string[]
+     */
+    public function getAllReferenced();
 }

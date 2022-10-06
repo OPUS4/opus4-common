@@ -29,17 +29,35 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace OpusTest\Common\Model;
 
-use Opus\Common\Model\AbstractModel;
+use Opus\Common\Licence;
+use Opus\Common\UserRole;
+use OpusTest\Common\TestAsset\TestCase;
 
-class Collection extends AbstractModel
+/**
+ * Basic tests for behaviour of AbstractModel class.
+ */
+class BasicAbstractModelTest extends TestCase
 {
     /**
-     * @return array
+     * In the initial implementation the first description generated, was used
+     * in all models (bad caching using static variable, see OPUS4/application#969)
      */
-    protected static function loadModelConfig()
+    public function testDescribeModelDoesNotAffectOtherModelClasses()
     {
-        return []; // TODO implement
+        $licenceDescriptor = Licence::describeModel();
+
+        $licenceFields = $licenceDescriptor->getFieldNames();
+
+        $this->assertCount(13, $licenceFields);
+        $this->assertContains('NameLong', $licenceFields);
+
+        $userRoleDescriptor = UserRole::describeModel();
+
+        $userRoleFields = $userRoleDescriptor->getFieldNames();
+
+        $this->assertCount(1, $userRoleFields);
+        $this->assertContains('Name', $userRoleFields);
     }
 }

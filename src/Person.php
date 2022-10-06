@@ -36,8 +36,44 @@ use Opus\Common\Model\AbstractModel;
 /**
  * Base model class for persons.
  *
- * TODO LAMIANS design-in-progress
+ * TODO LAMINAS design-in-progress
+ * TODO do not create static wrappers for PersonRepositoryInterface here?
  */
 class Person extends AbstractModel
 {
+    public const FIELD_ACADEMIC_TITLE   = 'AcademicTitle';
+    public const FIELD_DATE_OF_BIRTH    = 'DateOfBirth';
+    public const FIELD_EMAIL            = 'Email';
+    public const FIELD_FIRST_NAME       = 'FirstName';
+    public const FIELD_IDENTIFIER_GND   = 'IdentifierGnd';
+    public const FIELD_IDENTIFIER_MISC  = 'IdentifierMisc';
+    public const FIELD_IDENTIFIER_ORCID = 'IdentifierOrcid';
+    public const FIELD_LAST_NAME        = 'LastName';
+    public const FIELD_OPUS_ID          = 'OpusId';
+    public const FIELD_PLACE_OF_BIRTH   = 'PlaceOfBirth';
+
+    /**
+     * @return array
+     */
+    protected static function loadModelConfig()
+    {
+        return [
+            'fields' => [
+                self::FIELD_ACADEMIC_TITLE   => [],
+                self::FIELD_DATE_OF_BIRTH    => [
+                    'type' => 'Date',
+                ],
+                self::FIELD_EMAIL            => [],
+                self::FIELD_FIRST_NAME       => [],
+                self::FIELD_IDENTIFIER_GND   => [],
+                self::FIELD_IDENTIFIER_MISC  => [],
+                self::FIELD_IDENTIFIER_ORCID => [],
+                self::FIELD_LAST_NAME        => [
+                    'required' => true,
+                ],
+                self::FIELD_OPUS_ID          => [],
+                self::FIELD_PLACE_OF_BIRTH   => [],
+            ],
+        ];
+    }
 }

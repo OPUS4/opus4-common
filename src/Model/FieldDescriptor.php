@@ -31,8 +31,17 @@
 
 namespace Opus\Common\Model;
 
+use function array_change_key_case;
+use function filter_var;
+use function ucfirst;
+
+use const CASE_LOWER;
+use const FILTER_VALIDATE_BOOLEAN;
+
 /**
  * Describes field in data model.
+ *
+ * TODO read-only object? yes, or?
  */
 class FieldDescriptor implements FieldDescriptorInterface
 {
@@ -48,6 +57,9 @@ class FieldDescriptor implements FieldDescriptorInterface
     /** @var int */
     private $maxSize;
 
+    /** @var bool */
+    private $required = false;
+
     /** @var int */
     private $multiplicity = 1;
 
@@ -57,18 +69,29 @@ class FieldDescriptor implements FieldDescriptorInterface
      * @param ModelDescriptorInterface $owningModel
      *
      * TODO default values for type and maxSize
+     * TODO move init code out of constructor
      */
     public function __construct($name, $options, $owningModel)
     {
         $this->modelDescriptor = $owningModel;
-        $this->name            = $name;
+        $this->name            = ucfirst($name);
+
+        if ($options === null) {
+            return;
+        }
+
+        $options = array_change_key_case($options, CASE_LOWER);
 
         if (isset($options['type'])) {
             $this->type = $options['type'];
         }
 
-        if (isset($options['maxSize'])) {
-            $this->maxSize = $options['maxSize'];
+        if (isset($options['maxsize'])) {
+            $this->maxSize = $options['maxsize'];
+        }
+
+        if (isset($options['required'])) {
+            $this->required = filter_var($options['required'], FILTER_VALIDATE_BOOLEAN);
         }
     }
 
@@ -110,5 +133,13 @@ class FieldDescriptor implements FieldDescriptorInterface
     public function getMultiplicity()
     {
         return $this->multiplicity;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired()
+    {
+        return $this->required;
     }
 }

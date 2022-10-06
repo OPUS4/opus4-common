@@ -36,17 +36,15 @@ use OpusTest\Common\TestAsset\TestCase;
 
 class ModelDescriptorTest extends TestCase
 {
-    /**
-     * @doesNotPerformAssertions
-     */
     public function testConstruct()
     {
-        new ModelDescriptor();
+        $model = new ModelDescriptor('TestModel');
+        $this->assertEquals('TestModel', $model->getModelId());
     }
 
     public function testConstructWithConfig()
     {
-        $model = new ModelDescriptor([
+        $model = new ModelDescriptor('TestModel', [
             'fields' => [
                 'name' => [
                     'type'    => 'string',
@@ -58,18 +56,96 @@ class ModelDescriptorTest extends TestCase
             ],
         ]);
 
+        $this->assertEquals('TestModel', $model->getModelId());
+
         $field = $model->getFieldDescriptor('name');
-        $this->assertEquals('name', $field->getName());
+        $this->assertEquals('Name', $field->getName());
         $this->assertEquals('string', $field->getType());
         $this->assertEquals(80, $field->getMaxSize());
         $this->assertEquals(1, $field->getMultiplicity());
         $this->assertSame($model, $field->getModelDescriptor());
 
         $field = $model->getFieldDescriptor('code');
-        $this->assertEquals('code', $field->getName());
+        $this->assertEquals('Code', $field->getName());
         $this->assertEquals('int', $field->getType());
         // $this->assertEquals(80, $field->getMaxSize()); TODO max value?
         $this->assertEquals(1, $field->getMultiplicity());
         $this->assertSame($model, $field->getModelDescriptor());
+    }
+
+    public function testGetFieldDescriptor()
+    {
+        $model = new ModelDescriptor('TestModel', [
+            'fields' => [
+                'name' => [
+                    'type'    => 'string',
+                    'maxSize' => 80,
+                ],
+                'code' => [
+                    'type' => 'int',
+                ],
+            ],
+        ]);
+
+        $codeField = $model->getFieldDescriptor('Code');
+
+        $this->assertNotNull($codeField);
+        $this->assertEquals('Code', $codeField->getName());
+        $this->assertEquals('int', $codeField->getType());
+    }
+
+    public function testGetFieldDescriptorCaseInsensitive()
+    {
+        $model = new ModelDescriptor('TestModel', [
+            'fields' => [
+                'name' => [
+                    'type'    => 'string',
+                    'maxSize' => 80,
+                ],
+                'code' => [
+                    'type' => 'int',
+                ],
+            ],
+        ]);
+
+        $nameField = $model->getFieldDescriptor('name');
+
+        $this->assertNotNull($nameField);
+        $this->assertEquals('Name', $nameField->getName());
+    }
+
+    public function testGetFieldDescriptorUnknownField()
+    {
+        $model = new ModelDescriptor('TestModel');
+
+        $field = $model->getFieldDescriptor('LastName');
+
+        $this->assertNull($field);
+    }
+
+    public function testGetFieldDescriptorNullParameter()
+    {
+        $model = new ModelDescriptor('TestModel');
+
+        $field = $model->getFieldDescriptor(null);
+
+        $this->assertNull($field);
+    }
+
+    public function testGetFieldNames()
+    {
+        $descriptor = new ModelDescriptor('TestModel', [
+            'fields' => [
+                'name'  => [],
+                'type'  => [],
+                'value' => [],
+            ],
+        ]);
+
+        $this->assertEquals([
+            'Name',
+            'Type',
+            'Value',
+        ], $descriptor->getFieldNames());
     }
 }

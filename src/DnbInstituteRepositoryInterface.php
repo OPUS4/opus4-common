@@ -31,15 +31,22 @@
 
 namespace Opus\Common;
 
-use Opus\Common\Model\AbstractModel;
+use Opus\Common\Model\ModelRepositoryInterface;
 
-class Collection extends AbstractModel
+interface DnbInstituteRepositoryInterface extends ModelRepositoryInterface
 {
     /**
-     * @return array
+     * @return DnbInstituteInterface[]
      */
-    protected static function loadModelConfig()
-    {
-        return []; // TODO implement
-    }
+    public function getAll();
+
+    /**
+     * @return DnbInstituteInterface[]
+     */
+    public function getGrantors();
+
+    /**
+     * @return DnbInstituteInterface[]
+     */
+    public function getPublishers();
 }

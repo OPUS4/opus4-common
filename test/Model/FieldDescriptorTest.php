@@ -38,9 +38,31 @@ class FieldDescriptorTest extends TestCase
 {
     public function testConstruct()
     {
-        $field = new FieldDescriptor('test', ['maxSize' => 90], null);
+        $field = new FieldDescriptor('Test', ['maxSize' => 90], null);
 
-        $this->assertEquals('test', $field->getName());
+        $this->assertEquals('Test', $field->getName());
         $this->assertEquals(90, $field->getMaxSize());
+    }
+
+    public function testOptionCaseInsensitive()
+    {
+        $field = new FieldDescriptor('Test', ['MaXsiZe' => 90, 'Required' => true], null);
+
+        $this->assertEquals(90, $field->getMaxSize());
+        $this->assertTrue($field->isRequired());
+    }
+
+    public function testOptionNameFirstLetterUpperCase()
+    {
+        $field = new FieldDescriptor('volume', null, null);
+
+        $this->assertEquals('Volume', $field->getName());
+    }
+
+    public function testConstructWithNameOnly()
+    {
+        $field = new FieldDescriptor('Test', null, null);
+
+        $this->assertEquals('Test', $field->getName());
     }
 }

@@ -38,4 +38,9 @@ interface ModelDescriptorInterface
      * @return FieldDescriptorInterface
      */
     public function getFieldDescriptor($fieldName);
+
+    /**
+     * @return string[]
+     */
+    public function getFieldNames();
 }

@@ -40,4 +40,19 @@ use Opus\Common\Model\AbstractModel;
  */
 class Document extends AbstractModel implements ServerStateConstantsInterface
 {
+    public const FIELD_PUBLISHED_YEAR = 'PublishedYear';
+
+    /**
+     * @return array
+     */
+    protected static function loadModelConfig()
+    {
+        return [
+            'fields' => [
+                'PublishedYear' => [
+                    'type' => 'int',
+                ],
+            ],
+        ];
+    }
 }
