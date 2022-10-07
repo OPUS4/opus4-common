@@ -40,9 +40,27 @@ use function ucfirst;
 
 /**
  * Base class for all model classes.
+ *
+ * TODO change name? these classes are not models, but factories and repository wrappers for convient access to models
+ *      and functions
  */
 abstract class AbstractModel implements ModelInterface
 {
+    /**
+     * Prevent common model classes from being instantiated.
+     *
+     * These classes are not actual models, but instead serve as wrappers for access to model objects and related
+     * functions. The access is protected, so child classes could implement factory functions to instantiate objects
+     * for this class.
+     *
+     * TODO Should there be a factory function here, so not every child class has to implement its own?
+     *      This would undermine the instantion protection, but we are just trying to prevent accidental instantiation
+     *      here.
+     */
+    protected function __construct()
+    {
+    }
+
     /**
      * TODO perhaps should be its own factory? not stored here
      *
