@@ -59,6 +59,15 @@ class Identifier extends AbstractModel
     }
 
     /**
+     * @param string $fieldname
+     * @return string
+     */
+    public static function getTypeForFieldname($fieldname)
+    {
+        return self::getModelRepository()->getTypeForFieldname($fieldname);
+    }
+
+    /**
      * @return array[]
      */
     protected static function loadModelConfig()
