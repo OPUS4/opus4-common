@@ -35,6 +35,23 @@ use Opus\Common\Model\AbstractModel;
 
 class Collection extends AbstractModel
 {
+    public const FIELD_DISPLAY_FRONTDOOR = 'DisplayFrontdoor';
+    public const FIELD_NAME              = 'Name';
+    public const FIELD_NUMBER            = 'Number';
+    public const FIELD_OAI_SUBSET        = 'OaiSubset';
+    public const FIELD_VISIBLE           = 'Visible';
+    public const FIELD_VISIBLE_PUBLISH   = 'VisiblePublish';
+
+    /**
+     * @param int    $roleId
+     * @param string $number
+     * @return CollectionInterface[]
+     */
+    public static function fetchCollectionsByRoleNumber($roleId, $number)
+    {
+        return self::getModelRepository()->fetchCollectionsByRoleNumber($roleId, $number);
+    }
+
     /**
      * @return array
      */
