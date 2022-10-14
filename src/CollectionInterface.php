@@ -31,6 +31,8 @@
 
 namespace Opus\Common;
 
-interface CollectionInterface
+use Opus\Common\Model\ModelInterface;
+
+interface CollectionInterface extends ModelInterface
 {
 }

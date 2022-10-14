@@ -53,6 +53,16 @@ class Collection extends AbstractModel
     }
 
     /**
+     * @param string         $term
+     * @param null|int|int[] $roles
+     * @return array
+     */
+    public static function find($term, $roles = null)
+    {
+        return self::getModelRepository()->find($term, $roles);
+    }
+
+    /**
      * @return array
      */
     protected static function loadModelConfig()
