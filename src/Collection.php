@@ -32,6 +32,7 @@
 namespace Opus\Common;
 
 use Opus\Common\Model\AbstractModel;
+use Opus\Common\Model\NotFoundException;
 
 class Collection extends AbstractModel
 {
@@ -53,6 +54,15 @@ class Collection extends AbstractModel
     }
 
     /**
+     * @param int $docId
+     * @return int[]
+     */
+    public static function fetchCollectionIdsByDocumentId($docId)
+    {
+        return self::getModelRepository()->fetchCollectionIdsByDocumentId($docId);
+    }
+
+    /**
      * @param string         $term
      * @param null|int|int[] $roles
      * @return array
@@ -68,5 +78,47 @@ class Collection extends AbstractModel
     protected static function loadModelConfig()
     {
         return []; // TODO implement
+    }
+
+    /**
+     * Creates collection object from data in array.
+     *
+     * If array contains 'Id' the corresponding existing collection is used.
+     *
+     * TODO If 'Id' is from a different system the wrong collection might be used.
+     *      How can we deal with the possible problems? Does it make more sense to
+     *      handle reuse of existing objects outside the fromArray function?
+     *      Would it make more sense if we generte new objects and then apply
+     *      another function that maps the attributes of a document to existing
+     *      objects in the database. It seems this really depends on the type of
+     *      object in question.
+     *
+     * TODO Collections should probably never be created as part of an import. When
+     *      a document is stored the connected collections should already exist. If
+     *      not the storing operation should fail.
+     *
+     * @param array $data
+     * @return CollectionInterface|null
+     */
+    public static function fromArray($data)
+    {
+        $col = null;
+
+        if (isset($data['Id'])) {
+            try {
+                $col = self::get($data['Id']);
+
+                // TODO update from array not supported (handling of roleId)
+                // $col->updateFromArray($data);
+            } catch (NotFoundException $omnfe) {
+                // TODO handle it
+            }
+        }
+
+        if ($col === null) {
+            $col = parent::fromArray($data);
+        }
+
+        return $col;
     }
 }
