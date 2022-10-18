@@ -31,56 +31,42 @@
 
 namespace Opus\Common;
 
-use Opus\Common\Model\ModelInterface;
+use Opus\Common\Model\ModelRepositoryInterface;
 
-interface JobInterface extends ModelInterface
+interface JobRepositoryInterface extends ModelRepositoryInterface
 {
     /**
-     * @return string|null
+     * @param int[]|null $ids
+     * @return JobInterface[]
      */
-    public function getData();
-
-    /**
-     * @param string|null $data
-     * @return $this
-     */
-    public function setData($data);
-
-    /**
-     * @return string
-     */
-    public function getErrors();
-
-    /**
-     * @param string|null $errors
-     * @return $this
-     */
-    public function setErrors($errors);
-
-    /**
-     * @return string|null
-     */
-    public function getLabel();
-
-    /**
-     * @param string $label
-     * @return $this
-     */
-    public function setLabel($label);
-
-    /**
-     * @return string|null
-     */
-    public function getState();
+    public function getAll($ids = null);
 
     /**
      * @param string|null $state
-     * @return $this
+     * @return int
      */
-    public function setState($state);
+    public function getCount($state = null);
 
     /**
-     * @return bool
+     * @param string      $label
+     * @param string|null $state
+     * @return int
      */
-    public function isUniqueInQueue();
+    public function getCountForLabel($label, $state = null);
+
+    /**
+     * @param string|null $state
+     * @return array
+     */
+    public function getCountPerLabel($state = null);
+
+    /**
+     * @param string[]    $labels
+     * @param int|null    $limit
+     * @param string|null $state
+     * @return JobInterface[]
+     */
+    public function getByLabels($labels, $limit = null, $state = null);
+
+    public function deleteAll();
 }

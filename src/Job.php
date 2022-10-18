@@ -35,6 +35,71 @@ use Opus\Common\Model\AbstractModel;
 
 class Job extends AbstractModel
 {
+    public const FIELD_DATA   = 'Data';
+    public const FIELD_LABEL  = 'Label';
+    public const FIELD_STATE  = 'State';
+    public const FIELD_ERRORS = 'Errors';
+
+    public const STATE_PROCESSING = 'processing';
+    public const STATE_FAILED     = 'failed';
+    public const STATE_UNDEFINED  = 'undefined';
+
+    /**
+     * @param int[]|null $ids
+     * @return JobInterface[]
+     */
+    public static function getAll($ids = null)
+    {
+        return self::getModelRepository()->getAll($ids);
+    }
+
+    /**
+     * @param string|null $state
+     * @return int
+     */
+    public static function getCount($state = null)
+    {
+        return self::getModelRepository()->getCount($state);
+    }
+
+    /**
+     * @param string      $label
+     * @param string|null $state
+     * @return int
+     */
+    public static function getCountForLabel($label, $state = null)
+    {
+        return self::getModelRepository()->getCountForLabel($label, $state);
+    }
+
+    /**
+     * @param string|null $state
+     * @return array
+     */
+    public static function getCountPerLabel($state = null)
+    {
+        return self::getModelRepository()->getCountPerLabel($state);
+    }
+
+    /**
+     * @param string[]    $labels
+     * @param int|null    $limit
+     * @param string|null $state
+     * @return JobInterface[]
+     */
+    public static function getByLabels($labels, $limit = null, $state = null)
+    {
+        return self::getModelRepository()->getByLabels($labels, $limit, $state);
+    }
+
+    /**
+     * Deletes all stored jobs.
+     */
+    public static function deleteAll()
+    {
+        self::getModelRepository()->deleteAll();
+    }
+
     /**
      * @return array
      */
