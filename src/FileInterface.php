@@ -31,6 +31,128 @@
 
 namespace Opus\Common;
 
-interface FileInterface
+use Opus\Common\Model\ModelInterface;
+
+interface FileInterface extends ModelInterface
 {
+    /**
+     * @return string|null
+     */
+    public function getComment();
+
+    /**
+     * @param string|null $comment
+     * @return $this
+     */
+    public function setComment($comment);
+
+    /**
+     * @return int
+     */
+    public function getFileSize();
+
+    /**
+     * @param int $size
+     * @return $this
+     */
+    public function setFileSize($size);
+
+    /**
+     * @return string|null
+     */
+    public function getHashValue();
+
+    /**
+     * @param string|null $hash
+     * @return $this
+     */
+    public function setHashValue($hash);
+
+    /**
+     * @return string|null
+     */
+    public function getLabel();
+
+    /**
+     * @param string|null $label
+     * @return $this
+     */
+    public function setLabel($label);
+
+    /**
+     * @return string|null
+     */
+    public function getLanguage();
+
+    /**
+     * @param string|null $lang
+     * @return $this
+     */
+    public function setLanguage($lang);
+
+    /**
+     * @return string|null
+     */
+    public function getMimeType();
+
+    /**
+     * @param string|null $mimeType
+     * @return $this
+     */
+    public function setMimeType($mimeType);
+
+    /**
+     * @return string|null
+     */
+    public function getPathName();
+
+    /**
+     * @param string $pathName
+     * @return $this
+     */
+    public function setPathName($pathName);
+
+    /**
+     * @return Date|null
+     */
+    public function getServerDateSubmitted();
+
+    /**
+     * @param Date|null $dateSubmitted
+     * @return $this
+     */
+    public function setServerDateSubmitted($dateSubmitted);
+
+    /**
+     * @return int
+     */
+    public function getSortOrder();
+
+    /**
+     * @param int $pos
+     * @return $this
+     */
+    public function setSortOrder($pos);
+
+    /**
+     * @return bool
+     */
+    public function getVisibleInFrontdoor();
+
+    /**
+     * @param bool $visible
+     * @return $this
+     */
+    public function setVisibleInFrontdoor($visible);
+
+    /**
+     * @return bool
+     */
+    public function getVisibleInOai();
+
+    /**
+     * @param bool $visible
+     * @return $this
+     */
+    public function setVisibleInOai($visible);
 }

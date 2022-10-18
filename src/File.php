@@ -35,11 +35,60 @@ use Opus\Common\Model\AbstractModel;
 
 class File extends AbstractModel
 {
+    public const FIELD_COMMENT               = 'Comment';
+    public const FIELD_FILE_SIZE             = 'FileSize';
+    public const FIELD_HASH_VALUE            = 'HashValue';
+    public const FIELD_LABEL                 = 'Label';
+    public const FIELD_LANGUAGE              = 'Language';
+    public const FIELD_MIME_TYPE             = 'MimeType';
+    public const FIELD_PATH_NAME             = 'PathName';
+    public const FIELD_SERVER_DATE_SUBMITTED = 'ServerDateSubmitted';
+    public const FIELD_SORT_ORDER            = 'SortOrder';
+    public const FIELD_VISIBLE_IN_FRONTDOOR  = 'VisibleInFrontdoor';
+    public const FIELD_VISIBLE_IN_OAI        = 'VisibleInOai';
+    // TODO TempFile
+
+    /**
+     * @param int    $docId
+     * @param string $pathName
+     * @return FileInterface|null
+     */
+    public static function fetchByDocIdPathName($docId, $pathName)
+    {
+        return self::getModelRepository()->fetchByDocIdPathName($docId, $pathName);
+    }
+
     /**
      * @return array
      */
     protected static function loadModelConfig()
     {
-        return [];
+        return [
+            'fields' => [
+                self::FIELD_COMMENT               => [],
+                self::FIELD_FILE_SIZE             => [
+                    'type' => 'int',
+                ],
+                self::FIELD_HASH_VALUE            => [],
+                self::FIELD_LABEL                 => [],
+                self::FIELD_LANGUAGE              => [],
+                self::FIELD_MIME_TYPE             => [],
+                self::FIELD_PATH_NAME             => [
+                    'required' => true,
+                ],
+                self::FIELD_SERVER_DATE_SUBMITTED => [
+                    'type' => Date::class,
+                ],
+                self::FIELD_SORT_ORDER            => [
+                    'type' => 'int',
+                ],
+                self::FIELD_VISIBLE_IN_FRONTDOOR  => [
+                    'type' => 'bool',
+                ],
+                self::FIELD_VISIBLE_IN_OAI        => [
+                    'type' => 'bool',
+                ],
+            ],
+        ];
     }
 }
