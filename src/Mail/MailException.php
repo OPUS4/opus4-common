@@ -34,7 +34,7 @@ namespace Opus\Common\Mail;
 use Exception;
 
 /**
- * Extends default OpusException class.
+ * Exception for mail related problems.
  */
 class MailException extends Exception
 {
