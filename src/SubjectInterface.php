@@ -25,14 +25,57 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2020, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Common;
 
-use Exception as PhpException;
+use Opus\Common\Model\ModelInterface;
 
-class Exception extends PhpException
+interface SubjectInterface extends ModelInterface
 {
+    /**
+     * @return string|null
+     */
+    public function getExternalKey();
+
+    /**
+     * @param string|null $externalKey
+     * @return $this
+     */
+    public function setExternalKey($externalKey);
+
+    /**
+     * @return string|null
+     */
+    public function getLanguage();
+
+    /**
+     * @param string $lang
+     * @return $this
+     */
+    public function setLanguage($lang);
+
+    /**
+     * @return string|null
+     */
+    public function getType();
+
+    /**
+     * @param string $type
+     * @return $this
+     */
+    public function setType($type);
+
+    /**
+     * @return string|null
+     */
+    public function getValue();
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setValue($value);
 }

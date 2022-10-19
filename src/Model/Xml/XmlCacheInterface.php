@@ -54,9 +54,9 @@ interface XmlCacheInterface
     /**
      * Returns XML for document from cache.
      *
-     * @param int    $documentId
-     * @param string $xmlVersion
-     * @return mixed
+     * @param int|int[] $documentId
+     * @param string    $xmlVersion
+     * @return null|string|string[]
      */
     public function getData($documentId, $xmlVersion);
 

@@ -31,7 +31,7 @@
 
 namespace Opus\Common\Mail;
 
-use Opus\Common\Config;
+use Opus\Common\ConfigTrait;
 use Opus\Common\Log;
 use Zend_Mail;
 use Zend_Mail_Transport_File;
@@ -46,6 +46,8 @@ use function trim;
  */
 class SendMail
 {
+    use ConfigTrait;
+
     /** @var Transport */
     private $transport;
 
@@ -54,7 +56,8 @@ class SendMail
      */
     public function __construct()
     {
-        $config = Config::get();
+        $config = $this->getConfig();
+
         if (isset($config, $config->mail->opus)) {
             if (isset($config->mail->opus->transport) && $config->mail->opus->transport === 'file') {
                 // erlaubt das Speichern von E-Mails in Dateien, die im Verzeichnis mail.opus.file abgelegt werden

@@ -47,8 +47,9 @@ class ClassLoaderHelper
     public static function classExists($className)
     {
         // Anpassung des Zend-Autoloaders erforderlich, damit keine PHP Warning erzeugt wird, wenn Generator-Klasse
-        // nicht existiert: PHPUnit erzeugt sonst aus PHP Warning (wenn Klasse nicht gefunden wird) eine Exception, weil
-        // in Konfiguration convertWarningsToExceptions="true gesetzt -> das führt zu verändertem Exception-Verhalten
+        // nicht existiert: PHPUnit erzeugt sonst aus PHP Warning (wenn Klasse nicht gefunden wird) eine OpusException,
+        // weil in Konfiguration convertWarningsToExceptions="true gesetzt -> das führt zu verändertem
+        // OpusException-Verhalten
         $autoloader = Zend_Loader_Autoloader::getInstance();
 
         // Default-Wert für späteres Zurücksetzen speichern
