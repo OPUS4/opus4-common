@@ -25,30 +25,17 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Security;
 
-use Opus\Common\Model\ModelRepositoryInterface;
-use Opus\Common\Security\SecurityException;
+use Exception;
 
-interface AccountRepositoryInterface extends ModelRepositoryInterface
+/**
+ * Opus\Security specific exception.
+ */
+class SecurityException extends Exception
 {
-    /**
-     * @return AccountInterface[]|null
-     */
-    public function getAll();
-
-    /**
-     * Fetches account for login.
-     *
-     * TODO throws SecurityException if login does not exist - should that be changed?
-     *
-     * @param string $login Login name
-     * @return AccountInterface|null
-     * @throws SecurityException If login does not exist.
-     */
-    public function fetchAccountByLogin($login);
 }
