@@ -63,8 +63,10 @@ class LogServiceTest extends TestCase
 {
     public const DEFAULT_FORMAT = '%timestamp% %priorityName% (ID %runId%): %message%';
 
+    /** @var LogService */
     private $logService;
 
+    /** @var string */
     private $tempFolder;
 
     public function setUp()

@@ -57,8 +57,10 @@ use const DIRECTORY_SEPARATOR;
  */
 class FileTest extends TestCase
 {
+    /** @var string */
     private $srcPath = '';
 
+    /** @var string */
     private $destPath = '';
 
     /**

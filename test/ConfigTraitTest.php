@@ -38,6 +38,7 @@ use Zend_Config;
 
 class ConfigTraitTest extends TestCase
 {
+    /** @var Zend_Config */
     private $config;
 
     public function setUp()

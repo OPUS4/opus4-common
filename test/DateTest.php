@@ -54,6 +54,7 @@ use function strtotime;
  */
 class DateTest extends TestCase
 {
+    /** @var string */
     protected $localeBackup;
 
     /**
