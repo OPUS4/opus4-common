@@ -16,10 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup PHP 7.1
+      - name: Setup PHP 7.4
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.1'
+          php-version: '7.4'
 
       - name: Install Composer and Dependencies
         run: curl -s http://getcomposer.org/installer | php && php composer.phar self-update && php composer.phar install

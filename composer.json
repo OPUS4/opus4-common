@@ -10,7 +10,7 @@
   "require": {
     "ext-dom": "*",
     "ext-mbstring": "*",
-    "zendframework/zendframework1": "1.12.*",
+    "shardj/zf1-future": "1.21.*",
     "symfony/console": "*"
   },
   "require-dev": {
