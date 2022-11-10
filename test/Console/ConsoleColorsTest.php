@@ -8,6 +8,7 @@ use OpusTest\Common\TestAsset\TestCase;
 
 class ConsoleColorsTest extends TestCase
 {
+    /** @var ConsoleColors */
     protected $colors;
 
     public function setUp()

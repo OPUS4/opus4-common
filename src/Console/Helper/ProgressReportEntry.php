@@ -35,10 +35,13 @@ use Exception;
 
 class ProgressReportEntry
 {
+    /** @var string */
     protected $title;
 
+    /** @var string */
     protected $category;
 
+    /** @var array */
     protected $exceptions;
 
     /**

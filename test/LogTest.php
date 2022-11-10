@@ -52,6 +52,7 @@ use const PHP_EOL;
 
 class LogTest extends TestCase
 {
+    /** @var resource */
     private $logFile;
 
     public function tearDown()

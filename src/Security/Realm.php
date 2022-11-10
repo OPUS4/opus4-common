@@ -47,6 +47,7 @@ use const FILTER_VALIDATE_BOOLEAN;
  */
 class Realm implements RealmInterface
 {
+    /** @var RealmStorageInterface */
     private $realmStorage;
 
     /* Singleton code below                                                                     */

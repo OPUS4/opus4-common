@@ -42,10 +42,13 @@ use function ucfirst;
  */
 class Field implements FieldInterface
 {
+    /** @var ModelInterface */
     private $model;
 
+    /** @var string */
     private $name;
 
+    /** @var string|null */
     private $valueModelClass;
 
     /**

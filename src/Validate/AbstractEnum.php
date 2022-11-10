@@ -42,6 +42,7 @@ use function array_search;
  */
 abstract class AbstractEnum extends Zend_Validate_Abstract
 {
+    /** @var string[] */
     protected $validEnums = [];
 
     /**

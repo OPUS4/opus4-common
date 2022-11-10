@@ -54,8 +54,10 @@ use function sprintf;
  */
 class ProgressMatrix extends AbstractBaseProgressOutput
 {
+    /** @var int */
     private $maxLineLength;
 
+    /** @var int */
     private $currentLineLength;
 
     /**

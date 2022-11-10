@@ -54,14 +54,19 @@ abstract class AbstractBaseDocumentCommand extends Command
     /** @var bool */
     private $allDocuments = false;
 
+    /** @var int */
     protected $startId;
 
+    /** @var int */
     protected $endId;
 
+    /** @var bool */
     private $singleDocument = false;
 
+    /** @var string */
     protected $startIdDescription = 'ID of document where processing should start (or \'-\')';
 
+    /** @var string */
     protected $endIdDescription = 'ID of document where processing should stop (or \'-\')';
 
     protected function configure()
