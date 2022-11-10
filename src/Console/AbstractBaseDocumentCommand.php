@@ -40,7 +40,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use function count;
 use function ctype_digit;
-use function mbsplit;
+use function mb_split;
 
 /**
  * Base class for all commands using StartID and EndID as arguments.
@@ -78,6 +78,9 @@ abstract class AbstractBaseDocumentCommand extends Command
         );
     }
 
+    /**
+     * @return int
+     */
     protected function processArguments(InputInterface $input)
     {
         $startId = $input->getArgument(self::ARGUMENT_START_ID);
@@ -85,7 +88,7 @@ abstract class AbstractBaseDocumentCommand extends Command
 
         // handle accidental inputs like '20-' or '20-30' instead of '20 -' or '20 30'
         if ($startId !== '-') {
-            $parts = mbsplit('-', $startId);
+            $parts = mb_split('-', $startId);
             if (count($parts) === 2) {
                 $startId = $parts[0];
                 $endId   = $parts[1];
@@ -132,10 +135,12 @@ abstract class AbstractBaseDocumentCommand extends Command
 
         $this->startId = $startId;
         $this->endId   = $endId;
+
+        return 0;
     }
 
     /**
-     * @return int|null
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
