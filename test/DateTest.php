@@ -60,7 +60,7 @@ class DateTest extends TestCase
     /**
      * Prepare german locale setup.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Zend_Locale::setDefault('de');

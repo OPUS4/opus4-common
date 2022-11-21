@@ -41,7 +41,7 @@ class FileTypesTest extends TestCase
     /** @var FileTypes */
     private $helper;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

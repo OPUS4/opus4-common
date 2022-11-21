@@ -78,7 +78,7 @@ class LanguageTest extends TestCase
     /**
      * Set up test fixture.
      */
-    public function setUp()
+    public function setUp(): void
     {
         // Set up a mock language list.
         $list = [

@@ -50,7 +50,7 @@ class SendMailTest extends TestCase
     /**
      * Set up test fixtures.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->configDummy = new Zend_Config([

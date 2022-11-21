@@ -20,4 +20,14 @@
             </property>
         </properties>
     </rule>
+
+    <!-- Don't require stricttypes declaration (yet). -->
+    <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Allow usage of get_class for PHP < 8 -->
+    <rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference">
+        <severity>0</severity>
+    </rule>
 </ruleset>

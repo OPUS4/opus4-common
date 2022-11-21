@@ -55,7 +55,7 @@ class LogTest extends TestCase
     /** @var resource */
     private $logFile;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (is_resource($this->logFile)) {
             fclose($this->logFile);

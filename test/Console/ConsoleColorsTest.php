@@ -11,7 +11,7 @@ class ConsoleColorsTest extends TestCase
     /** @var ConsoleColors */
     protected $colors;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

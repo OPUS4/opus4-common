@@ -39,7 +39,7 @@ use function dirname;
 
 class TestCase extends PHPUnitFrameworkTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

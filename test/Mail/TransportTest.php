@@ -48,7 +48,7 @@ class TransportTest extends TestCase
     /**
      * No cleanup needed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -57,7 +57,7 @@ class TransportTest extends TestCase
         ]));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
     }
 

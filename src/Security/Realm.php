@@ -78,14 +78,14 @@ class Realm implements RealmInterface
     /**
      * Disallow construction.
      */
-    final private function __construct()
+    private function __construct()
     {
     }
 
     /**
      * Singleton classes cannot be cloned!
      */
-    final private function __clone()
+    private function __clone()
     {
     }
 

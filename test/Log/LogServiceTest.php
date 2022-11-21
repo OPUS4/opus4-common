@@ -69,7 +69,7 @@ class LogServiceTest extends TestCase
     /** @var string */
     private $tempFolder;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -88,7 +88,7 @@ class LogServiceTest extends TestCase
         ], true));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // reset singleton, because otherwise settings will carry over to next test
         $singleton  = LogService::getInstance();
