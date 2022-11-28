@@ -47,9 +47,9 @@ use function mb_split;
  */
 abstract class AbstractBaseDocumentCommand extends Command
 {
-    const ARGUMENT_START_ID = 'StartID';
+    public const ARGUMENT_START_ID = 'StartID';
 
-    const ARGUMENT_END_ID = 'EndID';
+    public const ARGUMENT_END_ID = 'EndID';
 
     /** @var bool */
     private $allDocuments = false;
@@ -92,7 +92,7 @@ abstract class AbstractBaseDocumentCommand extends Command
         $endId   = $input->getArgument(self::ARGUMENT_END_ID);
 
         // handle accidental inputs like '20-' or '20-30' instead of '20 -' or '20 30'
-        if ($startId !== '-') {
+        if ($startId !== '-' && $startId !== null) {
             $parts = mb_split('-', $startId);
             if (count($parts) === 2) {
                 $startId = $parts[0];
