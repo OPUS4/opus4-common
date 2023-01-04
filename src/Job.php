@@ -59,7 +59,7 @@ class Job extends AbstractModel
      */
     public static function getCount($state = null)
     {
-        return self::getModelRepository()->getCount($state);
+        return (int) self::getModelRepository()->getCount($state);
     }
 
     /**
@@ -69,7 +69,7 @@ class Job extends AbstractModel
      */
     public static function getCountForLabel($label, $state = null)
     {
-        return self::getModelRepository()->getCountForLabel($label, $state);
+        return (int) self::getModelRepository()->getCountForLabel($label, $state);
     }
 
     /**
