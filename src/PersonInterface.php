@@ -132,7 +132,7 @@ interface PersonInterface extends ModelInterface
      * @param string|null $gndId
      * @return $this
      */
-    public function setIdentifiertGnd($gndId);
+    public function setIdentifierGnd($gndId);
 
     /**
      * @return string|null
