@@ -37,6 +37,7 @@ use Zend_Mail;
 use Zend_Mail_Transport_File;
 use Zend_Validate_EmailAddress;
 
+use function is_array;
 use function mt_rand;
 use function time;
 use function trim;
