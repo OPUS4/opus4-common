@@ -150,6 +150,10 @@ class SendMail
         }
 
         foreach ($recipients as $recip) {
+            // TODO should not happen (except in existing tests) - remove test and code?
+            if (! is_array($recip)) {
+                continue;
+            }
             self::validateAddress($recip['address']);
             $logger->debug('SendMail: adding recipient <' . $recip['address'] . '>');
             $mail->addTo($recip['address'], $recip['name']);
