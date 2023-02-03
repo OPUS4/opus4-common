@@ -10,7 +10,7 @@
   "require": {
     "ext-dom": "*",
     "ext-mbstring": "*",
-    "shardj/zf1-future": "1.21.*",
+    "opus4/zf1-future": "1.21.*",
     "symfony/console": "*"
   },
   "require-dev": {
