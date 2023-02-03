@@ -37,6 +37,7 @@ use Zend_Mail;
 use Zend_Mail_Transport_File;
 use Zend_Validate_EmailAddress;
 
+use function is_array;
 use function mt_rand;
 use function time;
 use function trim;
@@ -150,6 +151,10 @@ class SendMail
         }
 
         foreach ($recipients as $recip) {
+            // TODO should not happen (except in existing tests) - remove test and code?
+            if (! is_array($recip)) {
+                continue;
+            }
             self::validateAddress($recip['address']);
             $logger->debug('SendMail: adding recipient <' . $recip['address'] . '>');
             $mail->addTo($recip['address'], $recip['name']);

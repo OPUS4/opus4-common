@@ -47,6 +47,7 @@ use const FILTER_VALIDATE_BOOLEAN;
  */
 class Realm implements RealmInterface
 {
+    /** @var RealmStorageInterface */
     private $realmStorage;
 
     /* Singleton code below                                                                     */
@@ -77,14 +78,14 @@ class Realm implements RealmInterface
     /**
      * Disallow construction.
      */
-    final private function __construct()
+    private function __construct()
     {
     }
 
     /**
      * Singleton classes cannot be cloned!
      */
-    final private function __clone()
+    private function __clone()
     {
     }
 

@@ -41,10 +41,13 @@ class ModelDescriptor implements ModelDescriptorInterface
 {
     use ConfigTrait;
 
+    /** @var string */
     private $modelId;
 
+    /** @var array */
     private $fields;
 
+    /** @var string */
     private static $fieldDescriptorClass;
 
     /**

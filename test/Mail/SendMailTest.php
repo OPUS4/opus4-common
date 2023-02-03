@@ -25,7 +25,7 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2009-2011, OPUS 4 development team
+ * @copyright   Copyright (c) 2009, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
@@ -44,12 +44,13 @@ use Zend_Config;
  */
 class SendMailTest extends TestCase
 {
+    /** @var Zend_Config */
     protected $configDummy;
 
     /**
      * Set up test fixtures.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->configDummy = new Zend_Config([

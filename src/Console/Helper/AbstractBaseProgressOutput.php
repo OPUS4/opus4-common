@@ -56,6 +56,7 @@ abstract class AbstractBaseProgressOutput implements ProgressOutputInterface
     /** @var float Time progress ended */
     protected $endTime;
 
+    /** @var int int */
     protected $progress = 0;
 
     /**

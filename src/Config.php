@@ -43,12 +43,16 @@ class Config
 {
     use LoggingTrait;
 
+    /** @var string */
     private $tempPath;
 
+    /** @var string[] */
     private $availableLanguages;
 
+    /** @var static */
     private static $instance;
 
+    /** @var Zend_Config */
     private static $config;
 
     /**

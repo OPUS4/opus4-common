@@ -37,6 +37,7 @@ use InvalidArgumentException;
 use Opus\Common\Model\AbstractModel;
 use Opus\Common\Model\Field;
 use Opus\Common\Model\ModelException;
+use Opus\Common\Security\SecurityException;
 
 use function checkdate;
 use function get_class;
@@ -92,6 +93,8 @@ class Date extends AbstractModel
      */
     public function __construct($value = null)
     {
+        parent::__construct();
+
         if ($value instanceof DateTime) {
             $this->setDateTime($value);
         } elseif (is_string($value) && preg_match(self::TIMEDATE_REGEXP, $value)) {
@@ -322,11 +325,15 @@ class Date extends AbstractModel
      */
     public function isValidDate()
     {
-        return checkdate(
-            $this->values[self::FIELD_MONTH],
-            $this->values[self::FIELD_DAY],
-            $this->values[self::FIELD_YEAR]
-        );
+        $month = $this->values[self::FIELD_MONTH];
+        $day   = $this->values[self::FIELD_DAY];
+        $year  = $this->values[self::FIELD_YEAR];
+
+        if ($month === null || $day === null || $year === null) {
+            return false;
+        } else {
+            return checkdate($month, $day, $year);
+        }
     }
 
     /**
