@@ -25,56 +25,26 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2019, OPUS 4 development team
+ * @copyright   Copyright (c) 2023, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Common\Model\FieldType;
+namespace OpusTest\Common\Model;
 
-use Opus\Common\Model\FieldType\TextType;
+use Opus\Common\Model\FieldTypes;
 use OpusTest\Common\TestAsset\TestCase;
 
-class TextTypeTest extends TestCase
+class FieldTypesTest extends TestCase
 {
-    public function testSetOptionsFromString()
+    public function testGetAllEnrichmentTypesRaw()
     {
-        $textType = new TextType();
-        $textType->setOptionsFromString("foo");
-
-        $this->assertNull($textType->getOptions());
-        $this->assertNull($textType->getOptionsAsString());
-        $this->assertFalse($textType->isStrictValidation());
+        $resultArr = FieldTypes::getAll(true);
+        $this->assertNotEmpty($resultArr);
     }
 
-    public function testGetDescription()
+    public function testGetAllEnrichmentTypes()
     {
-        $textType = new TextType();
-        $this->assertEquals('admin_enrichmenttype_texttype_description', $textType->getDescription());
-    }
-
-    public function testGetName()
-    {
-        $textType = new TextType();
-        $this->assertEquals('TextType', $textType->getName());
-    }
-
-    /**
-     * @doesNotPerformAssertions
-     */
-    public function testRobustnessOfSetOptions()
-    {
-        $textType = new TextType();
-
-        $textType->setOptions(null);
-
-        $textType->setOptions("");
-
-        $textType->setOptions("{foo}");
-
-        $textType->setOptions('{"foo":"bar"}');
-
-        $textType->setOptions(["foo"]);
-
-        $textType->setOptions(["foo" => "bar"]);
+        $resultArr = FieldTypes::getAll();
+        $this->assertNotEmpty($resultArr);
     }
 }

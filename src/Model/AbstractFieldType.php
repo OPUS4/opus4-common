@@ -35,35 +35,27 @@ use Admin_Form_Document_Enrichment;
 use Opus\Common\Log;
 use Zend_Form_Element;
 
-use function array_diff;
-use function class_implements;
-use function in_array;
 use function is_array;
 use function json_decode;
 use function json_encode;
 use function lcfirst;
 use function method_exists;
-use function scandir;
 use function strlen;
 use function strtolower;
 use function substr;
 use function ucfirst;
-
-use const DIRECTORY_SEPARATOR;
 
 /**
  * TODO declare as abstract and make functions abstract that have to be implemented by child classes
  */
 class AbstractFieldType implements FieldTypeInterface
 {
-    public const TYPES_NAMESPACE = 'Opus\Common\Model\FieldType';
-
     /**
      * @return string
      */
     public function getName()
     {
-        return substr(static::class, strlen(self::TYPES_NAMESPACE . '\\')); // TODO better, dynamic way
+        return substr(static::class, strlen(FieldTypes::TYPES_NAMESPACE . '\\')); // TODO better, dynamic way
     }
 
     /**
@@ -164,43 +156,6 @@ class AbstractFieldType implements FieldTypeInterface
             // Fehler bei der Erzegung des JSON
             return null;
         }
-        return $result;
-    }
-
-    /**
-     * Ermittelt die Klassennamen aller im System verfügbaren EnrichmentTypes.
-     *
-     * @param bool $rawNames
-     * @return array
-     *
-     * TODO this needs to be configurable, like in Zend for helpers and plugins, classes might not be centralized
-     */
-    public static function getAllEnrichmentTypes($rawNames = false)
-    {
-        $files  = array_diff(scandir(__DIR__ . DIRECTORY_SEPARATOR . 'FieldType'), ['.', '..']);
-        $result = [];
-
-        if ($files === false) {
-            return $result;
-        }
-
-        foreach ($files as $file) {
-            if (substr($file, strlen($file) - 4) === '.php') {
-                // found PHP file - try to instantiate
-                $className  = self::TYPES_NAMESPACE . '\\' . substr($file, 0, strlen($file) - 4);
-                $interfaces = class_implements($className);
-                if (in_array(FieldTypeInterface::class, $interfaces)) {
-                    $type = new $className();
-                    if (! $rawNames) {
-                        $typeName          = $type->getName();
-                        $result[$typeName] = $typeName;
-                    } else {
-                        $result[] = $className;
-                    }
-                }
-            }
-        }
-
         return $result;
     }
 

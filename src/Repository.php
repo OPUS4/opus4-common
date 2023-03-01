@@ -37,6 +37,7 @@ use Opus\Common\Model\ModelFactoryInterface;
 use Opus\Common\Model\ModelInterface;
 use Opus\Common\Model\ModelRepositoryInterface;
 use Opus\Common\Model\Xml\XmlCacheInterface;
+use Zend_Config;
 
 use function class_exists;
 use function class_implements;
@@ -164,7 +165,7 @@ class Repository
     }
 
     /**
-     * @return Config
+     * @return Zend_Config|null
      */
     public function getConfig()
     {
