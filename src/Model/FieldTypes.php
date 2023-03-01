@@ -98,7 +98,7 @@ class FieldTypes
      * Typ aus einem anderen Grund nicht geladen werden konnte.
      *
      * @param string $type
-     * @return FieldTypeInterface
+     * @return FieldTypeInterface|null
      */
     public static function getType($type)
     {
