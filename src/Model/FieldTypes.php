@@ -34,23 +34,27 @@ namespace Opus\Common\Model;
 use Opus\Common\Log;
 use Throwable;
 
-use function array_diff;
+use function array_keys;
+use function array_values;
+use function basename;
 use function class_implements;
+use function glob;
 use function in_array;
-use function scandir;
-use function strlen;
-use function substr;
 
 use const DIRECTORY_SEPARATOR;
 
 /**
  * TODO create instance -> getInstance()
  * TODO use LoggingTrait instead of static Log::get()
- * TODO single function for determining class for type
+ * TODO IMPORTANT use mapping to determine class for type
+ * TODO IMPORTANT classname === typename (at the moment) - THIS IS NOT GUARANTEED
  */
 class FieldTypes
 {
     public const TYPES_NAMESPACE = 'Opus\Common\Model\FieldType';
+
+    /** @var array|null */
+    private static $fieldTypes;
 
     /**
      * Ermittelt die Klassennamen aller im System verfügbaren EnrichmentTypes.
@@ -63,33 +67,41 @@ class FieldTypes
      */
     public static function getAll($rawNames = false)
     {
-        $files  = array_diff(scandir(
-            __DIR__ . DIRECTORY_SEPARATOR . 'FieldType'
-        ), ['.', '..']);
-        $result = [];
+        if (self::$fieldTypes === null) {
+            $files = glob(__DIR__ . DIRECTORY_SEPARATOR . 'FieldType' . DIRECTORY_SEPARATOR . '*.php');
 
-        if ($files === false) {
-            return $result;
-        }
+            if ($files === false) {
+                self::$fieldTypes = [];
+            } else {
+                $types = [];
 
-        foreach ($files as $file) {
-            if (substr($file, strlen($file) - 4) === '.php') {
-                // found PHP file - try to instantiate TODO getting class for type should be separate function
-                $className  = self::TYPES_NAMESPACE . '\\' . substr($file, 0, strlen($file) - 4);
-                $interfaces = class_implements($className);
-                if (in_array(FieldTypeInterface::class, $interfaces)) {
-                    $type = new $className();
-                    if (! $rawNames) {
-                        $typeName          = $type->getName();
-                        $result[$typeName] = $typeName;
-                    } else {
-                        $result[] = $className;
+                foreach ($files as $file) {
+                    // found PHP file - try to instantiate
+                    $fileName  = basename($file, '.php');
+                    $className = self::getTypeClass($fileName);
+
+                    $interfaces = class_implements($className);
+                    if (! in_array(FieldTypeInterface::class, $interfaces)) {
+                        continue;
                     }
+
+                    $type     = new $className();
+                    $typeName = $type->getName();
+
+                    $types[$typeName] = $className;
                 }
+
+                self::$fieldTypes = $types;
             }
         }
 
-        return $result;
+        if ($rawNames) {
+            // return type classes
+            return array_values(self::$fieldTypes);
+        } else {
+            // return type names
+            return array_keys(self::$fieldTypes);
+        }
     }
 
     /**
@@ -102,19 +114,32 @@ class FieldTypes
      */
     public static function getType($type)
     {
-        if ($type === null || empty($type)) {
+        if ($type === null || empty($type || ! in_array($type, self::getAll()))) {
             return null;
         }
 
-        $typeClass = self::TYPES_NAMESPACE . '\\' . $type;
+        $typeClass = self::getTypeClass($type);
 
+        // TODO check first with class_exists($typeClass, false) ?
         try {
             $typeObj = new $typeClass();
-        } catch (Throwable $ex) {
-            Log::get()->err('could not find enrichment type class ' . $typeClass);
+        } catch (Throwable $ex) { // TODO Throwable only available in PHP 7+
+            Log::get()->err('could not find field type class ' . $typeClass, $ex);
             return null;
         }
 
         return $typeObj;
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     *
+     * TODO better way? - allow registering namespaces/types like in Zend for form elements?
+     * TODO use $fieldTypes name -> class mapping instead of "calculating" classes
+     */
+    public static function getTypeClass($type)
+    {
+        return self::TYPES_NAMESPACE . '\\' . $type;
     }
 }

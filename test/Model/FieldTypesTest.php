@@ -31,6 +31,9 @@
 
 namespace OpusTest\Common\Model;
 
+use Opus\Common\Model\FieldType\BooleanType;
+use Opus\Common\Model\FieldType\RegexType;
+use Opus\Common\Model\FieldTypeInterface;
 use Opus\Common\Model\FieldTypes;
 use OpusTest\Common\TestAsset\TestCase;
 
@@ -38,13 +41,30 @@ class FieldTypesTest extends TestCase
 {
     public function testGetAllEnrichmentTypesRaw()
     {
-        $resultArr = FieldTypes::getAll(true);
-        $this->assertNotEmpty($resultArr);
+        $fieldTypes = FieldTypes::getAll(true);
+        $this->assertNotEmpty($fieldTypes);
+        $this->assertContains(BooleanType::class, $fieldTypes);
+        $this->assertContains(RegexType::class, $fieldTypes);
     }
 
     public function testGetAllEnrichmentTypes()
     {
-        $resultArr = FieldTypes::getAll();
-        $this->assertNotEmpty($resultArr);
+        $fieldTypes = FieldTypes::getAll();
+        $this->assertNotEmpty($fieldTypes);
+        $this->assertContains('BooleanType', $fieldTypes);
+        $this->assertContains('SelectType', $fieldTypes);
+    }
+
+    public function testGetType()
+    {
+        $booleanType = FieldTypes::getType('BooleanType');
+
+        $this->assertNotNull($booleanType);
+        $this->assertInstanceOf(FieldTypeInterface::class, $booleanType);
+    }
+
+    public function testGetTypeUnknown()
+    {
+        $this->assertNull(FieldTypes::getType('UnknownType'));
     }
 }
