@@ -47,6 +47,7 @@ use function ucfirst;
 
 /**
  * TODO declare as abstract and make functions abstract that have to be implemented by child classes
+ * TODO add documentation explaining the "why" for the different aspects/functions
  */
 class AbstractFieldType implements FieldTypeInterface
 {
