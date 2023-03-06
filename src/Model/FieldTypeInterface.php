@@ -99,6 +99,10 @@ interface FieldTypeInterface
     /**
      * Sollen bereits vorhandene Werte für ein Enrichment dieses Typs vor der Speicherung validiert werden?
      *
+     * Bei strikter Validierung muessen Werte, die in der aktuellen Konfiguration ungueltig sind, geaendert werden.
+     * Die strikte Validierung kann abgeschaltet werden, um alte, jetzt ungueltige Werte zu erlauben, so lange sie
+     * nicht geaendert werden.
+     *
      * @return bool
      */
     public function isStrictValidation();
