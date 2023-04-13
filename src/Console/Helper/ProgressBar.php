@@ -38,7 +38,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Adapter for Symfoy class ProgressBar in order to use it interchangeably with other
  * OPUS 4 ProgressOutput classes.
  */
-class ProgressBar extends AbstractBaseProgressOutput
+class ProgressBar extends AbstractProgressOutput
 {
     /** @var SymfonyProgressBar */
     private $progressBar;
