@@ -32,7 +32,7 @@
 
 namespace OpusTest\Common\Console\Helper;
 
-use Opus\Common\Console\Helper\AbstractBaseProgressOutput;
+use Opus\Common\Console\Helper\AbstractProgressOutput;
 use OpusTest\Common\TestAsset\TestCase;
 use Symfony\Component\Console\Output\NullOutput;
 
@@ -44,7 +44,7 @@ class BaseProgressOutputTest extends TestCase
     {
         $output = new NullOutput();
 
-        $progress = $this->getMockForAbstractClass(AbstractBaseProgressOutput::class, [$output, 100]);
+        $progress = $this->getMockForAbstractClass(AbstractProgressOutput::class, [$output, 100]);
 
         $progress->start();
         sleep(2);

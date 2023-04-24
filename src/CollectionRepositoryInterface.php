@@ -25,75 +25,58 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2023, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common\Model;
-
-use function ucfirst;
+namespace Opus\Common;
 
 /**
- * TODO This class is used to keep Opus\Common\Date compatible to the old Framework implementation and the code for
- *      generating XML. The old Field class still exists and is used by the entity classes in the Framework. For Date
- *      the Field objects are only created on demand and not at construction of the object.
- *
- * TODO LAMINAS keep this?
+ * Interface for collection related functions manipulating multiple documents.
  */
-class Field implements FieldInterface
+interface CollectionRepositoryInterface
 {
-    /** @var ModelInterface */
-    private $model;
-
-    /** @var string */
-    private $name;
-
-    /** @var string|null */
-    private $valueModelClass;
+    /**
+     * Adds collection to all documents or all documents in another collection.
+     *
+     * @param int  $colId
+     * @param int  $filterColId
+     * @param bool $updateLastModified
+     */
+    public function addCollection($colId, $filterColId, $updateLastModified = true);
 
     /**
-     * @param ModelInterface $model
-     * @param string         $name
-     * @param string|null    $valueModelClass
+     * Moves all documents from one collection to another.
+     *
+     * @param int  $srcColId
+     * @param int  $destColId
+     * @param bool $updateLastModified
      */
-    public function __construct($model, $name, $valueModelClass = null)
-    {
-        $this->model           = $model;
-        $this->name            = $name;
-        $this->valueModelClass = $valueModelClass;
-    }
+    public function moveDocuments($srcColId, $destColId, $updateLastModified = true);
 
     /**
-     * @return string
+     * Copies all documents from one collection to another.
+     *
+     * @param int  $srcColId
+     * @param int  $destColId
+     * @param bool $updateLastModified
      */
-    public function getName()
-    {
-        return $this->name;
-    }
+    public function copyDocuments($srcColId, $destColId, $updateLastModified = true);
 
     /**
-     * @return string|null
+     * Removes collection from all documents or all documents in another collection.
+     *
+     * @param int  $colId
+     * @param int  $filterColId
+     * @param bool $updateLastModified
      */
-    public function getValueModelClass()
-    {
-        return $this->valueModelClass;
-    }
+    public function removeCollection($colId, $filterColId, $updateLastModified = true);
 
     /**
-     * @return mixed
+     * Removes all documents from a collection.
+     *
+     * @param int  $colId
+     * @param bool $updateLastModified
      */
-    public function getValue()
-    {
-        $getter = 'get' . ucfirst($this->name);
-
-        return $this->model->$getter();
-    }
-
-    /**
-     * @return false
-     */
-    public function hasMultipleValues()
-    {
-        return false; // TODO LAMINAS get from model description
-    }
+    public function removeDocuments($colId, $updateLastModified = true);
 }

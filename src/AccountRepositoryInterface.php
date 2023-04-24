@@ -32,6 +32,7 @@
 namespace Opus\Common;
 
 use Opus\Common\Model\ModelRepositoryInterface;
+use Opus\Common\Security\SecurityException;
 
 interface AccountRepositoryInterface extends ModelRepositoryInterface
 {
@@ -41,9 +42,13 @@ interface AccountRepositoryInterface extends ModelRepositoryInterface
     public function getAll();
 
     /**
+     * Fetches account for login.
+     *
+     * TODO throws SecurityException if login does not exist - should that be changed?
+     *
      * @param string $login Login name
      * @return AccountInterface|null
-     * TODO throws SecurityException if login does not exist - should that be changed?
+     * @throws SecurityException If login does not exist.
      */
     public function fetchAccountByLogin($login);
 }

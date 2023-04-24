@@ -52,10 +52,12 @@ use function sprintf;
  * TODO class using ProgressMatrix should not have to worry about formatting - just provide result for step(s)
  * TODO support providing status in array for block of steps
  */
-class ProgressMatrix extends AbstractBaseProgressOutput
+class ProgressMatrix extends AbstractProgressOutput
 {
+    /** @var int */
     private $maxLineLength;
 
+    /** @var int */
     private $currentLineLength;
 
     /**

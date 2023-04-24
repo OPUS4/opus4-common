@@ -41,8 +41,10 @@ use function sprintf;
  */
 class ProgressReport
 {
+    /** @var string */
     private $reportTitle = "<bg=red>There were %d documents with problems:</>";
 
+    /** @var string */
     private $reportTitleSingular = "<bg=red>There was 1 document with problems:</>";
 
     /** @var ProgressReportEntry[] */

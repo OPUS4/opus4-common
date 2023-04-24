@@ -36,9 +36,7 @@ use Zend_Log;
 
 trait LoggingTrait
 {
-    /**
-     * Logger for class.
-     */
+    /** @var Zend_Log Logger for class. */
     private $logger;
 
     /**

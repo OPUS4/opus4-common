@@ -184,7 +184,7 @@ class LogService
             $priority = $logConfig->level;
         }
 
-        if (ctype_alpha($priority)) {
+        if (is_string($priority) && ctype_alpha($priority)) {
             $level = $this->convertPriorityFromString($priority);
         } else {
             $level = $priority;

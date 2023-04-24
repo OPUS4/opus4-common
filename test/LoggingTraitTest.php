@@ -38,9 +38,10 @@ use Zend_Log;
 
 class LoggingTraitTest extends TestCase
 {
+    /** @var Zend_Log */
     private $logger;
 
-    public function setUp()
+    public function setUp(): void
     {
         $log = new Zend_Log();
 

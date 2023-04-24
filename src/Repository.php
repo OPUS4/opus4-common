@@ -54,6 +54,7 @@ use function substr;
  */
 class Repository
 {
+    /** @var static */
     private static $repository;
 
     /**

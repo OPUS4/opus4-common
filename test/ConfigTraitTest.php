@@ -38,9 +38,10 @@ use Zend_Config;
 
 class ConfigTraitTest extends TestCase
 {
+    /** @var Zend_Config */
     private $config;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->config = new Zend_Config(['option' => 'test']);
         Config::set($this->config);

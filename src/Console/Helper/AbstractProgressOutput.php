@@ -39,7 +39,7 @@ use function strlen;
 /**
  * Base class for ProgressOutput helper.
  */
-abstract class AbstractBaseProgressOutput implements ProgressOutputInterface
+abstract class AbstractProgressOutput implements ProgressOutputInterface
 {
     /** @var int Maximum number of steps (progress) */
     protected $max;
@@ -56,6 +56,7 @@ abstract class AbstractBaseProgressOutput implements ProgressOutputInterface
     /** @var float Time progress ended */
     protected $endTime;
 
+    /** @var int int */
     protected $progress = 0;
 
     /**

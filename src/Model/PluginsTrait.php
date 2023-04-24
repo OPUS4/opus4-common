@@ -74,6 +74,7 @@ use function is_string;
  */
 trait PluginsTrait
 {
+    /** @var array */
     private $plugins;
 
     /**

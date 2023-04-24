@@ -40,28 +40,33 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use function count;
 use function ctype_digit;
-use function mbsplit;
+use function mb_split;
 
 /**
  * Base class for all commands using StartID and EndID as arguments.
  */
-abstract class AbstractBaseDocumentCommand extends Command
+abstract class AbstractDocumentCommand extends Command
 {
-    const ARGUMENT_START_ID = 'StartID';
+    public const ARGUMENT_START_ID = 'StartID';
 
-    const ARGUMENT_END_ID = 'EndID';
+    public const ARGUMENT_END_ID = 'EndID';
 
     /** @var bool */
     private $allDocuments = false;
 
+    /** @var int */
     protected $startId;
 
+    /** @var int */
     protected $endId;
 
+    /** @var bool */
     private $singleDocument = false;
 
+    /** @var string */
     protected $startIdDescription = 'ID of document where processing should start (or \'-\')';
 
+    /** @var string */
     protected $endIdDescription = 'ID of document where processing should stop (or \'-\')';
 
     protected function configure()
@@ -78,14 +83,17 @@ abstract class AbstractBaseDocumentCommand extends Command
         );
     }
 
+    /**
+     * @return int
+     */
     protected function processArguments(InputInterface $input)
     {
         $startId = $input->getArgument(self::ARGUMENT_START_ID);
         $endId   = $input->getArgument(self::ARGUMENT_END_ID);
 
         // handle accidental inputs like '20-' or '20-30' instead of '20 -' or '20 30'
-        if ($startId !== '-') {
-            $parts = mbsplit('-', $startId);
+        if ($startId !== '-' && $startId !== null) {
+            $parts = mb_split('-', $startId);
             if (count($parts) === 2) {
                 $startId = $parts[0];
                 $endId   = $parts[1];
@@ -132,10 +140,12 @@ abstract class AbstractBaseDocumentCommand extends Command
 
         $this->startId = $startId;
         $this->endId   = $endId;
+
+        return 0;
     }
 
     /**
-     * @return int|null
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
