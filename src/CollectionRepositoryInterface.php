@@ -37,6 +37,13 @@ namespace Opus\Common;
 interface CollectionRepositoryInterface
 {
     /**
+     * @param int    $roleId
+     * @param string $name
+     * @return CollectionInterface[]
+     */
+    public function fetchCollectionsByRoleName($roleId, $name);
+
+    /**
      * Adds collection to all documents or all documents in another collection.
      *
      * @param int  $colId

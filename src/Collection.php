@@ -54,6 +54,16 @@ class Collection extends AbstractModel
     }
 
     /**
+     * @param int    $roleId
+     * @param string $name
+     * @return CollectionInterface[]
+     */
+    public static function fetchCollectionsByRoleName($roleId, $name)
+    {
+        return self::getModelRepository()->fetchCollectionsByRoleName($roleId, $name);
+    }
+
+    /**
      * @param int $docId
      * @return int[]
      */
