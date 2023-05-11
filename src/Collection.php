@@ -61,7 +61,7 @@ class Collection extends AbstractModel
      * result set has zero or one element.
      *
      * @param  int $roleId
-     * @return CollectionInterface[].
+     * @return CollectionInterface[]
      */
     public function fetchCollectionsByRoleId($roleId)
     {
