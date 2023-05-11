@@ -35,4 +35,27 @@ use Opus\Common\Model\ModelInterface;
 
 interface CollectionInterface extends ModelInterface
 {
+    /**
+     * Move all documents to another collection.
+     *
+     * @param int  $destColId
+     * @param bool $updateLastModified
+     */
+    public function moveDocuments($destColId, $updateLastModified = true);
+
+    /**
+     * Copy all documents to another collection.
+     *
+     * @param int  $destColId
+     * @param bool $updateLastModified
+     */
+    public function copyDocuments($destColId, $updateLastModified = true);
+
+    /**
+     * Remove documents from collection.
+     *
+     * @param int[] $docIds
+     * @param bool  $updateLastModified
+     */
+    public function removeDocuments($docIds, $updateLastModified = true);
 }

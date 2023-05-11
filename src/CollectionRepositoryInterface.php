@@ -37,6 +37,14 @@ namespace Opus\Common;
 interface CollectionRepositoryInterface
 {
     /**
+     * Removes document from current collection by deleting from the relation
+     * table "link_documents_collections".
+     *
+     * @param null|int $docId
+     */
+    public function unlinkCollectionsByDocumentId($docId = null);
+
+    /**
      * @param int    $roleId
      * @param string $name
      * @return CollectionInterface[]
@@ -44,46 +52,33 @@ interface CollectionRepositoryInterface
     public function fetchCollectionsByRoleName($roleId, $name);
 
     /**
-     * Adds collection to all documents or all documents in another collection.
+     * Returns all collection for given (role_id, collection number) as array
+     * with Opus\Collection objects.  Always returning an array, even if the
+     * result set has zero or one element.
      *
-     * @param int  $colId
-     * @param int  $filterColId
-     * @param bool $updateLastModified
+     * @param  int    $roleId
+     * @param  string $number
+     * @return CollectionInterface[]
      */
-    public function addCollection($colId, $filterColId, $updateLastModified = true);
+    public function fetchCollectionsByRoleNumber($roleId, $number);
 
     /**
-     * Moves all documents from one collection to another.
+     * Returns all collection for given (role_id) as array
+     * with Opus\Collection objects.  Always returning an array, even if the
+     * result set has zero or one element.
      *
-     * @param int  $srcColId
-     * @param int  $destColId
-     * @param bool $updateLastModified
+     * @param  int $roleId
+     * @return CollectionInterface[].
      */
-    public function moveDocuments($srcColId, $destColId, $updateLastModified = true);
+    public function fetchCollectionsByRoleId($roleId);
 
     /**
-     * Copies all documents from one collection to another.
+     * Returns all collection_ids for a given document_id.
      *
-     * @param int  $srcColId
-     * @param int  $destColId
-     * @param bool $updateLastModified
-     */
-    public function copyDocuments($srcColId, $destColId, $updateLastModified = true);
-
-    /**
-     * Removes collection from all documents or all documents in another collection.
+     * @param  int $docId
+     * @return array  Array of collection Ids.
      *
-     * @param int  $colId
-     * @param int  $filterColId
-     * @param bool $updateLastModified
+     * FIXME: This method belongs to Opus\Db\Link\Documents\Collections
      */
-    public function removeCollection($colId, $filterColId, $updateLastModified = true);
-
-    /**
-     * Removes all documents from a collection.
-     *
-     * @param int  $colId
-     * @param bool $updateLastModified
-     */
-    public function removeDocuments($colId, $updateLastModified = true);
+    public function fetchCollectionIdsByDocumentId($docId);
 }
