@@ -38,6 +38,9 @@ interface CollectionInterface extends ModelInterface
     /**
      * Move all documents to another collection.
      *
+     * All documents are removed from source collection, even if they are already present in the destination
+     * collection. Last modified is updated for all source collections, if update is enabled.
+     *
      * @param int  $destColId
      * @param bool $updateLastModified
      */
@@ -45,6 +48,9 @@ interface CollectionInterface extends ModelInterface
 
     /**
      * Copy all documents to another collection.
+     *
+     * Only documents that are not already present in destination collection are copied. Last modified is updated
+     * only for documents that were copied, if update is enabled.
      *
      * @param int  $destColId
      * @param bool $updateLastModified
