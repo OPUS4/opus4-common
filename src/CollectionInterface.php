@@ -54,8 +54,8 @@ interface CollectionInterface extends ModelInterface
     /**
      * Remove documents from collection.
      *
-     * @param int[] $docIds
-     * @param bool  $updateLastModified
+     * @param int[]|null $docIds
+     * @param bool       $updateLastModified
      */
-    public function removeDocuments($docIds, $updateLastModified = true);
+    public function removeDocuments($docIds = null, $updateLastModified = true);
 }
