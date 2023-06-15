@@ -32,6 +32,7 @@
 namespace Opus\Common;
 
 use InvalidArgumentException;
+use Zend_Exception;
 use Zend_Config;
 
 use function substr;
@@ -158,5 +159,64 @@ class Config
     public static function get()
     {
         return self::$config;
+    }
+
+    /**
+     * Gets a value from a Zend_Config object.
+     *
+     * @param Zend_Config $config
+     * @param string      $option
+     * @return null|Zend_Config
+     */
+    public static function getValueFromConfig($config, $option)
+    {
+        if ($option === null || strlen(trim($option)) === 0) {
+            return null;
+        }
+
+        $keys      = explode('.', $option);
+        $subconfig = $config;
+        foreach ($keys as $key) {
+            $subconfig = $subconfig->get($key);
+            if (! $subconfig instanceof Zend_Config) {
+                break;
+            }
+        }
+        return $subconfig;
+    }
+
+    /**
+     * Updates a value in a Zend_Config object.
+     *
+     * @param Zend_Config $config
+     * @param string      $option Name of option
+     * @param string      $value New value for option
+     * @throws Zend_Exception
+     * TODO review and if possible replace this code with something simpler
+     */
+    public static function setValueInConfig($config, $option, $value)
+    {
+        if ($config->readOnly()) {
+            Log::get()->err('Zend_Config object is readonly.');
+            return;
+        }
+
+        $keys = explode('.', $option);
+
+        $subconfig = $config;
+
+        $index = 0;
+
+        foreach ($keys as $key) {
+            $index++;
+            if ($subconfig->get($key) === null && $index < count($keys)) {
+                // create subsection
+                eval('$subconfig->' . $key . ' = array();');
+                $subconfig = $subconfig->get($key);
+            } else {
+                // set value
+                eval('$subconfig->' . $key . ' = $value;');
+            }
+        }
     }
 }
