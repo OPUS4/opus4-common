@@ -32,8 +32,8 @@
 namespace Opus\Common;
 
 use InvalidArgumentException;
-use Zend_Exception;
 use Zend_Config;
+use Zend_Exception;
 
 use function count;
 use function explode;
