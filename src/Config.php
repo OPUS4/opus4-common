@@ -35,6 +35,9 @@ use InvalidArgumentException;
 use Zend_Exception;
 use Zend_Config;
 
+use function count;
+use function explode;
+use function strlen;
 use function substr;
 use function trim;
 
