@@ -31,6 +31,7 @@
 
 namespace Opus\Common\Cover;
 
+use Opus\Common\Config;
 use Opus\Common\Util\ClassLoaderHelper;
 
 /**
@@ -43,21 +44,18 @@ class CoverGeneratorFactory
      */
     public static function create()
     {
-        $generatorClass = DefaultCoverGenerator::class; // default class name
+        // the actual cover generator class is provided via the pdf.covers.generatorClass configuration variable
+        $generatorClass = '';
 
-        // TODO allow to override the default cover generator class
-/*
+        $config = Config::get();
         if (isset($config->pdf->covers->generatorClass)) {
             $generatorClass = $config->pdf->covers->generatorClass;
         }
-*/
-
         if (empty($generatorClass)) {
             return null;
         }
 
         $classExists = ClassLoaderHelper::classExists($generatorClass);
-
         if (! $classExists) {
             return null;
         }
