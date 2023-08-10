@@ -56,20 +56,6 @@ interface CoverGeneratorInterface
     public function setFilecacheDir($filecacheDir);
 
     /**
-     * Returns the path to a workspace subdirectory that stores temporary files.
-     *
-     * @return string
-     */
-    public function getTempDir();
-
-    /**
-     * Sets the path to a workspace subdirectory that stores temporary files.
-     *
-     * @param string|null $tempDir
-     */
-    public function setTempDir($tempDir);
-
-    /**
      * Returns the file path to a file copy that includes an appropriate cover page.
      * Returns the file's original path if no cover needs to be generated or if cover generation fails.
      *
