@@ -31,7 +31,7 @@
 
 namespace Opus\Common\Cover;
 
-use Opus\Common\Config;
+use Opus\Common\ConfigTrait;
 use Opus\Common\Util\ClassLoaderHelper;
 
 /**
@@ -39,15 +39,33 @@ use Opus\Common\Util\ClassLoaderHelper;
  */
 class CoverGeneratorFactory
 {
+    use ConfigTrait;
+
+    /** @var self Singleton instance of CoverGeneratorFactory. */
+    private static $instance;
+
+    /**
+     * Creates singleton instance of CoverGeneratorFactory.
+     *
+     * @return self
+     */
+    public static function getInstance()
+    {
+        if (null === self::$instance) {
+            self::$instance = new CoverGeneratorFactory();
+        }
+        return self::$instance;
+    }
+
     /**
      * @return CoverGeneratorInterface|null
      */
-    public static function create()
+    public function create()
     {
         // the actual cover generator class is provided via the pdf.covers.generatorClass configuration variable
         $generatorClass = '';
 
-        $config = Config::get();
+        $config = $this->getConfig();
         if (isset($config->pdf->covers->generatorClass)) {
             $generatorClass = $config->pdf->covers->generatorClass;
         }
