@@ -32,6 +32,7 @@
 namespace Opus\Common\Cover;
 
 use Opus\Common\ConfigTrait;
+use Opus\Common\LoggingTrait;
 use Opus\Common\Util\ClassLoaderHelper;
 
 /**
@@ -40,6 +41,7 @@ use Opus\Common\Util\ClassLoaderHelper;
 class CoverGeneratorFactory
 {
     use ConfigTrait;
+    use LoggingTrait;
 
     /** @var self Singleton instance of CoverGeneratorFactory. */
     private static $instance;
@@ -75,6 +77,8 @@ class CoverGeneratorFactory
 
         $classExists = ClassLoaderHelper::classExists($generatorClass);
         if (! $classExists) {
+            $this->getLogger()->err("Class '$generatorClass' not found");
+
             return null;
         }
 
