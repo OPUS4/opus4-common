@@ -56,6 +56,7 @@ use const DIRECTORY_SEPARATOR;
  */
 class SimpleTestCase extends TestCase
 {
+    /** @var Config Original configuration cloned for backup purposes. */
     private $configBackup;
 
     const CONFIG_VALUE_FALSE = ''; // Zend_Config übersetzt false in den Wert ''
