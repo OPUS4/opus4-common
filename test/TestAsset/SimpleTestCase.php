@@ -94,7 +94,7 @@ class SimpleTestCase extends TestCase
     /**
      * @beforeClass
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         defined('APPLICATION_PATH') || define('APPLICATION_PATH', realpath(dirname(dirname(dirname(__FILE__)))));
 
@@ -120,7 +120,7 @@ class SimpleTestCase extends TestCase
     /**
      * @param string $path Path for folder
      */
-    public static function createFolder($path)
+    public static function createFolder($path): void
     {
         if (! file_exists($path)) {
             mkdir($path, 0700, true);
@@ -130,7 +130,7 @@ class SimpleTestCase extends TestCase
     /**
      * Standard setUp method for clearing database.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -140,7 +140,7 @@ class SimpleTestCase extends TestCase
         }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->configBackup !== null) {
             Config::set($this->configBackup);
