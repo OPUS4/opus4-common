@@ -33,11 +33,10 @@ namespace OpusTest\Common\TestAsset;
 
 use Opus\Common\Log;
 use Opus\Common\Log\LogService;
-use PHPUnit\Framework\TestCase as PHPUnitFrameworkTestCase;
 
 use function dirname;
 
-class TestCase extends PHPUnitFrameworkTestCase
+class TestCase extends SimpleTestCase
 {
     public function setUp(): void
     {
