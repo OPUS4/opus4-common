@@ -75,7 +75,7 @@ class LogServiceTest extends TestCase
 
         $tempFolder       = $this->createTempFolder();
         $this->tempFolder = $tempFolder;
-        $this->createFolder('log');
+        self::createFolder($this->tempFolder . DIRECTORY_SEPARATOR . 'log');
 
         $this->logService = LogService::getInstance();
         $this->logService->setPath(null);
@@ -731,20 +731,6 @@ class LogServiceTest extends TestCase
     {
         $path  = sys_get_temp_dir();
         $path .= DIRECTORY_SEPARATOR . uniqid('opus4-common_test_');
-        mkdir($path, 0777, true);
-        return $path;
-    }
-
-    /**
-     * TODO Move it from here for use in other tests as well.
-     * TODO fix - has a generic name, but very specific function relying on a class variable (bad feeling here)
-     *
-     * @param string $folderName
-     * @return string path to log folder.
-     */
-    protected function createFolder($folderName)
-    {
-        $path = $this->tempFolder . DIRECTORY_SEPARATOR . $folderName;
         mkdir($path, 0777, true);
         return $path;
     }

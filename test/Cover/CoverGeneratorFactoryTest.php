@@ -25,41 +25,57 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Common\TestAsset;
+namespace OpusTest\Common\Cover;
 
-use Opus\Common\Config;
-use Opus\Common\Log;
-use Opus\Common\Log\LogService;
-use PHPUnit\Framework\TestCase as PHPUnitFrameworkTestCase;
+use Opus\Common\Cover\CoverGeneratorFactory;
+use OpusTest\Common\TestAsset\TestCase;
+use Zend_Config;
 
-use function dirname;
-use function file_exists;
-use function mkdir;
-
-class TestCase extends PHPUnitFrameworkTestCase
+class CoverGeneratorFactoryTest extends TestCase
 {
-    public function setUp(): void
+    public function testGetInstance()
     {
-        parent::setUp();
+        $factory = CoverGeneratorFactory::getInstance();
 
-        Config::setInstance(null); // Reset configuration after each test
-        Log::drop(); // just in case there is still an old logger cached
-        LogService::getInstance()->setPath(dirname(__FILE__, 3) . '/build/log');
+        $this->assertNotNull($factory);
+        $this->assertInstanceOf(CoverGeneratorFactory::class, $factory);
+
+        $this->assertSame($factory, CoverGeneratorFactory::getInstance());
     }
 
-    /**
-     * @param string $path Path for folder
-     *
-     * TODO automatic cleanup?
-     */
-    public function createFolder($path)
+    public function testCreateWithMissingGeneratorClass()
     {
-        if (! file_exists($path)) {
-            mkdir($path, 0700, true);
-        }
+        $factory = CoverGeneratorFactory::getInstance();
+        $factory->setConfig(new Zend_Config([
+            'pdf' => [
+                'covers' => [
+                    'generatorClass' => '',
+                ],
+            ],
+        ]));
+
+        $generator = $factory->create();
+
+        $this->assertNull($generator);
+    }
+
+    public function testCreateWithUnknownGeneratorClass()
+    {
+        $factory = CoverGeneratorFactory::getInstance();
+        $factory->setConfig(new Zend_Config([
+            'pdf' => [
+                'covers' => [
+                    'generatorClass' => 'Opus\Pdf\Cover\UnknownCoverGenerator',
+                ],
+            ],
+        ]));
+
+        $generator = $factory->create();
+
+        $this->assertNull($generator);
     }
 }
