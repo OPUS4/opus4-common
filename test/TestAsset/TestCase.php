@@ -34,13 +34,13 @@ namespace OpusTest\Common\TestAsset;
 use Opus\Common\Config;
 use Opus\Common\Log;
 use Opus\Common\Log\LogService;
-use PHPUnit\Framework\TestCase as PhpUnitFrameworkTestcase;
+use PHPUnit\Framework\TestCase as PHPUnitFrameworkTestCase;
 
 use function dirname;
 use function file_exists;
 use function mkdir;
 
-class TestCase extends PhpUnitFrameworkTestcase
+class TestCase extends PHPUnitFrameworkTestCase
 {
     public function setUp(): void
     {
