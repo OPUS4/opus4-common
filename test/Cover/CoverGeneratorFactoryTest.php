@@ -43,6 +43,8 @@ class CoverGeneratorFactoryTest extends TestCase
 
         $this->assertNotNull($factory);
         $this->assertInstanceOf(CoverGeneratorFactory::class, $factory);
+
+        $this->assertSame($factory, CoverGeneratorFactory::getInstance());
     }
 
     public function testCreateWithMissingGeneratorClass()
