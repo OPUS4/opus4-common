@@ -33,39 +33,46 @@ namespace OpusTest\Common\Cover;
 
 use Opus\Common\Cover\CoverGeneratorFactory;
 use OpusTest\Common\TestAsset\TestCase;
+use Zend_Config;
 
 class CoverGeneratorFactoryTest extends TestCase
 {
+    public function testGetInstance()
+    {
+        $factory = CoverGeneratorFactory::getInstance();
+
+        $this->assertNotNull($factory);
+        $this->assertInstanceOf(CoverGeneratorFactory::class, $factory);
+    }
+
     public function testCreateWithMissingGeneratorClass()
     {
-        $overlayProperties = [
+        $factory = CoverGeneratorFactory::getInstance();
+        $factory->setConfig(new Zend_Config([
             'pdf' => [
                 'covers' => [
                     'generatorClass' => '',
                 ],
             ],
-        ];
+        ]));
 
-        $this->adjustConfiguration($overlayProperties);
-
-        $generator = CoverGeneratorFactory::getInstance()->create();
+        $generator = $factory->create();
 
         $this->assertNull($generator);
     }
 
     public function testCreateWithUnknownGeneratorClass()
     {
-        $overlayProperties = [
+        $factory = CoverGeneratorFactory::getInstance();
+        $factory->setConfig(new Zend_Config([
             'pdf' => [
                 'covers' => [
                     'generatorClass' => 'Opus\Pdf\Cover\UnknownCoverGenerator',
                 ],
             ],
-        ];
+        ]));
 
-        $this->adjustConfiguration($overlayProperties);
-
-        $generator = CoverGeneratorFactory::getInstance()->create();
+        $generator = $factory->create();
 
         $this->assertNull($generator);
     }
