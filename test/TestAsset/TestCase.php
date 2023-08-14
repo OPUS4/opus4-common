@@ -31,18 +31,35 @@
 
 namespace OpusTest\Common\TestAsset;
 
+use Opus\Common\Config;
 use Opus\Common\Log;
 use Opus\Common\Log\LogService;
+use PHPUnit\Framework\TestCase as PhpUnitFrameworkTestcase;
 
 use function dirname;
+use function file_exists;
+use function mkdir;
 
-class TestCase extends SimpleTestCase
+class TestCase extends PhpUnitFrameworkTestcase
 {
     public function setUp(): void
     {
         parent::setUp();
 
+        Config::setInstance(null); // Reset configuration after each test
         Log::drop(); // just in case there is still an old logger cached
         LogService::getInstance()->setPath(dirname(__FILE__, 3) . '/build/log');
+    }
+
+    /**
+     * @param string $path Path for folder
+     *
+     * TODO automatic cleanup?
+     */
+    public function createFolder($path)
+    {
+        if (! file_exists($path)) {
+            mkdir($path, 0700, true);
+        }
     }
 }
