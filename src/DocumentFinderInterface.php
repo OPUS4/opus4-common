@@ -160,7 +160,7 @@ interface DocumentFinderInterface
     public function setBelongsToBibliography($partOfBibliography = true);
 
     /**
-     * @param int $collectionId Identifier for collection
+     * @param int|int[] $collectionId Identifier for collection
      * @return mixed
      */
     public function setCollectionId($collectionId);
