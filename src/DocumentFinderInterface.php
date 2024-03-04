@@ -302,4 +302,10 @@ interface DocumentFinderInterface
      * @return array
      */
     public function getYearsPublished();
+
+    /**
+     * @param string $state
+     * @return mixed
+     */
+    public function setPublicationState($state);
 }
