@@ -25,19 +25,17 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2024, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Common;
 
-interface ServerStateConstantsInterface
+interface PublicationStateConstantsInterface
 {
-    public const STATE_DELETED     = 'deleted';
-    public const STATE_INPROGRESS  = 'inprogress';
-    public const STATE_RESTRICTED  = 'restricted';
-    public const STATE_UNPUBLISHED = 'unpublished';
-    public const STATE_PUBLISHED   = 'published';
-    public const STATE_TEMPORARY   = 'temporary';
-    public const STATE_AUDITED     = 'audited';
+    public const PUBLICATION_STATE_DRAFT     = 'draft';
+    public const PUBLICATION_STATE_ACCEPTED  = 'acceptedVersion';
+    public const PUBLICATION_STATE_SUBMITTED = 'submittedVersion';
+    public const PUBLICATION_STATE_PUBLISHED = 'publishedVersion';
+    public const PUBLICATION_STATE_UPDATED   = 'updatedVersion';
 }
