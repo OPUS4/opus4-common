@@ -33,9 +33,13 @@ namespace Opus\Common;
 
 interface PublicationStateConstantsInterface
 {
-    public const DRAFT     = 'draft';
-    public const ACCEPTED  = 'acceptedVersion';
-    public const SUBMITTED = 'submittedVersion';
-    public const PUBLISHED = 'publishedVersion';
-    public const UPDATED   = 'updatedVersion';
+    public const DRAFT           = 'draft';
+    public const ACCEPTED        = 'acceptedVersion';
+    public const SUBMITTED       = 'submittedVersion';
+    public const PUBLISHED       = 'publishedVersion';
+    public const AUTHORS_VERSION = 'authorsVersion';
+    public const PROOF           = 'proof';
+    public const CORRECTED       = 'correctedVersion';
+    public const UPDATED         = 'updatedVersion';
+    public const ENHANCED        = 'updatedVersion';
 }
