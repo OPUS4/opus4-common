@@ -262,7 +262,7 @@ class LogServiceTest extends TestCase
         $id = $logService->getRunId();
 
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals($id, $logService->getRunId());
     }
 
