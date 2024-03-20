@@ -72,7 +72,7 @@ class LogTest extends TestCase
         $debugMessage = 'Debug level message from testSetLevel';
         $opusLog->debug($debugMessage);
 
-        $this->assertContains($debugMessage, $this->readLog());
+        $this->assertStringContainsString($debugMessage, $this->readLog());
         $this->assertEquals(Zend_Log::DEBUG, $opusLog->getLevel());
     }
 
@@ -87,14 +87,14 @@ class LogTest extends TestCase
         $opusLog->debug($debugMessage);
 
         $content = $this->readLog();
-        $this->assertContains($infoMessage, $content);
-        $this->assertNotContains($debugMessage, $content);
+        $this->assertStringContainsString($infoMessage, $content);
+        $this->assertStringNotContainsString($debugMessage, $content);
 
         $opusLog->setLevel(null);
         $opusLog->debug($debugMessage);
 
         $content = $this->readLog();
-        $this->assertContains($debugMessage, $content);
+        $this->assertStringContainsString($debugMessage, $content);
     }
 
     public function testCustomLevelsWithFiltersDisabled()
@@ -107,12 +107,12 @@ class LogTest extends TestCase
         $testMessage = 'Test level created before filter disabled';
         $opusLog->test($testMessage);
         $content = $this->readLog();
-        $this->assertContains($testMessage, $content);
+        $this->assertStringContainsString($testMessage, $content);
 
         $tlevelMessage = 'Test level created after filter disabled';
         $opusLog->tlevel($tlevelMessage);
         $content = $this->readLog();
-        $this->assertContains($tlevelMessage, $content);
+        $this->assertStringContainsString($tlevelMessage, $content);
     }
 
     public function testSetLevelNotAffectingOtherFilters()
@@ -126,18 +126,18 @@ class LogTest extends TestCase
         // INFO message gets rejected by additional filter
         $infoMessage = 'Info level Message';
         $opusLog->info($infoMessage);
-        $this->assertNotContains($infoMessage, $this->readLog());
+        $this->assertStringNotContainsString($infoMessage, $this->readLog());
 
         // After setting level to DEBUG the additional filter still rejects DEBUG message
         $opusLog->setLevel(Zend_Log::DEBUG);
         $debugMessage = 'Debug Level Message';
         $opusLog->debug($debugMessage);
-        $this->assertNotContains($debugMessage, $this->readLog());
+        $this->assertStringNotContainsString($debugMessage, $this->readLog());
 
         // An ERROR level message is accepted by both filters
         $errorMessage = 'Error level Message';
         $opusLog->err($errorMessage);
-        $this->assertContains($errorMessage, $this->readLog());
+        $this->assertStringContainsString($errorMessage, $this->readLog());
     }
 
     public function testSetLevelNegativeLevel()

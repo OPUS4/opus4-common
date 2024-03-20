@@ -293,7 +293,7 @@ class LogServiceTest extends TestCase
 
         $expected .= PHP_EOL;
 
-        $this->assertContains("ID $runId", $format);
+        $this->assertStringContainsString("ID $runId", $format);
         $this->assertEquals($expected, $format);
     }
 
@@ -382,10 +382,10 @@ class LogServiceTest extends TestCase
         $content = $this->readLogFile('test.log');
 
         $this->assertInstanceOf(Zend_Log::class, $logger);
-        $this->assertContains($warnMessage, $content);
-        $this->assertContains($runId, $content);
+        $this->assertStringContainsString($warnMessage, $content);
+        $this->assertStringContainsString($runId, $content);
         $this->assertEquals($expected, $content);
-        $this->assertNotContains($debugMessage, $content);
+        $this->assertStringNotContainsString($debugMessage, $content);
     }
 
     public function testGetLogGettingDefaultLogger()
@@ -422,14 +422,14 @@ class LogServiceTest extends TestCase
         $debugMessage = 'debug level message';
         $logger->debug($debugMessage);
 
-        $this->assertNotContains($debugMessage, $this->readLogFile('translation.log'));
+        $this->assertStringNotContainsString($debugMessage, $this->readLogFile('translation.log'));
 
         $infoMessage = 'info level message';
         $logger->info($infoMessage);
 
         $content = $this->readLogFile('translation.log');
 
-        $this->assertContains($infoMessage, $content);
+        $this->assertStringContainsString($infoMessage, $content);
         $this->assertEquals($infoMessage, trim($content));
     }
 
@@ -451,7 +451,7 @@ class LogServiceTest extends TestCase
 
         $content = $this->readLogFile('unknownLogger.log');
 
-        $this->assertContains($message, $content);
+        $this->assertStringContainsString($message, $content);
     }
 
     /**
@@ -550,7 +550,7 @@ class LogServiceTest extends TestCase
 
         $content = $this->readLogFile('translation.log');
 
-        $this->assertContains($message, $content);
+        $this->assertStringContainsString($message, $content);
     }
 
     public function testCreateLogWithOptions()
@@ -564,10 +564,10 @@ class LogServiceTest extends TestCase
         $message = 'error test message';
 
         $logger->warn($message);
-        $this->assertNotContains($message, $this->readLogFile('opus-error.log'));
+        $this->assertStringNotContainsString($message, $this->readLogFile('opus-error.log'));
 
         $logger->err($message);
-        $this->assertContains("ERROR $message", $this->readLogFile('opus-error.log'));
+        $this->assertStringContainsString("ERROR $message", $this->readLogFile('opus-error.log'));
     }
 
     public function testCreateLogWithInvalidPriorityName()
@@ -581,11 +581,11 @@ class LogServiceTest extends TestCase
         $message = 'error test message';
 
         $logger->debug($message);
-        $this->assertNotContains($message, $this->readLogFile('error.log'));
+        $this->assertStringNotContainsString($message, $this->readLogFile('error.log'));
 
         // default log level in test setUp is WARN
         $logger->warn($message);
-        $this->assertContains("ERROR $message", $this->readLogFile('error.log'));
+        $this->assertStringContainsString("ERROR $message", $this->readLogFile('error.log'));
     }
 
     public function testCreateLogWithPriorityValue()
@@ -599,10 +599,10 @@ class LogServiceTest extends TestCase
         $message = 'error test message';
 
         $logger->warn($message);
-        $this->assertNotContains($message, $this->readLogFile('error.log'));
+        $this->assertStringNotContainsString($message, $this->readLogFile('error.log'));
 
         $logger->err($message);
-        $this->assertContains("ERROR $message", $this->readLogFile('error.log'));
+        $this->assertStringContainsString("ERROR $message", $this->readLogFile('error.log'));
     }
 
     public function testCreateDefaultLogWithCustomFilename()
@@ -617,7 +617,7 @@ class LogServiceTest extends TestCase
 
         $content = $this->readLogFile('opus-console.log');
 
-        $this->assertContains($message, $content);
+        $this->assertStringContainsString($message, $content);
 
         $this->assertSame($logger, $logService->getDefaultLog());
     }
