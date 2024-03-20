@@ -31,6 +31,7 @@
 
 namespace Opus\Common\Console\Helper;
 
+use Exception;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function count;
