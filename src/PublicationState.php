@@ -31,9 +31,67 @@
 
 namespace Opus\Common;
 
+use function array_diff;
+use function array_map;
+use function explode;
+use function is_string;
+
 /**
- * TODO expand this class with validation and returning all possible values, ...?
+ * TODO this should probably inherit from the "FieldDescriptor" class or something similar
  */
 class PublicationState implements PublicationStateConstantsInterface
 {
+    use ConfigTrait;
+
+    private $values = [
+        'draft',
+        'authorsVersion',
+        'submittedVersion',
+        'acceptedVersion',
+        'proof',
+        'publishedVersion',
+        'correctedVersion',
+        'enhancedVersion',
+    ];
+
+    /**
+     * Returns all possible values for PublicationState.
+     *
+     * This mirrors the ENUM definition in the database schema.
+     *
+     * TODO read from the database metadata?
+     *
+     * @return string[]
+     */
+    public function getAllValues()
+    {
+        return $this->values;
+    }
+
+    /**
+     * Returns all allowed values for PublicationState.
+     *
+     * model.document.fields.PublicationState.excludeValues =
+     *
+     * @return string[]
+     */
+    public function getValues()
+    {
+        $config = $this->getConfig();
+
+        if (isset($config->model->document->fields->PublicationState->excludeValues)) {
+            $excludeValues = $config->model->document->fields->PublicationState->excludeValues;
+            if (is_string($excludeValues)) {
+                $excludeValues = explode(',', $excludeValues);
+            } else {
+                $excludeValues = $excludeValues->toArray();
+            }
+
+            $excludeValues = array_map('trim', $excludeValues);
+        } else {
+            $excludeValues = [];
+        }
+
+        return array_diff($this->values, $excludeValues);
+    }
 }
