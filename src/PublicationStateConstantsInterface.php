@@ -40,6 +40,8 @@ interface PublicationStateConstantsInterface
     public const AUTHORS_VERSION = 'authorsVersion';
     public const PROOF           = 'proof';
     public const CORRECTED       = 'correctedVersion';
-    public const UPDATED         = 'updatedVersion';
-    public const ENHANCED        = 'updatedVersion';
+    public const ENHANCED        = 'enhancedVersion';
+
+    /** @deprecated */
+    public const UPDATED         = 'enhancedVersion';
 }
