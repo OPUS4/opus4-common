@@ -45,6 +45,7 @@ class PublicationState implements PublicationStateConstantsInterface
 {
     use ConfigTrait;
 
+    /** @var string[] Supported database values for PublicationState */
     private $values = [
         'draft',
         'authorsVersion',
