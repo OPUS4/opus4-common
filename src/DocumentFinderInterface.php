@@ -304,7 +304,7 @@ interface DocumentFinderInterface
     public function getYearsPublished();
 
     /**
-     * @param string $state
+     * @param string|string[] $state
      * @return mixed
      */
     public function setPublicationState($state);
