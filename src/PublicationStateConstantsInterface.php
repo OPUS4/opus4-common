@@ -43,5 +43,5 @@ interface PublicationStateConstantsInterface
     public const ENHANCED        = 'enhancedVersion';
 
     /** @deprecated */
-    public const UPDATED         = 'enhancedVersion';
+    public const UPDATED = 'enhancedVersion';
 }
