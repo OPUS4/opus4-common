@@ -38,6 +38,8 @@ use function is_string;
 
 /**
  * TODO this should probably inherit from the "FieldDescriptor" class or something similar
+ *      Because of that the functions should not be static. The code using this should obtain a descriptor class for
+ *      field PublicationState that provides this functionality.
  */
 class PublicationState implements PublicationStateConstantsInterface
 {
