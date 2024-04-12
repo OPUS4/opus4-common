@@ -271,6 +271,9 @@ class Date extends AbstractModel
      */
     public function __toString()
     {
+        if (! $this->isValid()) {
+            return '';
+        }
         $dateStr = sprintf(
             '%04d-%02d-%02d',
             $this->values[self::FIELD_YEAR],

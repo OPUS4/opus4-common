@@ -141,8 +141,29 @@ class DateTest extends TestCase
      */
     public function testCreateWithTooLongYearStringConstructionArgumentShouldBeInvalid()
     {
-        $od = new Date("1234567-12-12T11:11:11Z");
+        $od = new Date('1234567-12-12T11:11:11Z');
         $this->assertFalse($od->isValid(), 'Opus\Date object should be INVALID!');
+    }
+
+    public function testCreateWithNull()
+    {
+        $date = new Date(null);
+        $this->assertFalse($date->isValid());
+        $this->assertEquals('', $date->__toString());
+    }
+
+    public function testCreateWithEmptyString()
+    {
+        $date = new Date('');
+        $this->assertFalse($date->isValid());
+        $this->assertEquals('', $date->__toString());
+    }
+
+    public function testCreateWithZeroDate()
+    {
+        $date = new Date('0000-00-00');
+        $this->assertFalse($date->isValid());
+        $this->assertEquals('', $date->__toString());
     }
 
     /**
@@ -150,7 +171,7 @@ class DateTest extends TestCase
      */
     public function testCreateWithShortYearStringConstructionArgumentShouldBeValid()
     {
-        $od = new Date("10-12-12T11:11:11Z");
+        $od = new Date('10-12-12T11:11:11Z');
         $this->assertTrue($od->isValid(), 'Opus\Date object should be valid!');
     }
 
