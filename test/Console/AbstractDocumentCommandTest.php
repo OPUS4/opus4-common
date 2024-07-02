@@ -33,12 +33,12 @@
 namespace OpusTest\Common\Console;
 
 use InvalidArgumentException;
-use Opus\Common\Console\AbstractBaseDocumentCommand;
+use Opus\Common\Console\AbstractDocumentCommand;
 use OpusTest\Common\TestAsset\TestCase;
 use ReflectionClass;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class BaseDocumentCommandTest extends TestCase
+class AbstractDocumentCommandTest extends TestCase
 {
     /**
      * @return array Columns: argStartId, argEndId, startId, endId, singleDocument
@@ -69,15 +69,15 @@ class BaseDocumentCommandTest extends TestCase
      */
     public function testDocumentRangeArguments($argStartId, $argEndId, $startId, $endId, $singleDocument)
     {
-        $commandClass = AbstractBaseDocumentCommand::class;
+        $commandClass = AbstractDocumentCommand::class;
 
         $stub = $this->getMockForAbstractClass($commandClass);
         $stub->setName('test');
 
         $tester = new CommandTester($stub);
         $tester->execute([
-            AbstractBaseDocumentCommand::ARGUMENT_START_ID => $argStartId,
-            AbstractBaseDocumentCommand::ARGUMENT_END_ID   => $argEndId,
+            AbstractDocumentCommand::ARGUMENT_START_ID => $argStartId,
+            AbstractDocumentCommand::ARGUMENT_END_ID   => $argEndId,
         ]);
 
         $ref = new ReflectionClass($commandClass);
@@ -118,7 +118,7 @@ class BaseDocumentCommandTest extends TestCase
      */
     public function testInvalidArguments($argStartId, $argEndId, $message)
     {
-        $commandClass = AbstractBaseDocumentCommand::class;
+        $commandClass = AbstractDocumentCommand::class;
 
         $stub = $this->getMockForAbstractClass($commandClass);
         $stub->setName('test');
@@ -129,8 +129,8 @@ class BaseDocumentCommandTest extends TestCase
         $this->expectExceptionMessage($message);
 
         $tester->execute([
-            AbstractBaseDocumentCommand::ARGUMENT_START_ID => $argStartId,
-            AbstractBaseDocumentCommand::ARGUMENT_END_ID   => $argEndId,
+            AbstractDocumentCommand::ARGUMENT_START_ID => $argStartId,
+            AbstractDocumentCommand::ARGUMENT_END_ID   => $argEndId,
         ]);
     }
 }

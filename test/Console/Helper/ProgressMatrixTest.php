@@ -65,9 +65,9 @@ class ProgressMatrixTest extends TestCase
 
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('.   63 / 100 ( 63%)' . PHP_EOL, $output); // end of first line
-        $this->assertContains(str_repeat('.', 63), $output); // first line
-        $this->assertContains(PHP_EOL . str_repeat('.', 37), $output); // second line
+        $this->assertStringContainsString('.   63 / 100 ( 63%)' . PHP_EOL, $output); // end of first line
+        $this->assertStringContainsString(str_repeat('.', 63), $output); // first line
+        $this->assertStringContainsString(PHP_EOL . str_repeat('.', 37), $output); // second line
     }
 
     public function testAdvanceStepLargerThanOne()
@@ -91,9 +91,9 @@ class ProgressMatrixTest extends TestCase
 
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('.   63 / 100 ( 63%)' . PHP_EOL, $output); // end of first line
-        $this->assertContains(str_repeat('.', 63), $output); // first line
-        $this->assertContains(PHP_EOL . str_repeat('.', 37), $output); // second line
+        $this->assertStringContainsString('.   63 / 100 ( 63%)' . PHP_EOL, $output); // end of first line
+        $this->assertStringContainsString(str_repeat('.', 63), $output); // first line
+        $this->assertStringContainsString(PHP_EOL . str_repeat('.', 37), $output); // second line
     }
 
     public function testSetProgress()
@@ -118,9 +118,9 @@ class ProgressMatrixTest extends TestCase
         rewind($outputInterface->getStream());
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('.   63 / 100 ( 63%)' . PHP_EOL, $output); // end of first line
-        $this->assertContains(str_repeat('.', 63), $output); // first line
-        $this->assertContains(PHP_EOL . str_repeat('.', 37), $output); // second line
+        $this->assertStringContainsString('.   63 / 100 ( 63%)' . PHP_EOL, $output); // end of first line
+        $this->assertStringContainsString(str_repeat('.', 63), $output); // first line
+        $this->assertStringContainsString(PHP_EOL . str_repeat('.', 37), $output); // second line
     }
 
     public function testLineLengthAdjustsToMax()

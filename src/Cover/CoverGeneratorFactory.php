@@ -29,15 +29,59 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Cover;
 
-interface ServerStateConstantsInterface
+use Opus\Common\ConfigTrait;
+use Opus\Common\LoggingTrait;
+use Opus\Common\Util\ClassLoaderHelper;
+
+/**
+ * Factory to create a PDF cover generator instance.
+ */
+class CoverGeneratorFactory
 {
-    public const STATE_DELETED     = 'deleted';
-    public const STATE_INPROGRESS  = 'inprogress';
-    public const STATE_RESTRICTED  = 'restricted';
-    public const STATE_UNPUBLISHED = 'unpublished';
-    public const STATE_PUBLISHED   = 'published';
-    public const STATE_TEMPORARY   = 'temporary';
-    public const STATE_AUDITED     = 'audited';
+    use ConfigTrait;
+    use LoggingTrait;
+
+    /** @var self Singleton instance of CoverGeneratorFactory. */
+    private static $instance;
+
+    /**
+     * Creates singleton instance of CoverGeneratorFactory.
+     *
+     * @return self
+     */
+    public static function getInstance()
+    {
+        if (null === self::$instance) {
+            self::$instance = new CoverGeneratorFactory();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * @return CoverGeneratorInterface|null
+     */
+    public function create()
+    {
+        // the actual cover generator class is provided via the pdf.covers.generatorClass configuration variable
+        $generatorClass = '';
+
+        $config = $this->getConfig();
+        if (isset($config->pdf->covers->generatorClass)) {
+            $generatorClass = $config->pdf->covers->generatorClass;
+        }
+        if (empty($generatorClass)) {
+            return null;
+        }
+
+        $classExists = ClassLoaderHelper::classExists($generatorClass);
+        if (! $classExists) {
+            $this->getLogger()->err("Class '$generatorClass' not found");
+
+            return null;
+        }
+
+        return new $generatorClass();
+    }
 }

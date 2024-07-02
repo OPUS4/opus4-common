@@ -29,15 +29,53 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace OpusTest\Common\Cover;
 
-interface ServerStateConstantsInterface
+use Opus\Common\Cover\CoverGeneratorFactory;
+use OpusTest\Common\TestAsset\TestCase;
+use Zend_Config;
+
+class CoverGeneratorFactoryTest extends TestCase
 {
-    public const STATE_DELETED     = 'deleted';
-    public const STATE_INPROGRESS  = 'inprogress';
-    public const STATE_RESTRICTED  = 'restricted';
-    public const STATE_UNPUBLISHED = 'unpublished';
-    public const STATE_PUBLISHED   = 'published';
-    public const STATE_TEMPORARY   = 'temporary';
-    public const STATE_AUDITED     = 'audited';
+    public function testGetInstance()
+    {
+        $factory = CoverGeneratorFactory::getInstance();
+
+        $this->assertNotNull($factory);
+        $this->assertInstanceOf(CoverGeneratorFactory::class, $factory);
+
+        $this->assertSame($factory, CoverGeneratorFactory::getInstance());
+    }
+
+    public function testCreateWithMissingGeneratorClass()
+    {
+        $factory = CoverGeneratorFactory::getInstance();
+        $factory->setConfig(new Zend_Config([
+            'pdf' => [
+                'covers' => [
+                    'generatorClass' => '',
+                ],
+            ],
+        ]));
+
+        $generator = $factory->create();
+
+        $this->assertNull($generator);
+    }
+
+    public function testCreateWithUnknownGeneratorClass()
+    {
+        $factory = CoverGeneratorFactory::getInstance();
+        $factory->setConfig(new Zend_Config([
+            'pdf' => [
+                'covers' => [
+                    'generatorClass' => 'Opus\Pdf\Cover\UnknownCoverGenerator',
+                ],
+            ],
+        ]));
+
+        $generator = $factory->create();
+
+        $this->assertNull($generator);
+    }
 }

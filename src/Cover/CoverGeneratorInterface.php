@@ -29,15 +29,39 @@
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Cover;
 
-interface ServerStateConstantsInterface
+use Opus\Common\DocumentInterface;
+use Opus\Common\FileInterface;
+
+/**
+ * Interface for generating a PDF file copy which includes an appropriate PDF cover.
+ *
+ * The PDF cover should be generated via a PDF generator class that implements PdfGeneratorInterface.
+ */
+interface CoverGeneratorInterface
 {
-    public const STATE_DELETED     = 'deleted';
-    public const STATE_INPROGRESS  = 'inprogress';
-    public const STATE_RESTRICTED  = 'restricted';
-    public const STATE_UNPUBLISHED = 'unpublished';
-    public const STATE_PUBLISHED   = 'published';
-    public const STATE_TEMPORARY   = 'temporary';
-    public const STATE_AUDITED     = 'audited';
+    /**
+     * Returns the path to a workspace subdirectory that stores cached document files.
+     *
+     * @return string
+     */
+    public function getFilecacheDir();
+
+    /**
+     * Sets the path to a workspace subdirectory that stores cached document files.
+     *
+     * @param string|null $filecacheDir
+     */
+    public function setFilecacheDir($filecacheDir);
+
+    /**
+     * Returns the file path to a file copy that includes an appropriate cover page.
+     * Returns the file's original path if no cover needs to be generated or if cover generation fails.
+     *
+     * @param DocumentInterface $document The document for which a PDF cover shall be generated.
+     * @param FileInterface     $file The document's file for which a PDF cover shall be generated.
+     * @return string file path
+     */
+    public function processFile($document, $file);
 }

@@ -45,7 +45,7 @@ use function mb_split;
 /**
  * Base class for all commands using StartID and EndID as arguments.
  */
-abstract class AbstractBaseDocumentCommand extends Command
+abstract class AbstractDocumentCommand extends Command
 {
     public const ARGUMENT_START_ID = 'StartID';
 

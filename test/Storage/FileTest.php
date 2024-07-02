@@ -37,7 +37,9 @@ use Opus\Common\Storage\FileNotFoundException;
 use Opus\Common\Storage\StorageException;
 use Opus\Common\Util\File as FileUtil;
 use OpusTest\Common\TestAsset\TestCase;
+use Zend_Config;
 
+use function dirname;
 use function fclose;
 use function fopen;
 use function fwrite;
@@ -70,6 +72,10 @@ class FileTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Config::set(new Zend_Config([
+            'workspacePath' => dirname(__FILE__, 3) . '/build',
+        ]));
 
         $config = Config::get();
         $path   = $config->workspacePath . '/' . uniqid();
@@ -226,45 +232,36 @@ class FileTest extends TestCase
     }
 
     /**
-     * Test getting mime type from file extension for text file.
+     * @return array
      */
-    public function testGetFileMimeTypeFromExtension()
+    public function fileExtensionMimeTypeProvider()
+    {
+        return [
+            ['test.txt', 'text/plain'],
+            ['test.TXT', 'text/plain'],
+            ['test.tXt', 'text/plain'],
+            ['test.pdf', 'application/pdf'],
+            ['test.ps', 'application/postscript'],
+        ];
+    }
+
+    /**
+     * Test getting mime type from file extension for text file.
+     *
+     * TODO simplify - function getFileMimeTypeFromExtension does not need that setup
+     *
+     * @param string $fileName
+     * @param string $mimeType
+     * @dataProvider fileExtensionMimeTypeProvider
+     */
+    public function testGetFileMimeTypeFromExtension($fileName, $mimeType)
     {
         $storage = new File($this->destPath, 'subdir6');
         $storage->createSubdirectory();
         $source = $this->srcPath . '/' . "test.txt";
         touch($source);
-        $destination = 'test.txt';
-        $storage->copyExternalFile($source, $destination);
-        $this->assertEquals('text/plain', $storage->getFileMimeTypeFromExtension($destination));
-    }
-
-    /**
-     * Test getting mime type from file extension for PDF file.
-     */
-    public function testGetFileMimeTypeFromExtensionForPdf()
-    {
-        $storage = new File($this->destPath, 'subdir6');
-        $storage->createSubdirectory();
-        $source = $this->srcPath . '/' . "test.pdf";
-        touch($source);
-        $destination = 'test.pdf';
-        $storage->copyExternalFile($source, $destination);
-        $this->assertEquals('application/pdf', $storage->getFileMimeTypeFromExtension($destination));
-    }
-
-    /**
-     * Test getting mime type from file extension for Postscript file.
-     */
-    public function testGetFileMimeTypeFromExtensionForPostscript()
-    {
-        $storage = new File($this->destPath, 'subdir6');
-        $storage->createSubdirectory();
-        $source = $this->srcPath . '/' . "test.ps";
-        touch($source);
-        $destination = 'test.ps';
-        $storage->copyExternalFile($source, $destination);
-        $this->assertEquals('application/postscript', $storage->getFileMimeTypeFromExtension($destination));
+        $storage->copyExternalFile($source, $fileName);
+        $this->assertEquals($mimeType, $storage->getFileMimeTypeFromExtension($fileName));
     }
 
     /**

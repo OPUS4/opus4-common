@@ -33,15 +33,13 @@
 namespace Opus\Common\Storage;
 
 use Exception;
-use finfo;
 use Opus\Common\Util\File as FileUtil;
+use Symfony\Component\Mime\MimeTypes;
 
-use function class_exists;
 use function copy;
 use function count;
 use function file_exists;
 use function filesize;
-use function function_exists;
 use function getcwd;
 use function glob;
 use function is_dir;
@@ -49,15 +47,12 @@ use function is_executable;
 use function is_file;
 use function is_readable;
 use function is_writable;
-use function mime_content_type;
 use function mkdir;
 use function preg_match;
 use function rename;
 use function rmdir;
 use function sprintf;
 use function unlink;
-
-use const FILEINFO_MIME_TYPE;
 
 /**
  * phpcs:disable
@@ -241,29 +236,16 @@ class File
      * is returned.
      *
      * @param string $file
-     * @return string
+     * @return string|null
+     *
+     * TODO getFileMimeTypeFromExtension not needed anymore?
+     * TODO test with PDF file and postscript (.ps)
      */
     public function getFileMimeEncoding($file)
     {
         $fullFile = $this->getWorkingDirectory() . $file;
-
-        // TODO basically this class should exist - why check? We don't for other classes.
-        if (true === class_exists('finfo')) {
-            // for PHP >= 5.3.0 or PECL fileinfo >= 0.1.0
-            $finfo = new finfo(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
-            if (false !== $finfo) {
-                return $finfo->file($fullFile);
-            }
-        } elseif (function_exists('mime_content_type')) {
-            // use mime_content_type for PHP < 5.3.0
-            return @mime_content_type($fullFile);
-        } else {
-            $message = self::class . ": Neither PECL fileinfo, nor mime_content_type could be found.";
-            $logger  = Log::get();
-            $logger->err($message);
-
-            return $this->getFileMimeTypeFromExtension($file);
-        }
+        $mimeTypes = new MimeTypes();
+        return $mimeTypes->guessMimeType($fullFile);
     }
 
     /**
@@ -273,16 +255,17 @@ class File
      * @return string
      *
      * TODO make mapping configurable in file?
+     * TODO getFileMimeTypeFromExtension not needed anymore?
      */
     public function getFileMimeTypeFromExtension($file)
     {
         $mimeEncoding = 'application/octet-stream';
 
-        if (preg_match('/\.pdf$/', $file) > 0) {
+        if (preg_match('/\.pdf$/i', $file) > 0) {
             $mimeEncoding = "application/pdf";
-        } elseif (preg_match('/\.ps$/', $file) > 0) {
+        } elseif (preg_match('/\.ps$/i', $file) > 0) {
             $mimeEncoding = "application/postscript";
-        } elseif (preg_match('/\.txt$/', $file) > 0) {
+        } elseif (preg_match('/\.txt$/i', $file) > 0) {
             $mimeEncoding = "text/plain";
         }
 

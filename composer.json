@@ -11,8 +11,10 @@
     "ext-dom": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
+    "ext-fileinfo": "*",
     "opus4/zf1-future": "1.21.*",
-    "symfony/console": "*"
+    "symfony/console": "*",
+    "symfony/mime": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "<9",

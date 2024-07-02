@@ -57,8 +57,8 @@ class ProgressBarTest extends TestCase
 
         $bar = '[>' . str_repeat('-', 62) . ']'; // 62 because max = 100 (3 digits)
 
-        $this->assertContains($bar, $output); // two spaces before 10
-        $this->assertContains('0/100', $output);
+        $this->assertStringContainsString($bar, $output); // two spaces before 10
+        $this->assertStringContainsString('0/100', $output);
     }
 
     /**

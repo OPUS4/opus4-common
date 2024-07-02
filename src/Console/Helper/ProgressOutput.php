@@ -38,7 +38,7 @@ use function microtime;
 use function round;
 use function sprintf;
 
-class ProgressOutput extends AbstractBaseProgressOutput
+class ProgressOutput extends AbstractProgressOutput
 {
     /**
      * @var string

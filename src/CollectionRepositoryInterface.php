@@ -25,19 +25,60 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2023, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
 namespace Opus\Common;
 
-interface ServerStateConstantsInterface
+/**
+ * Interface for collection related functions manipulating multiple documents.
+ */
+interface CollectionRepositoryInterface
 {
-    public const STATE_DELETED     = 'deleted';
-    public const STATE_INPROGRESS  = 'inprogress';
-    public const STATE_RESTRICTED  = 'restricted';
-    public const STATE_UNPUBLISHED = 'unpublished';
-    public const STATE_PUBLISHED   = 'published';
-    public const STATE_TEMPORARY   = 'temporary';
-    public const STATE_AUDITED     = 'audited';
+    /**
+     * Removes document from current collection by deleting from the relation
+     * table "link_documents_collections".
+     *
+     * @param null|int $docId
+     */
+    public function unlinkCollectionsByDocumentId($docId = null);
+
+    /**
+     * @param int    $roleId
+     * @param string $name
+     * @return CollectionInterface[]
+     */
+    public function fetchCollectionsByRoleName($roleId, $name);
+
+    /**
+     * Returns all collection for given (role_id, collection number) as array
+     * with Opus\Collection objects.  Always returning an array, even if the
+     * result set has zero or one element.
+     *
+     * @param  int    $roleId
+     * @param  string $number
+     * @return CollectionInterface[]
+     */
+    public function fetchCollectionsByRoleNumber($roleId, $number);
+
+    /**
+     * Returns all collection for given (role_id) as array
+     * with Opus\Collection objects.  Always returning an array, even if the
+     * result set has zero or one element.
+     *
+     * @param  int $roleId
+     * @return CollectionInterface[]
+     */
+    public function fetchCollectionsByRoleId($roleId);
+
+    /**
+     * Returns all collection_ids for a given document_id.
+     *
+     * @param  int $docId
+     * @return array  Array of collection Ids.
+     *
+     * FIXME: This method belongs to Opus\Db\Link\Documents\Collections
+     */
+    public function fetchCollectionIdsByDocumentId($docId);
 }
