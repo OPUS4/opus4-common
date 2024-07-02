@@ -9,6 +9,7 @@
   "homepage": "http://www.opus-repository.org",
   "require": {
     "ext-dom": "*",
+    "ext-json": "*",
     "ext-mbstring": "*",
     "ext-fileinfo": "*",
     "opus4/zf1-future": "1.21.*",

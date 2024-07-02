@@ -33,6 +33,10 @@ namespace Opus\Common;
 
 use Opus\Common\Model\AbstractModel;
 
+/**
+ * TODO DESIGN A EnrichmentKey is a Field - those two things should be merged - an Enrichment is a value for custom
+ *      field, an EnrichmentKey
+ */
 class EnrichmentKey extends AbstractModel
 {
     public const FIELD_NAME    = 'Name';
@@ -84,14 +88,14 @@ class EnrichmentKey extends AbstractModel
     {
         return [
             'fields' => [
-                'Name'    => [
+                self::FIELD_NAME    => [
                     'required' => true,
                     'maxsize'  => 191,
                 ],
-                'Type'    => [
+                self::FIELD_TYPE    => [
                     'maxsize' => 255,
                 ],
-                'Options' => [
+                self::FIELD_OPTIONS => [
                     'maxsize' => 255,
                 ],
             ],
