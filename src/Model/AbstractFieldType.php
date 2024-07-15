@@ -48,6 +48,9 @@ use function ucfirst;
 /**
  * TODO declare as abstract and make functions abstract that have to be implemented by child classes
  * TODO add documentation explaining the "why" for the different aspects/functions
+ * TODO form elements should be mapped to FieldType in Application
+ * TODO FieldType does not determine if a field is required or not
+ *      (A field has a configuration, including a FieldType and description!)
  */
 class AbstractFieldType implements FieldTypeInterface
 {
