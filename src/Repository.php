@@ -32,6 +32,7 @@
 namespace Opus\Common;
 
 use Opus\Common\Config\ConfigException;
+use Opus\Common\Config\DocumentTypesInterface;
 use Opus\Common\Model\ModelException;
 use Opus\Common\Model\ModelFactoryInterface;
 use Opus\Common\Model\ModelInterface;
@@ -68,6 +69,16 @@ class Repository
         }
 
         return self::$repository;
+    }
+
+    /**
+     * @return DocumentTypesInterface
+     */
+    public function getDocumentTypes()
+    {
+        $documentTypesClass = '';
+
+        return new $documentTypesClass();
     }
 
     /**
