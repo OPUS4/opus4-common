@@ -46,7 +46,7 @@ class BooleanTest extends TestCase
      *
      * @return array Array of invalid arguments.
      */
-    public function validDataProvider()
+    public static function validDataProvider()
     {
         return [
             [true],
@@ -59,7 +59,7 @@ class BooleanTest extends TestCase
      *
      * @return array Array of invalid arguments and a message.
      */
-    public function invalidDataProvider()
+    public static function invalidDataProvider()
     {
         return [
             [null, 'Null value not rejected'],

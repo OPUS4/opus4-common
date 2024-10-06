@@ -43,7 +43,7 @@ class AbstractDocumentCommandTest extends TestCase
     /**
      * @return array Columns: argStartId, argEndId, startId, endId, singleDocument
      */
-    public function argumentsProvider()
+    public static function argumentsProvider()
     {
         return [
             [null,    null, null, null, false],
@@ -99,7 +99,7 @@ class AbstractDocumentCommandTest extends TestCase
     /**
      * @return array
      */
-    public function invalidArgumentProvider()
+    public static function invalidArgumentProvider()
     {
         return [
             ['a',   null, 'StartID needs to be an integer'],

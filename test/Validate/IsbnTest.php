@@ -46,7 +46,7 @@ class IsbnTest extends TestCase
      *
      * @return array Array of invalid arguments.
      */
-    public function validDataProvider()
+    public static function validDataProvider()
     {
         return [
             ['978-3-86680-192-9'],
@@ -69,7 +69,7 @@ class IsbnTest extends TestCase
      *
      * @return array Array of invalid arguments and a message.
      */
-    public function invalidDataProvider()
+    public static function invalidDataProvider()
     {
         return [
             [null, 'Null value not rejected'],

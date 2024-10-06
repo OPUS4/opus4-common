@@ -95,7 +95,7 @@ class ModelDescriptor implements ModelDescriptorInterface
      */
     public function getFieldDescriptor($fieldName)
     {
-        $ucName = ucfirst($fieldName);
+        $ucName = ucfirst($fieldName ?? '');
 
         if (isset($this->fields[$ucName])) {
             return $this->fields[$ucName];

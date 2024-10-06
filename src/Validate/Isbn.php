@@ -105,6 +105,10 @@ class Isbn extends Zend_Validate_Abstract
      */
     public function extractDigits($value)
     {
+        if ($value === null) {
+            return [];
+        }
+
         $isbnParts = preg_split('/(-|\s)/', $value);
 
         // Separate digits for checkdigit calculation

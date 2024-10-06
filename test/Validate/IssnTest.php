@@ -44,7 +44,7 @@ class IssnTest extends TestCase
     /**
      * @return array with valid issn's
      */
-    public function validIssnProvider()
+    public static function validIssnProvider()
     {
         return [
             ['1050-124X'],
@@ -59,7 +59,7 @@ class IssnTest extends TestCase
     /**
      * @return array with invalid issn's
      */
-    public function invalidIssnProvider()
+    public static function invalidIssnProvider()
     {
         return [
             [null],
@@ -76,7 +76,7 @@ class IssnTest extends TestCase
     /**
      * @return array with invalid issn's and it's error-messages and error-keys
      */
-    public function messageIssnProvider()
+    public static function messageIssnProvider()
     {
         return [
             ['12345478', 'form', "'12345478' is malformed."],

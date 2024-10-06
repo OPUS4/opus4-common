@@ -234,7 +234,7 @@ class FileTest extends TestCase
     /**
      * @return array
      */
-    public function fileExtensionMimeTypeProvider()
+    public static function fileExtensionMimeTypeProvider()
     {
         return [
             ['test.txt', 'text/plain'],
