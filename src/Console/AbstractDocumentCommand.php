@@ -144,10 +144,7 @@ abstract class AbstractDocumentCommand extends Command
         return 0;
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         return $this->processArguments($input);
     }

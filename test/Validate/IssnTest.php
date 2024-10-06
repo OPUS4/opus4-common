@@ -37,7 +37,7 @@ use OpusTest\Common\TestAsset\TestCase;
 /**
  * Unit tests for Opus\Validate\Issn.
  *
- * @coversDefaultClass \Opus\Validate\Issn
+ * @coversDefaultClass Issn
  */
 class IssnTest extends TestCase
 {
