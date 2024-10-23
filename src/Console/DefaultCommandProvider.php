@@ -74,7 +74,7 @@ class DefaultCommandProvider implements CommandProviderInterface
         $providers = [];
 
         if (isset($config->console->commandProvider)) {
-            $providerClasses = $config->console->commandProviders->toArray();
+            $providerClasses = $config->console->commandProvider->toArray();
             foreach ($providerClasses as $providerClass) {
                 $provider    = new $providerClass();
                 $providers[] = $provider;
