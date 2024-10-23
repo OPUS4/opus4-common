@@ -57,7 +57,7 @@ class DefaultCommandProvider implements CommandProviderInterface
         foreach ($providers as $provider) {
             $providerCommands = $provider->getCommands();
             if ($providerCommands !== null) {
-                array_push($commands, $providerCommands);
+                $commands = array_merge($commands, $providerCommands);
             }
         }
 
