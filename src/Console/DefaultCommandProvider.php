@@ -35,7 +35,7 @@ namespace Opus\Common\Console;
 use Opus\Common\ConfigTrait;
 use Symfony\Component\Console\Command\Command;
 
-use function array_push;
+use function array_merge;
 
 /**
  * The default CommandProvider looks for CommandProviders in the configuration
