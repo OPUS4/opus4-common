@@ -42,6 +42,7 @@ class DocumentLifecycleListener
      * @param DocumentInterface $document
      *
      * TODO separate different responsibilities (at least into separate functions)
+     *      every special processing for fields should be a separate class that can be configured
      */
     public function preStore($document)
     {
@@ -52,9 +53,11 @@ class DocumentLifecycleListener
                 $document->setServerDateCreated($date);
             }
         }
-        $document->setServerDateModified($date);
 
-        if (true === $document->isNewRecord() || true === $document->isModified()) {
+        if ($document->isNewRecord() || $document->isModified()) {
+            // TODO update ServerDateModified only for relevant changes (bibliographic metadata)
+            $document->setServerDateModified($date);
+
             // Initially set ServerDatePublished if ServerState==='published'
             if ($document->getServerState() === 'published') {
                 if ($document->getServerDatePublished() === null) {
