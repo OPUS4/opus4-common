@@ -25,41 +25,63 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Common\TestAsset;
+namespace Opus\Common\Cover;
 
-use Opus\Common\Config;
-use Opus\Common\Log;
-use Opus\Common\Log\LogService;
-use PHPUnit\Framework\TestCase as PHPUnitFrameworkTestCase;
+use Opus\Common\ConfigTrait;
+use Opus\Common\LoggingTrait;
+use Opus\Common\Util\ClassLoaderHelper;
 
-use function dirname;
-use function file_exists;
-use function mkdir;
-
-class TestCase extends PHPUnitFrameworkTestCase
+/**
+ * Factory to create a PDF cover generator instance.
+ */
+class CoverGeneratorFactory
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+    use ConfigTrait;
+    use LoggingTrait;
 
-        Config::setInstance(null); // Reset configuration after each test
-        Log::drop(); // just in case there is still an old logger cached
-        LogService::getInstance()->setPath(dirname(__FILE__, 3) . '/build/log');
+    /** @var self Singleton instance of CoverGeneratorFactory. */
+    private static $instance;
+
+    /**
+     * Creates singleton instance of CoverGeneratorFactory.
+     *
+     * @return self
+     */
+    public static function getInstance()
+    {
+        if (null === self::$instance) {
+            self::$instance = new CoverGeneratorFactory();
+        }
+        return self::$instance;
     }
 
     /**
-     * @param string $path Path for folder
-     *
-     * TODO automatic cleanup?
+     * @return CoverGeneratorInterface|null
      */
-    public function createFolder($path)
+    public function create()
     {
-        if (! file_exists($path)) {
-            mkdir($path, 0700, true);
+        // the actual cover generator class is provided via the pdf.covers.generatorClass configuration variable
+        $generatorClass = '';
+
+        $config = $this->getConfig();
+        if (isset($config->pdf->covers->generatorClass)) {
+            $generatorClass = $config->pdf->covers->generatorClass;
         }
+        if (empty($generatorClass)) {
+            return null;
+        }
+
+        $classExists = ClassLoaderHelper::classExists($generatorClass);
+        if (! $classExists) {
+            $this->getLogger()->err("Class '$generatorClass' not found");
+
+            return null;
+        }
+
+        return new $generatorClass();
     }
 }

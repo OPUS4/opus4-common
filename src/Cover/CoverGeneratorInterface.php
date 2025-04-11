@@ -25,41 +25,43 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2022, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Common\TestAsset;
+namespace Opus\Common\Cover;
 
-use Opus\Common\Config;
-use Opus\Common\Log;
-use Opus\Common\Log\LogService;
-use PHPUnit\Framework\TestCase as PHPUnitFrameworkTestCase;
+use Opus\Common\DocumentInterface;
+use Opus\Common\FileInterface;
 
-use function dirname;
-use function file_exists;
-use function mkdir;
-
-class TestCase extends PHPUnitFrameworkTestCase
+/**
+ * Interface for generating a PDF file copy which includes an appropriate PDF cover.
+ *
+ * The PDF cover should be generated via a PDF generator class that implements PdfGeneratorInterface.
+ */
+interface CoverGeneratorInterface
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Config::setInstance(null); // Reset configuration after each test
-        Log::drop(); // just in case there is still an old logger cached
-        LogService::getInstance()->setPath(dirname(__FILE__, 3) . '/build/log');
-    }
+    /**
+     * Returns the path to a workspace subdirectory that stores cached document files.
+     *
+     * @return string
+     */
+    public function getFilecacheDir();
 
     /**
-     * @param string $path Path for folder
+     * Sets the path to a workspace subdirectory that stores cached document files.
      *
-     * TODO automatic cleanup?
+     * @param string|null $filecacheDir
      */
-    public function createFolder($path)
-    {
-        if (! file_exists($path)) {
-            mkdir($path, 0700, true);
-        }
-    }
+    public function setFilecacheDir($filecacheDir);
+
+    /**
+     * Returns the file path to a file copy that includes an appropriate cover page.
+     * Returns the file's original path if no cover needs to be generated or if cover generation fails.
+     *
+     * @param DocumentInterface $document The document for which a PDF cover shall be generated.
+     * @param FileInterface     $file The document's file for which a PDF cover shall be generated.
+     * @return string file path
+     */
+    public function processFile($document, $file);
 }

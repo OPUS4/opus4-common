@@ -133,7 +133,7 @@ class Config
     }
 
     /**
-     * @param self $config
+     * @param self|null $config
      */
     public static function setInstance($config)
     {
