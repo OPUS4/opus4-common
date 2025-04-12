@@ -33,6 +33,8 @@
 namespace Opus\Common\Console;
 
 use Opus\Common\ConfigTrait;
+use Opus\Common\LoggingTrait;
+use Opus\Common\Util\ClassLoaderHelper;
 use Symfony\Component\Console\Command\Command;
 
 use function array_merge;
@@ -44,6 +46,7 @@ use function array_merge;
 class DefaultCommandProvider implements CommandProviderInterface
 {
     use ConfigTrait;
+    use LoggingTrait;
 
     /**
      * @return Command[]
@@ -76,8 +79,12 @@ class DefaultCommandProvider implements CommandProviderInterface
         if (isset($config->console->commandProvider)) {
             $providerClasses = $config->console->commandProvider->toArray();
             foreach ($providerClasses as $providerClass) {
-                $provider    = new $providerClass();
-                $providers[] = $provider;
+                if (ClassLoaderHelper::classExists($providerClass)) {
+                    $provider    = new $providerClass();
+                    $providers[] = $provider;
+                } else {
+                    $this->getLogger()->err('Command provider class not found: ' . $providerClass);
+                }
             }
         }
 
