@@ -44,7 +44,7 @@ class NoteVisibilityTest extends TestCase
      *
      * @return array Array of invalid arguments.
      */
-    public function validDataProvider()
+    public static function validDataProvider()
     {
         return [
             ['private'],
@@ -57,7 +57,7 @@ class NoteVisibilityTest extends TestCase
      *
      * @return array Array of invalid arguments.
      */
-    public function invalidDataProvider()
+    public static function invalidDataProvider()
     {
         return [
             [null],

@@ -25,19 +25,41 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2019, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace Opus\Common\Model\FieldType;
 
-interface ServerStateConstantsInterface
+use Admin_Form_Document_Enrichment;
+use Opus\Common\Model\AbstractFieldType;
+use Zend_Form_Element;
+
+class BooleanType extends AbstractFieldType
 {
-    public const STATE_DELETED     = 'deleted';
-    public const STATE_INPROGRESS  = 'inprogress';
-    public const STATE_RESTRICTED  = 'restricted';
-    public const STATE_UNPUBLISHED = 'unpublished';
-    public const STATE_PUBLISHED   = 'published';
-    public const STATE_TEMPORARY   = 'temporary';
-    public const STATE_AUDITED     = 'audited';
+    /**
+     * @return string
+     */
+    public function getFormElementName()
+    {
+        return 'Checkbox';
+    }
+
+    /**
+     * @param mixed|null $value
+     * @return Zend_Form_Element
+     */
+    public function getFormElement($value = null)
+    {
+        $form    = new Admin_Form_Document_Enrichment();
+        $options = ['required' => true]; // FIXME überhaupt erforderlich?
+        $element = $form->createElement($this->getFormElementName(), Admin_Form_Document_Enrichment::ELEMENT_VALUE, $options);
+        $element->removeDecorator('Label'); // kein Label anzeigen
+
+        if ($value !== null) {
+            $element->setValue($value);
+        }
+
+        return $element;
+    }
 }

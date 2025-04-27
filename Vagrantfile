@@ -2,15 +2,15 @@
 # vi: set ft=ruby :
 
 $software = <<SCRIPT
-# Downgrade to PHP 7.1
+# Downgrade to PHP 8.1
 apt-add-repository -y ppa:ondrej/php
 apt-get -yq update
-apt-get -yq install php7.1
+apt-get -yq install php8.1
 
 # Install required PHP packages
-apt-get -yq install php7.1-curl
-apt-get -yq install php7.1-dom
-apt-get -yq install php7.1-mbstring
+apt-get -yq install php8.1-curl
+apt-get -yq install php8.1-dom
+apt-get -yq install php8.1-mbstring
 
 # Install tools
 apt-get -yq install unzip
@@ -40,7 +40,7 @@ echo "'composer cs-fix' to automatically fix basic style problems"
 SCRIPT
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "bento/ubuntu-20.04"
+  config.vm.box = "bento/ubuntu-24.04"
 
   config.vm.provision 'shell', inline: $software
   config.vm.provision 'shell', privileged: false, inline: $composer

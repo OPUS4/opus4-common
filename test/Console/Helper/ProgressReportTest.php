@@ -99,9 +99,9 @@ class ProgressReportTest extends TestCase
         rewind($outputInterface->getStream());
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('There was 1 document with problems:', $output);
-        $this->assertContains('1) TestTitle' . PHP_EOL, $output);
-        $this->assertContains('TestException' . PHP_EOL, $output);
+        $this->assertStringContainsString('There was 1 document with problems:', $output);
+        $this->assertStringContainsString('1) TestTitle' . PHP_EOL, $output);
+        $this->assertStringContainsString('TestException' . PHP_EOL, $output);
     }
 
     public function testWriteMultipleStepsWithException()
@@ -127,11 +127,11 @@ class ProgressReportTest extends TestCase
         rewind($outputInterface->getStream());
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('There were 2 documents with problems:', $output);
-        $this->assertContains('1) TestTitle' . PHP_EOL, $output);
-        $this->assertContains('TestException' . PHP_EOL, $output);
-        $this->assertContains('2) TestTitle2' . PHP_EOL, $output);
-        $this->assertContains('TestException2' . PHP_EOL, $output);
+        $this->assertStringContainsString('There were 2 documents with problems:', $output);
+        $this->assertStringContainsString('1) TestTitle' . PHP_EOL, $output);
+        $this->assertStringContainsString('TestException' . PHP_EOL, $output);
+        $this->assertStringContainsString('2) TestTitle2' . PHP_EOL, $output);
+        $this->assertStringContainsString('TestException2' . PHP_EOL, $output);
     }
 
     public function testWriteNothingIfNotEntries()
@@ -163,9 +163,9 @@ class ProgressReportTest extends TestCase
         rewind($outputInterface->getStream());
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('There was 1 document with problems:', $output);
-        $this->assertContains('1) TestTitle' . PHP_EOL, $output);
-        $this->assertContains('TestException' . PHP_EOL . 'TestException2' . PHP_EOL, $output);
+        $this->assertStringContainsString('There was 1 document with problems:', $output);
+        $this->assertStringContainsString('1) TestTitle' . PHP_EOL, $output);
+        $this->assertStringContainsString('TestException' . PHP_EOL . 'TestException2' . PHP_EOL, $output);
     }
 
     public function testClear()

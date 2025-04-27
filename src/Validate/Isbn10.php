@@ -62,6 +62,7 @@ class Isbn10 extends Isbn
         self::MSG_CHECK_DIGIT => "The check digit of '%value%' is not valid",
         self::MSG_FORM        => "'%value%' is malformed",
     ];
+    // phpcs:enable
 
     /**
      * Validate the given ISBN-10 string.
@@ -74,7 +75,7 @@ class Isbn10 extends Isbn
         $this->_setValue($value);
 
         // check length
-        if (strlen($value) !== 10 and strlen($value) !== 13) {
+        if ($value === null || strlen($value) !== 10 && strlen($value) !== 13) {
             $this->_error(self::MSG_FORM);
             return false;
         }
@@ -88,13 +89,13 @@ class Isbn10 extends Isbn
         }
 
         // check for mixed separators
-        if ((preg_match('/-/', $value) > 0) and (preg_match('/\s/', $value) > 0)) {
+        if ((preg_match('/-/', $value) > 0) && (preg_match('/\s/', $value) > 0)) {
             $this->_error(self::MSG_FORM);
             return false;
         }
 
         $digits = $this->extractDigits($value);
-        if (count($digits) != 10) {
+        if (count($digits) !== 10) {
             $this->_error(self::MSG_FORM);
             return false;
         }
@@ -123,7 +124,7 @@ class Isbn10 extends Isbn
             $z[10] += $i * $z[$i - 1];
         }
         $z[10] %= 11;
-        if ($z[10] == 10) {
+        if ($z[10] === 10) {
             $z[10] = 'X';
         }
         return "$z[10]";

@@ -25,7 +25,7 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2008-2010, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @copyright   Copyright (c) 2010 Saechsische Landesbibliothek - Staats- und Universitaetsbibliothek Dresden (SLUB)
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
@@ -51,20 +51,17 @@ use function mkdir;
 use function preg_match;
 use function rename;
 use function rmdir;
-use function sprintf;
 use function unlink;
 
 /**
- * phpcs:disable
+ * TODO REVIEW class
  */
 class File
 {
-    /**
-     * Working directory.  All files will be modified relative to this path.
-     *
-     * @var string
-     */
+    /** @var string Working directory. All files will be modified relative to this path. */
     private $filesDirectory;
+
+    /** @var string Subdirectory name */
     private $subDirectory;
 
     /**
@@ -72,11 +69,14 @@ class File
      * working directory, in which all file modifications will take place.
      *
      * @param null|string $directory
+     * @param null|string $subdirectory
      * @throws StorageException
+     *
+     * TODO $directory should not allowed to be NULL
      */
     public function __construct($directory = null, $subdirectory = null)
     {
-        if (! is_dir($directory)) {
+        if ($directory === null || ! is_dir($directory)) {
             throw new StorageException("Storage directory '$directory' does not exist. (cwd: " . getcwd() . ")");
         }
 
@@ -88,6 +88,9 @@ class File
         $this->subDirectory   = FileUtil::addDirectorySeparator($subdirectory);
     }
 
+    /**
+     * @return string
+     */
     public function getWorkingDirectory()
     {
         return $this->filesDirectory . $this->subDirectory;
@@ -96,7 +99,6 @@ class File
     /**
      * Creates subdirectory "$this->workingDirectory/$subdirectory".
      *
-     * @param string $subdirectory Subdirectory of working dir to create.
      * @throws StorageException
      * @return bool
      */
@@ -129,7 +131,7 @@ class File
      * parameter is relative to the working directory.
      *
      * @param string $sourceFile Absolute path.
-     * @param string $destintationFile Path relative to workingDirectory.
+     * @param string $destinationFile Path relative to workingDirectory.
      * @throws StorageException
      * @return bool
      */
@@ -152,10 +154,10 @@ class File
      * Copy a file from source to destination
      *
      * @param string $sourceFile Absolute path.
-     * @param string $destintationFile Path relative to workingDirectory.
+     * @param string $destinationFile Path relative to workingDirectory.
      * @throws StorageException
-     * @throws FileNotFoundException if file does not exist
-     * @throws FileAccessException if renaming of file failed
+     * @throws FileNotFoundException If file does not exist.
+     * @throws FileAccessException If renaming of file failed.
      * @return bool
      */
     public function renameFile($sourceFile, $destinationFile)
@@ -183,8 +185,8 @@ class File
      *
      * @param string $file
      * @throws StorageException
-     * @throws FileNotFoundException if file does not exist
-     * @throws FileAccessException if deleting file failed
+     * @throws FileNotFoundException If file does not exist.
+     * @throws FileAccessException If deleting file failed.
      */
     public function deleteFile($file)
     {
@@ -218,8 +220,8 @@ class File
             return false;
         }
 
-        $is_empty = count(glob($directory . "/*")) === 0;
-        if (! $is_empty) {
+        $isEmpty = count(glob($directory . "/*")) === 0;
+        if (! $isEmpty) {
             return false;
         }
 
@@ -243,7 +245,7 @@ class File
      */
     public function getFileMimeEncoding($file)
     {
-        $fullFile = $this->getWorkingDirectory() . $file;
+        $fullFile  = $this->getWorkingDirectory() . $file;
         $mimeTypes = new MimeTypes();
         return $mimeTypes->guessMimeType($fullFile);
     }
@@ -275,8 +277,11 @@ class File
     /**
      * Determine size of a given file.
      *
+     * The maximum file size depends on the operating system. On a 32-bit system it will be around 2 GB, because
+     * int variables are only signed 32-bit numbers.
+     *
      * @param string $file
-     * return integer
+     * @return int
      */
     public function getFileSize($file)
     {
@@ -285,9 +290,6 @@ class File
             throw new Exception("File does not exist.");
         }
 
-        // Common workaround for php limitation (2 / 4 GB file size)
-        // look at http://php.net/manual/en/function.filesize.php
-        // more information
-        return sprintf('%u', @filesize($fullFile));
+        return @filesize($fullFile);
     }
 }

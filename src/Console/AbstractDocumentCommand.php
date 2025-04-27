@@ -40,6 +40,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use function count;
 use function ctype_digit;
+use function is_int;
 use function mb_split;
 
 /**
@@ -118,11 +119,11 @@ abstract class AbstractDocumentCommand extends Command
             $endId = null;
         }
 
-        if ($startId !== null && ! ctype_digit($startId)) {
+        if (! is_int($startId) && $startId !== null && ! ctype_digit($startId)) {
             throw new InvalidArgumentException('StartID needs to be an integer.');
         }
 
-        if ($endId !== null && ! ctype_digit($endId)) {
+        if (! is_int($endId) && $endId !== null && ! ctype_digit($endId)) {
             throw new InvalidArgumentException('EndID needs to be an integer.');
         }
 
@@ -138,16 +139,13 @@ abstract class AbstractDocumentCommand extends Command
             }
         }
 
-        $this->startId = $startId;
-        $this->endId   = $endId;
+        $this->startId = (int) $startId;
+        $this->endId   = (int) $endId;
 
         return 0;
     }
 
-    /**
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         return $this->processArguments($input);
     }

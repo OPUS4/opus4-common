@@ -55,7 +55,7 @@ class ProgressOutputTest extends TestCase
         rewind($outputInterface->getStream());
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('Stats after  10 docs', $output); // two spaces before 10
+        $this->assertStringContainsString('Stats after  10 docs', $output); // two spaces before 10
     }
 
     /**

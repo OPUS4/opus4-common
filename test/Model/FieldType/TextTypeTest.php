@@ -25,19 +25,56 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @copyright   Copyright (c) 2022, OPUS 4 development team
+ * @copyright   Copyright (c) 2019, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Common;
+namespace OpusTest\Common\Model\FieldType;
 
-interface ServerStateConstantsInterface
+use Opus\Common\Model\FieldType\TextType;
+use OpusTest\Common\TestAsset\TestCase;
+
+class TextTypeTest extends TestCase
 {
-    public const STATE_DELETED     = 'deleted';
-    public const STATE_INPROGRESS  = 'inprogress';
-    public const STATE_RESTRICTED  = 'restricted';
-    public const STATE_UNPUBLISHED = 'unpublished';
-    public const STATE_PUBLISHED   = 'published';
-    public const STATE_TEMPORARY   = 'temporary';
-    public const STATE_AUDITED     = 'audited';
+    public function testSetOptionsFromString()
+    {
+        $textType = new TextType();
+        $textType->setOptionsFromString("foo");
+
+        $this->assertNull($textType->getOptions());
+        $this->assertNull($textType->getOptionsAsString());
+        $this->assertFalse($textType->isStrictValidation());
+    }
+
+    public function testGetDescription()
+    {
+        $textType = new TextType();
+        $this->assertEquals('admin_enrichmenttype_texttype_description', $textType->getDescription());
+    }
+
+    public function testGetName()
+    {
+        $textType = new TextType();
+        $this->assertEquals('TextType', $textType->getName());
+    }
+
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testRobustnessOfSetOptions()
+    {
+        $textType = new TextType();
+
+        $textType->setOptions(null);
+
+        $textType->setOptions("");
+
+        $textType->setOptions("{foo}");
+
+        $textType->setOptions('{"foo":"bar"}');
+
+        $textType->setOptions(["foo"]);
+
+        $textType->setOptions(["foo" => "bar"]);
+    }
 }

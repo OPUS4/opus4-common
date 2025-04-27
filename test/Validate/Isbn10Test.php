@@ -46,7 +46,7 @@ class Isbn10Test extends TestCase
      *
      * @return array Array of invalid arguments.
      */
-    public function validDataProvider()
+    public static function validDataProvider()
     {
         return [
             ['123456789X'],
@@ -67,7 +67,7 @@ class Isbn10Test extends TestCase
      *
      * @return array Array of invalid arguments and a message.
      */
-    public function invalidDataProvider()
+    public static function invalidDataProvider()
     {
         return [
             [null, 'Null value not rejected'],

@@ -76,7 +76,7 @@ class Issn extends Zend_Validate_Abstract
         $this->_setValue($value);
 
         // check length
-        if (strlen($value) !== 8 + 1) {
+        if ($value === null || strlen($value) !== 8 + 1) {
             $this->_error(self::MSG_FORM);
             return false;
         }

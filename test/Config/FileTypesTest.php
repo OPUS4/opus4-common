@@ -74,7 +74,7 @@ class FileTypesTest extends TestCase
         $types = $this->helper->getValidMimeTypes();
 
         $this->assertNotNull($types);
-        $this->assertInternalType('array', $types);
+        $this->assertIsArray($types);
 
         $this->assertArrayHasKey('pdf', $types);
         $this->assertEquals('application/pdf', $types['pdf']);

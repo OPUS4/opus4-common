@@ -128,7 +128,7 @@ class SendMail
     ) {
         $logger = Log::get();
 
-        if (trim($from) === '') {
+        if ($from === null || trim($from) === '') {
             throw new MailException('No sender address given.');
         }
         self::validateAddress($from);

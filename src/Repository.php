@@ -32,11 +32,13 @@
 namespace Opus\Common;
 
 use Opus\Common\Config\ConfigException;
+use Opus\Common\Config\DocumentTypesInterface;
 use Opus\Common\Model\ModelException;
 use Opus\Common\Model\ModelFactoryInterface;
 use Opus\Common\Model\ModelInterface;
 use Opus\Common\Model\ModelRepositoryInterface;
 use Opus\Common\Model\Xml\XmlCacheInterface;
+use Zend_Config;
 
 use function class_exists;
 use function class_implements;
@@ -67,6 +69,16 @@ class Repository
         }
 
         return self::$repository;
+    }
+
+    /**
+     * @return DocumentTypesInterface
+     */
+    public function getDocumentTypes()
+    {
+        $documentTypesClass = '';
+
+        return new $documentTypesClass();
     }
 
     /**
@@ -164,7 +176,7 @@ class Repository
     }
 
     /**
-     * @return Config
+     * @return Zend_Config|null
      */
     public function getConfig()
     {

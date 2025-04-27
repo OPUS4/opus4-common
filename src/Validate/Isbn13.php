@@ -75,7 +75,7 @@ class Isbn13 extends Isbn
         $this->_setValue($value);
 
         // check lenght
-        if (strlen($value) !== 13 && strlen($value) !== 17) {
+        if ($value === null || strlen($value) !== 13 && strlen($value) !== 17) {
             $this->_error(self::MSG_FORM);
             return false;
         }

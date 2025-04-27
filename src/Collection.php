@@ -44,6 +44,31 @@ class Collection extends AbstractModel
     public const FIELD_VISIBLE_PUBLISH   = 'VisiblePublish';
 
     /**
+     * Removes document from current collection by deleting from the relation
+     * table "link_documents_collections".
+     *
+     * @param null|int $docId
+     * @return int
+     */
+    public static function unlinkCollectionsByDocumentId($docId = null)
+    {
+        return self::getModelRepository()->unlinkCollectionsByDocumentId($docId);
+    }
+
+    /**
+     * Returns all collection for given (role_id) as array
+     * with Opus\Collection objects.  Always returning an array, even if the
+     * result set has zero or one element.
+     *
+     * @param  int $roleId
+     * @return CollectionInterface[]
+     */
+    public function fetchCollectionsByRoleId($roleId)
+    {
+        return self::getModelRepository()->fetchCollectionsByRoleId($roleId);
+    }
+
+    /**
      * @param int    $roleId
      * @param string $number
      * @return CollectionInterface[]
@@ -51,6 +76,16 @@ class Collection extends AbstractModel
     public static function fetchCollectionsByRoleNumber($roleId, $number)
     {
         return self::getModelRepository()->fetchCollectionsByRoleNumber($roleId, $number);
+    }
+
+    /**
+     * @param int    $roleId
+     * @param string $name
+     * @return CollectionInterface[]
+     */
+    public static function fetchCollectionsByRoleName($roleId, $name)
+    {
+        return self::getModelRepository()->fetchCollectionsByRoleName($roleId, $name);
     }
 
     /**

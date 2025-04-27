@@ -37,14 +37,14 @@ use OpusTest\Common\TestAsset\TestCase;
 /**
  * Unit tests for Opus\Validate\Issn.
  *
- * @coversDefaultClass \Opus\Validate\Issn
+ * @coversDefaultClass Issn
  */
 class IssnTest extends TestCase
 {
     /**
      * @return array with valid issn's
      */
-    public function validIssnProvider()
+    public static function validIssnProvider()
     {
         return [
             ['1050-124X'],
@@ -52,13 +52,14 @@ class IssnTest extends TestCase
             ['1062-5127'],
             ['0025-5858'],
             ['0001-3218'],
+            ['1879-0690'],
         ];
     }
 
     /**
      * @return array with invalid issn's
      */
-    public function invalidIssnProvider()
+    public static function invalidIssnProvider()
     {
         return [
             [null],
@@ -75,7 +76,7 @@ class IssnTest extends TestCase
     /**
      * @return array with invalid issn's and it's error-messages and error-keys
      */
-    public function messageIssnProvider()
+    public static function messageIssnProvider()
     {
         return [
             ['12345478', 'form', "'12345478' is malformed."],
