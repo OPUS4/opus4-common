@@ -48,19 +48,27 @@ namespace Opus\Common\Console\Helper;
  */
 interface ProgressOutputInterface
 {
+    /**
+     * @return void
+     */
     public function start();
 
+    /**
+     * @return void
+     */
     public function finish();
 
     /**
      * @param int        $steps
      * @param null|mixed $status
+     * @return void
      */
     public function advance($steps = 1, $status = null);
 
     /**
      * @param int        $progress
      * @param null|mixed $status
+     * @return void
      */
     public function setProgress($progress, $status = null);
 

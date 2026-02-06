@@ -108,18 +108,22 @@ interface XmlCacheInterface
 
     /**
      * Removes all entries from cache.
+     *
+     * @return void
      */
     public function clear();
 
     /**
      * @param string $select
+     * @return void
      *
-     * TODO database dependent - move out of interface and implementation
+     *  TODO database dependent - move out of interface and implementation
      */
     public function removeAllEntriesWhereSubSelect($select);
 
     /**
      * @param mixed $model
+     * @return void
      *
      * TODO database dependent - move out of interface and implementation
      */

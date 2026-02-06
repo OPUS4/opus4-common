@@ -45,6 +45,7 @@ interface ServerStateChangeListenerInterface
      * TODO would it be better to isolate state changes from data changes?
      *
      * @param mixed $document
+     * @return void
      *
      * TODO review and refine API - ServerStateEvent extends OpusEvent ?
      */

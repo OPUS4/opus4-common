@@ -41,7 +41,13 @@ use Opus\Common\Model\ModelInterface;
  */
 interface DocumentInterface extends ModelInterface
 {
+    /**
+     * @return int|null
+     */
     public function getId();
 
+    /**
+     * @return bool
+     */
     public function getServerStateChanged();
 }

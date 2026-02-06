@@ -52,6 +52,7 @@ interface CoverGeneratorInterface
      * Sets the path to a workspace subdirectory that stores cached document files.
      *
      * @param string|null $filecacheDir
+     * @return void
      */
     public function setFilecacheDir($filecacheDir);
 

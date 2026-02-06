@@ -62,11 +62,14 @@ interface StorageInterface
      *
      * @param string      $key
      * @param null|string $module
+     * @return void
      */
     public function remove($key, $module = null);
 
     /**
      * Removes all custom translations.
+     *
+     * @return void
      */
     public function removeAll();
 
@@ -74,6 +77,7 @@ interface StorageInterface
      * Removes all translations for a module.
      *
      * @param string $module
+     * @return void
      */
     public function removeModule($module);
 
@@ -83,6 +87,7 @@ interface StorageInterface
      * @param string $key
      * @param array  $translation
      * @param string $module
+     * @return void
      */
     public function setTranslation($key, $translation, $module = 'default');
 
@@ -142,6 +147,7 @@ interface StorageInterface
      * @param string $key
      * @param string $newKey
      * @param string $module
+     * @return void
      */
     public function renameKey($key, $newKey, $module = 'default');
 

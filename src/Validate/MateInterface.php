@@ -48,16 +48,21 @@ interface MateInterface
      * Add another validator to the list of mates.
      *
      * @param self $mate Validator implementing Opus_Validate_Mate.
+     * @return void
      */
     public function addMate(self $mate);
 
     /**
      * Inform all mates that the common validation result.
+     *
+     * @return void
      */
     public function decideAllValid();
 
     /**
      * Tell a specific validator to decide for validity.
+     *
+     * @return void
      */
     public function decideValid();
 }

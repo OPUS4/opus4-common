@@ -66,6 +66,8 @@ interface CollectionRoleRepositoryInterface
 
     /**
      * TODO is this Framework specific - is used in Application - should it?
+     *
+     * @return void
      */
     public function fixPositions();
 

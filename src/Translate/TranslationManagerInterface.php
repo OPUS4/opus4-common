@@ -66,6 +66,7 @@ interface TranslationManagerInterface
      * @param string $key
      * @param string $newKey
      * @param string $module // TODO do we need this parameter?
+     * @return void
      */
     public function renameKey($key, $newKey, $module = 'default');
 
@@ -74,6 +75,7 @@ interface TranslationManagerInterface
      * @param array       $translations
      * @param null|string $module
      * @param null|string $oldKey
+     * @return void
      */
     public function updateTranslation($key, $translations, $module = null, $oldKey = null);
 
@@ -81,17 +83,25 @@ interface TranslationManagerInterface
      * @param string      $key
      * @param array       $values
      * @param null|string $module
+     * @return void
      */
     public function setTranslation($key, $values, $module = null);
 
     /**
      * @param string      $key
      * @param null|string $module
+     * @return void
      */
     public function delete($key, $module = null);
 
+    /**
+     * @return void
+     */
     public function deleteAll();
 
+    /**
+     * @return void
+     */
     public function deleteMatches();
 
     /**

@@ -49,6 +49,7 @@ interface DocumentRepositoryInterface extends ModelRepositoryInterface
      *
      * @param string|Date $date Date-Object holding the date to be set
      * @param int[]       $ids array of document ids
+     * @return void
      */
     public function setServerDateModifiedForDocuments($date, $ids);
 }

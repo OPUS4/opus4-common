@@ -41,6 +41,7 @@ interface CollectionRepositoryInterface
      * table "link_documents_collections".
      *
      * @param null|int $docId
+     * @return void
      */
     public function unlinkCollectionsByDocumentId($docId = null);
 

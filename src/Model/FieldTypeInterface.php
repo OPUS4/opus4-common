@@ -71,6 +71,7 @@ interface FieldTypeInterface
      * erzeugte Formularelement eingetragen.
      *
      * @param null|string $value anzuzeigender Wert des Enrichments
+     * @return void
      */
     public function getFormElement($value = null);
 
@@ -86,6 +87,7 @@ interface FieldTypeInterface
      * interne Felder
      *
      * @param string|string[] $string
+     * @return void
      */
     public function setOptionsFromString($string);
 

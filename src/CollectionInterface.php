@@ -43,6 +43,7 @@ interface CollectionInterface extends ModelInterface
      *
      * @param int  $destColId
      * @param bool $updateLastModified
+     * @return void
      */
     public function moveDocuments($destColId, $updateLastModified = true);
 
@@ -54,6 +55,7 @@ interface CollectionInterface extends ModelInterface
      *
      * @param int  $destColId
      * @param bool $updateLastModified
+     * @return void
      */
     public function copyDocuments($destColId, $updateLastModified = true);
 
@@ -62,6 +64,7 @@ interface CollectionInterface extends ModelInterface
      *
      * @param int[]|null $docIds
      * @param bool       $updateLastModified
+     * @return void
      */
     public function removeDocuments($docIds = null, $updateLastModified = true);
 }

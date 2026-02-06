@@ -68,5 +68,8 @@ interface JobRepositoryInterface extends ModelRepositoryInterface
      */
     public function getByLabels($labels, $limit = null, $state = null);
 
+    /**
+     * @return void
+     */
     public function deleteAll();
 }
