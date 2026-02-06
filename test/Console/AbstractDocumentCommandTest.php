@@ -47,13 +47,17 @@ class AbstractDocumentCommandTest extends TestCase
     {
         return [
             [null,    null, null, null, false],
-            ['10',    null,   10, null, true],
+            ['10',    null,   10, null,  true],
+            [10,      null,   10, null,  true],
             ['10',    '20',   10,   20, false],
+            [10,        20,   10,   20, false],
             ['-10',   null, null,   10, false],
             ['10-',   null,   10, null, false],
             ['10-25', null,   10,   25, false],
             ['45',     '-',   45, null, false],
+            [45,       '-',   45, null, false],
             ['-',     '80', null,   80, false],
+            ['-',       80, null,   80, false],
             ['-',     null, null, null, false],
             ['-',      '-', null, null, false],
         ];
