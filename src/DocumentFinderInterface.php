@@ -191,9 +191,10 @@ interface DocumentFinderInterface
      *
      * @param string $name Name of identifier field
      * @param string $value Value of identifier
+     * @param bool   $like Look for identifier that contain value
      * @return $this
      */
-    public function setIdentifierValue($name, $value);
+    public function setIdentifierValue($name, $value, $like = false);
 
     /**
      * Set type of document as condition.
