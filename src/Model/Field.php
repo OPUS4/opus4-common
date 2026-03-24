@@ -102,7 +102,7 @@ class Field implements FieldInterface
         return false; // TODO LAMINAS get from model description
     }
 
-    public function getType(): string
+    public function getType(): string|null
     {
         return $this->type;
     }

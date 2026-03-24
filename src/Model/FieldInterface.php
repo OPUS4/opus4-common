@@ -62,6 +62,8 @@ interface FieldInterface
 
     /**
      * Type of field like 'int', 'bool'.
+     *
+     * TODO Should NULL be allowed?
      */
-    public function getType(): string;
+    public function getType(): string|null;
 }
