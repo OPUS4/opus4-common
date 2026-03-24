@@ -51,16 +51,21 @@ class Field implements FieldInterface
     /** @var string|null */
     private $valueModelClass;
 
+    /** @var string */
+    private $type;
+
     /**
      * @param ModelInterface $model
      * @param string         $name
      * @param string|null    $valueModelClass
+     * @param string         $type
      */
-    public function __construct($model, $name, $valueModelClass = null)
+    public function __construct($model, $name, $valueModelClass = null, $type = '')
     {
         $this->model           = $model;
         $this->name            = $name;
         $this->valueModelClass = $valueModelClass;
+        $this->type            = $type;
     }
 
     /**
@@ -95,5 +100,10 @@ class Field implements FieldInterface
     public function hasMultipleValues()
     {
         return false; // TODO LAMINAS get from model description
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 }

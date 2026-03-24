@@ -59,4 +59,9 @@ interface FieldInterface
      * @return bool True, if multiple values are possible for this field
      */
     public function hasMultipleValues();
+
+    /**
+     * Type of field like 'int', 'bool'.
+     */
+    public function getType(): string;
 }
