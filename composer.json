@@ -13,7 +13,7 @@
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-fileinfo": "*",
-    "opus4/zf1-future": "1.21.*",
+    "opus4/zf1-future": "1.25.*",
     "symfony/console": "*",
     "symfony/mime": "*"
   },
