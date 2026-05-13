@@ -32,6 +32,7 @@
 namespace Opus\Common;
 
 use Opus\Common\Model\AbstractModel;
+use Opus\Common\Util\DocumentHelper;
 
 /**
  * Base model class for documents.
@@ -41,6 +42,9 @@ use Opus\Common\Model\AbstractModel;
 class Document extends AbstractModel implements ServerStateConstantsInterface
 {
     public const FIELD_PUBLISHED_YEAR = 'PublishedYear';
+
+    /** @var DocumentHelper */
+    private static $documentHelper;
 
     /**
      * @return array
@@ -54,5 +58,20 @@ class Document extends AbstractModel implements ServerStateConstantsInterface
                 ],
             ],
         ];
+    }
+
+    public static function getYear(string $publishedDateYear, string $publishedYear, string $completedDateYear, string $completedYear): int
+    {
+        $helper = self::getDocumentHelper();
+        return $helper->getYear($publishedDateYear, $publishedYear, $completedDateYear, $completedYear);
+    }
+
+    protected static function getDocumentHelper(): DocumentHelper
+    {
+        if (null === self::$documentHelper) {
+            self::$documentHelper = new DocumentHelper();
+        }
+
+        return self::$documentHelper;
     }
 }
