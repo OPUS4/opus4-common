@@ -52,7 +52,7 @@ class DocumentHelper
     /** @var string */
     private $yearFieldOrder;
 
-    public function getYear(string $publishedDateYear, string $publishedYear, string $completedDateYear, string $completedYear): int
+    public function getYear(string $publishedDateYear, string $publishedYear, string $completedDateYear, string $completedYear): string
     {
         $fields                  = [];
         $fields['PublishedDate'] = $publishedDateYear;

@@ -60,7 +60,7 @@ class Document extends AbstractModel implements ServerStateConstantsInterface
         ];
     }
 
-    public static function getYear(string $publishedDateYear, string $publishedYear, string $completedDateYear, string $completedYear): int
+    public static function getYear(string $publishedDateYear, string $publishedYear, string $completedDateYear, string $completedYear): string
     {
         $helper = self::getDocumentHelper();
         return $helper->getYear($publishedDateYear, $publishedYear, $completedDateYear, $completedYear);
