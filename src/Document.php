@@ -78,7 +78,7 @@ class Document extends AbstractModel implements ServerStateConstantsInterface
     /**
      * TODO Needed for testing - should be removed, if a better way is found.
      */
-    public function reset(): void
+    public static function reset(): void
     {
         self::$documentHelper = null;
     }
