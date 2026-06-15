@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,15 +25,11 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Validate;
+namespace Opus\Common\Validate;
 
 use Laminas\Validator\ValidatorInterface;
 
@@ -41,18 +38,15 @@ use Laminas\Validator\ValidatorInterface;
  * of Opus_Validate_AbstractMate is provided.
  *
  * @see AbstractMate
- * @category    Framework
- * @package     Opus_Validate
  */
 class MateDecorator extends AbstractMate
 {
-
     /**
      * Validator object that is decorated.
      *
      * @var ValidatorInterface
      */
-    protected $decorated = null;
+    protected $decorated;
 
     /**
      * Create decoration for given validator.
@@ -68,7 +62,7 @@ class MateDecorator extends AbstractMate
      * Create and return a decorated validator.
      *
      * @param ValidatorInterface $validator Validator to be decorated.
-     * @return MateDecorator Decorator instance.
+     * @return self Decorator instance.
      */
     public static function decorate(ValidatorInterface $validator)
     {
@@ -79,7 +73,7 @@ class MateDecorator extends AbstractMate
      * Call the decorated validator. This method is called by Opus_Validate_AbstractMate::isValid().
      *
      * @param mixed $value Value to validate.
-     * @return boolean Whatever the decorated validators isValid() method returns.
+     * @return bool Whatever the decorated validators isValid() method returns.
      */
     protected function isValidCheck($value)
     {

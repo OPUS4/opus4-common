@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,21 +25,22 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Model
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Model;
+namespace Opus\Common\Model;
 
+/**
+ * Interface for model classes.
+ *
+ * This interface does not include methods required for persisting objects. Those methods are defined
+ * in the PersistableInterface, in order to keep the definition of the data model separate from the
+ * implementation of the persistance code.
+ *
+ * TODO LAMINAS design-in-progress For now just a marker for model classes
+ * TODO LAMINAS define methods the are required in every model
+ */
 interface ModelInterface
 {
-
-    public function getId();
-
-    public function store();
-
-    public function delete();
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,40 +25,45 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    opus4-common
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2021, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace Opus\Common;
 
-/**
- * Class Config
- * @package Opus
- *
- * TODO revisit using get() for Laminas\Config object
- *      should Opus\Config extend Laminas\Config?
- * TODO replace singleton by dependency injection in Laminas
- * TODO in general review this stuff and think about it !!!
- */
+use InvalidArgumentException;
+use Zend_Config;
+use Zend_Exception;
+
+use function count;
+use function explode;
+use function strlen;
+use function substr;
+use function trim;
+
+use const DIRECTORY_SEPARATOR;
+
 class Config
 {
     use LoggingTrait;
 
+    /** @var string */
     private $tempPath;
 
+    /** @var string[] */
     private $availableLanguages;
 
+    /** @var static */
     private static $instance;
 
+    /** @var Zend_Config */
     private static $config;
 
     /**
      * Returns the path to the application workspace.
      *
-     * @throws Exception
+     * @return string
+     * @throws OpusException
      */
     public function getWorkspacePath()
     {
@@ -65,7 +71,7 @@ class Config
 
         if (! isset($config->workspacePath)) {
             $this->getLogger()->err('missing config key workspacePath');
-            throw new Exception('missing configuration key workspacePath');
+            throw new OpusException('missing configuration key workspacePath');
         }
 
         $workspacePath = $config->workspacePath;
@@ -79,12 +85,13 @@ class Config
 
     /**
      * Returns path to temporary files folder.
+     *
      * @return string Path for temporary files.
-     * @throws Exception
+     * @throws OpusException
      */
     public function getTempPath()
     {
-        if (is_null($this->tempPath)) {
+        if ($this->tempPath === null) {
             $this->tempPath = trim($this->getWorkspacePath() . 'tmp' . DIRECTORY_SEPARATOR);
         }
 
@@ -93,23 +100,33 @@ class Config
 
     /**
      * Set path to folder for temporary files.
-     * @param $tempPath
+     *
+     * @param string $tempPath
      */
     public function setTempPath($tempPath)
     {
         $this->tempPath = $tempPath;
     }
 
+    /**
+     * @return string[]
+     */
     public function getAvailableLanguages()
     {
         return $this->availableLanguages;
     }
 
+    /**
+     * @param string[] $availableLanguages
+     */
     public function setAvailableLanguages($availableLanguages)
     {
         $this->availableLanguages = $availableLanguages;
     }
 
+    /**
+     * @return self
+     */
     public static function getInstance()
     {
         if (self::$instance === null) {
@@ -119,22 +136,90 @@ class Config
         return self::$instance;
     }
 
+    /**
+     * @param self|null $config
+     */
     public static function setInstance($config)
     {
         if ($config !== null && ! $config instanceof Config) {
-            throw new \InvalidArgumentException('Argument must be instance of Opus\Config or null');
+            throw new InvalidArgumentException('Argument must be instance of Opus\Config or null');
         }
 
         self::$instance = $config;
     }
 
+    /**
+     * @param Zend_Config $config
+     */
     public static function set($config)
     {
         self::$config = $config;
     }
 
+    /**
+     * @return Zend_Config
+     */
     public static function get()
     {
         return self::$config;
+    }
+
+    /**
+     * Gets a value from a Zend_Config object.
+     *
+     * @param Zend_Config $config
+     * @param string      $option
+     * @return null|Zend_Config
+     */
+    public static function getValueFromConfig($config, $option)
+    {
+        if ($option === null || strlen(trim($option)) === 0) {
+            return null;
+        }
+
+        $keys      = explode('.', $option);
+        $subconfig = $config;
+        foreach ($keys as $key) {
+            $subconfig = $subconfig->get($key);
+            if (! $subconfig instanceof Zend_Config) {
+                break;
+            }
+        }
+        return $subconfig;
+    }
+
+    /**
+     * Updates a value in a Zend_Config object.
+     *
+     * @param Zend_Config $config
+     * @param string      $option Name of option
+     * @param string      $value New value for option
+     * @throws Zend_Exception
+     * TODO review and if possible replace this code with something simpler
+     */
+    public static function setValueInConfig($config, $option, $value)
+    {
+        if ($config->readOnly()) {
+            Log::get()->err('Zend_Config object is readonly.');
+            return;
+        }
+
+        $keys = explode('.', $option);
+
+        $subconfig = $config;
+
+        $index = 0;
+
+        foreach ($keys as $key) {
+            $index++;
+            if ($subconfig->get($key) === null && $index < count($keys)) {
+                // create subsection
+                eval('$subconfig->' . $key . ' = array();');
+                $subconfig = $subconfig->get($key);
+            } else {
+                // set value
+                eval('$subconfig->' . $key . ' = $value;');
+            }
+        }
     }
 }

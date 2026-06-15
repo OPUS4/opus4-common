@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,18 +25,20 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    opus4-common
- * @package     Opus
- * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus;
+namespace Opus\Common;
 
+use InvalidArgumentException;
 use Laminas\Log\Logger;
-use Opus\Log\LevelFilter;
-use Opus\Log\LogService;
+use Opus\Common\Log\LevelFilter;
+use Opus\Common\Log\LogService;
+use Zend_Exception;
+
+use function count;
+use function is_numeric;
 
 /**
  * Extension of Zend_Log for manipulating a logger with additional functionalities like changing the priority level.
@@ -44,15 +47,10 @@ use Opus\Log\LogService;
  */
 class Log extends Logger
 {
-
-    /**
-     * @var LevelFilter Filter object used to control the level of the log.
-     */
+    /** @var LevelFilter Filter object used to control the level of the log. */
     private $filter;
 
-    /**
-     * @var Logger Stores the default logger.
-     */
+    /** @var parent Stores the default logger. */
     protected static $cachedReference;
 
     /**
@@ -66,14 +64,14 @@ class Log extends Logger
      */
     public function setLevel($level)
     {
-        if ($level !== null && (! is_numeric($level) or $level < 0)) {
-            throw new \InvalidArgumentException('Level needs to be an integer and cannot be negative');
+        if ($level !== null && (! is_numeric($level) || $level < 0)) {
+            throw new InvalidArgumentException('Level needs to be an integer and cannot be negative');
         }
 
         if ($this->filter === null) {
             $this->filter = new LevelFilter($level);
 
-            $writers = $this->getWriters();
+            $writers      = $this->getWriters();
             $writersArray = $writers->toArray();
 
             if (count($writersArray) > 0) {
@@ -102,6 +100,7 @@ class Log extends Logger
      * Returns a default logger.
      *
      * @return Logger
+     * @throws Zend_Exception
      */
     public static function get()
     {
@@ -112,10 +111,13 @@ class Log extends Logger
         return self::$cachedReference;
     }
 
+    /**
+     * @param parent $logger
+     */
     public static function set($logger)
     {
         if (! $logger instanceof Logger) {
-            throw new \InvalidArgumentException('Argument must be instance of Laminas\Log\Logger');
+            throw new InvalidArgumentException('Argument must be instance of Laminas\Log\Logger');
         }
 
         self::$cachedReference = $logger;

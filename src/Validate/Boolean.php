@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,30 +25,23 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Validate;
+namespace Opus\Common\Validate;
 
 use Laminas\Validator\AbstractValidator;
 
+use function is_bool;
+
 /**
  * Defines an validator for boolean values.
- *
- * @category    Framework
- * @package     Opus_Validate
  */
 class Boolean extends AbstractValidator
 {
-
     /**
      * Error message key for invalid type.
-     *
      */
     const MSG_TYPE = 'invalid';
 
@@ -64,7 +58,7 @@ class Boolean extends AbstractValidator
      * Validate the given boolean value.
      *
      * @param mixed $value An value.
-     * @return boolean True if the given value is of type boolean.
+     * @return bool True if the given value is of type Boolean.
      */
     public function isValid($value)
     {

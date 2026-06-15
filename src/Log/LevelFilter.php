@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,33 +25,33 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    opus4-common
- * @package     Opus\Log
- * @author      Kaustabh Barman <barman@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Log;
+namespace Opus\Common\Log;
 
+use InvalidArgumentException;
 use Laminas\Log\Filter\Priority;
 use Laminas\Log\Logger;
+
+use function is_numeric;
 
 /**
  * Filter with adjustable log level allowing manipulation of filtering.
  */
 class LevelFilter extends Priority
 {
-    /**
-     * @var string Original operator to restore filtering when enabling filter again.
-     */
+    /** @var string Original operator to restore filtering when enabling filter again. */
     private $savedOperator;
 
-    /**
-     * @var bool Flag to determine if filter is disabled.
-     */
+    /** @var bool Flag to determine if filter is disabled. */
     private $disabled;
 
+    /**
+     * @param int         $level
+     * @param null|string $operator
+     */
     public function __construct($level, $operator = null)
     {
         parent::__construct($level, $operator);
@@ -70,8 +71,8 @@ class LevelFilter extends Priority
             $this->operator = '>=';
             $this->priority = Logger::EMERG;
             $this->disabled = true;
-        } elseif (! is_numeric($level) or $level < 0) {
-            throw new \InvalidArgumentException('Level needs to be an integer and cannot be negative');
+        } elseif (! is_numeric($level) || $level < 0) {
+            throw new InvalidArgumentException('Level needs to be an integer and cannot be negative');
         } else {
             $this->operator = $this->savedOperator;
             $this->priority = $level;

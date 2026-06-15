@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,62 +25,75 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus
- * @author      Kaustabh Barman <barman@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Log;
+namespace OpusTest\Common\Log;
 
+use Exception;
+use FilesystemIterator;
+use InvalidArgumentException;
 use Laminas\Config\Config;
 use Laminas\Log\Logger;
-use Opus\Exception;
-use Opus\Log\LogService;
-use PHPUnit\Framework\TestCase;
+use Opus\Common\Log\LogService;
+use Opus\Common\OpusException;
+use OpusTest\Common\TestAsset\TestCase;
+use RecursiveDirectoryIterator;
+use ReflectionClass;
+use ReflectionException;
 
-/**
- * Class LogServiceTest
- * @package OpusTest\Log
- *
- * TODO move generic test utility functions so they can be used in other test classes,
- *      current maybe into a helper class, later perhaps into a opus4-test library
- */
+use function file_exists;
+use function file_get_contents;
+use function fopen;
+use function is_dir;
+use function mkdir;
+use function preg_replace;
+use function rmdir;
+use function rtrim;
+use function sys_get_temp_dir;
+use function trim;
+use function uniqid;
+use function unlink;
+
+use const DIRECTORY_SEPARATOR;
+use const PHP_EOL;
+
 class LogServiceTest extends TestCase
 {
+    public const DEFAULT_FORMAT = '%timestamp% %priorityName% (ID %runId%): %message%';
 
-    const DEFAULT_FORMAT = '%timestamp% %priorityName% (ID %runId%): %message%';
-
+    /** @var LogService */
     private $logService;
 
+    /** @var string */
     private $tempFolder;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $tempFolder = $this->createTempFolder();
+        $tempFolder       = $this->createTempFolder();
         $this->tempFolder = $tempFolder;
-        $this->createFolder('log');
+        self::createFolder($this->tempFolder . DIRECTORY_SEPARATOR . 'log');
 
         $this->logService = LogService::getInstance();
+        $this->logService->setPath(null);
         $this->logService->setConfig(new Config([
             'workspacePath' => $tempFolder,
-            'log' => [
+            'log'           => [
                 'format' => self::DEFAULT_FORMAT,
-                'level' => 'WARN'
-            ]
+                'level'  => 'WARN',
+            ],
         ], true));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // reset singleton, because otherwise settings will carry over to next test
-        $singleton = LogService::getInstance();
-        $reflection = new \ReflectionClass($singleton);
-        $instance = $reflection->getProperty('instance');
+        $singleton  = LogService::getInstance();
+        $reflection = new ReflectionClass($singleton);
+        $instance   = $reflection->getProperty('instance');
         $instance->setAccessible(true);
         $instance->setValue(null, null);
         $instance->setAccessible(false);
@@ -116,7 +130,7 @@ class LogServiceTest extends TestCase
         $logService = LogService::getInstance();
         $logService->setConfig(new Config([]));
 
-        $this->expectException(\Exception::class);
+        $this->expectException(OpusException::class);
         $this->expectExceptionMessage('Workspace path not found in configuration.');
 
         $logService->getPath();
@@ -165,7 +179,7 @@ class LogServiceTest extends TestCase
         $logService = $this->getLogService();
 
         $logService->getConfig()->merge(new Config([
-            'log' => ['level' => null]
+            'log' => ['level' => null],
         ]));
 
         $priority = $logService->getDefaultPriorityAsString();
@@ -216,7 +230,7 @@ class LogServiceTest extends TestCase
         $logService = $this->getLogService();
 
         $logService->getConfig()->merge(new Config([
-            'log' => ['format' => null]
+            'log' => ['format' => null],
         ]));
 
         $format = $logService->getDefaultFormat();
@@ -248,7 +262,7 @@ class LogServiceTest extends TestCase
         $id = $logService->getRunId();
 
         $this->assertNotNull($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
         $this->assertEquals($id, $logService->getRunId());
     }
 
@@ -277,7 +291,9 @@ class LogServiceTest extends TestCase
 
         $expected = preg_replace('/%runId%/', $runId, self::DEFAULT_FORMAT);
 
-        $this->assertContains("ID $runId", $format);
+        $expected .= PHP_EOL;
+
+        $this->assertStringContainsString("ID $runId", $format);
         $this->assertEquals($expected, $format);
     }
 
@@ -288,7 +304,7 @@ class LogServiceTest extends TestCase
     {
         $logService = $this->getLogService();
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Format must not be null');
 
         $logService->prepareFormat(null);
@@ -322,17 +338,17 @@ class LogServiceTest extends TestCase
     /**
      * Test logger created by createLogger().
      *
-     * @throws Exception
-     * @throws \ReflectionException
+     * @throws OpusException
+     * @throws ReflectionException
      */
     public function testCreateLogger()
     {
         $logService = $this->getLogService();
 
         $logFilePath = $logService->getPath() . 'test.log';
-        $logFile = @fopen($logFilePath, 'a', false);
+        $logFile     = @fopen($logFilePath, 'a', false);
 
-        $reflection = new \ReflectionClass($logService);
+        $reflection = new ReflectionClass($logService);
 
         $createLogger = $reflection->getMethod('createLogger');
         $createLogger->setAccessible(true);
@@ -340,7 +356,7 @@ class LogServiceTest extends TestCase
 
         $this->assertNotNull($logger);
 
-        $warnMessage = 'WARN Message';
+        $warnMessage  = 'WARN Message';
         $debugMessage = 'DEBUG Message';
         $logger->warn($warnMessage);
         $logger->debug($debugMessage);
@@ -352,10 +368,10 @@ class LogServiceTest extends TestCase
         $content = $this->readLogFile('test.log');
 
         $this->assertInstanceOf(Logger::class, $logger);
-        $this->assertContains($warnMessage, $content);
-        $this->assertContains($runId, $content);
+        $this->assertStringContainsString($warnMessage, $content);
+        $this->assertStringContainsString($runId, $content);
         $this->assertEquals($expected, $content);
-        $this->assertNotContains($debugMessage, $content);
+        $this->assertStringNotContainsString($debugMessage, $content);
     }
 
     public function testGetLogGettingDefaultLogger()
@@ -374,13 +390,15 @@ class LogServiceTest extends TestCase
         $logService = $this->getLogService();
 
         $logService->getConfig()->merge(new Config([
-            'logging' => ['log' => [
-                'translation' => [
-                    'format' => '%message%',
-                    'file' => 'translation.log',
-                    'level' => 'INFO'
-                ]
-            ]]
+            'logging' => [
+                'log' => [
+                    'translation' => [
+                        'format' => '%message%',
+                        'file'   => 'translation.log',
+                        'level'  => 'INFO',
+                    ],
+                ],
+            ],
         ]));
 
         $logger = $logService->getLog('translation');
@@ -390,14 +408,14 @@ class LogServiceTest extends TestCase
         $debugMessage = 'debug level message';
         $logger->debug($debugMessage);
 
-        $this->assertNotContains($debugMessage, $this->readLogFile('translation.log'));
+        $this->assertStringNotContainsString($debugMessage, $this->readLogFile('translation.log'));
 
         $infoMessage = 'info level message';
         $logger->info($infoMessage);
 
         $content = $this->readLogFile('translation.log');
 
-        $this->assertContains($infoMessage, $content);
+        $this->assertStringContainsString($infoMessage, $content);
         $this->assertEquals($infoMessage, trim($content));
     }
 
@@ -419,7 +437,7 @@ class LogServiceTest extends TestCase
 
         $content = $this->readLogFile('unknownLogger.log');
 
-        $this->assertContains($message, $content);
+        $this->assertStringContainsString($message, $content);
     }
 
     /**
@@ -443,14 +461,16 @@ class LogServiceTest extends TestCase
 
         $doiLogConfig = [
             'format' => '%timestamp% %message%',
-            'file' => 'doi.log',
-            'level' => 'warn'
+            'file'   => 'doi.log',
+            'level'  => 'warn',
         ];
 
         $logService->getConfig()->merge(new Config([
-            'logging' => ['log' => [
-                'doi' => $doiLogConfig
-            ]]
+            'logging' => [
+                'log' => [
+                    'doi' => $doiLogConfig,
+                ],
+            ],
         ]));
 
         $config = $logService->getLogConfig('doi');
@@ -466,19 +486,21 @@ class LogServiceTest extends TestCase
         $logService = $this->getLogService();
 
         $logService->getConfig()->merge(new Config([
-            'logging' => ['log' => [
-                'error' => [
-                    'file' => 'error.log'
-                ]
-            ]]
+            'logging' => [
+                'log' => [
+                    'error' => [
+                        'file' => 'error.log',
+                    ],
+                ],
+            ],
         ]));
 
         $logConfig = $logService->getLogConfig('error');
 
         $this->assertEquals([
             'format' => $logService->getDefaultFormat(),
-            'level' => $logService->getDefaultPriorityAsString(),
-            'file' => 'error.log'
+            'level'  => $logService->getDefaultPriorityAsString(),
+            'file'   => 'error.log',
         ], $logConfig->toArray());
     }
 
@@ -491,8 +513,8 @@ class LogServiceTest extends TestCase
 
         $doiLogConfig = [
             'format' => $logService->getDefaultFormat(),
-            'file' => 'doi.log',
-            'level' => $logService->getDefaultPriorityAsString()
+            'file'   => 'doi.log',
+            'level'  => $logService->getDefaultPriorityAsString(),
         ];
 
         $config = $logService->getLogConfig('doi');
@@ -514,7 +536,7 @@ class LogServiceTest extends TestCase
 
         $content = $this->readLogFile('translation.log');
 
-        $this->assertContains($message, $content);
+        $this->assertStringContainsString($message, $content);
     }
 
     public function testCreateLogWithOptions()
@@ -528,10 +550,10 @@ class LogServiceTest extends TestCase
         $message = 'error test message';
 
         $logger->warn($message);
-        $this->assertNotContains($message, $this->readLogFile('opus-error.log'));
+        $this->assertStringNotContainsString($message, $this->readLogFile('opus-error.log'));
 
         $logger->err($message);
-        $this->assertContains("ERROR $message", $this->readLogFile('opus-error.log'));
+        $this->assertStringContainsString("ERROR $message", $this->readLogFile('opus-error.log'));
     }
 
     public function testCreateLogWithInvalidPriorityName()
@@ -545,11 +567,11 @@ class LogServiceTest extends TestCase
         $message = 'error test message';
 
         $logger->debug($message);
-        $this->assertNotContains($message, $this->readLogFile('error.log'));
+        $this->assertStringNotContainsString($message, $this->readLogFile('error.log'));
 
         // default log level in test setUp is WARN
         $logger->warn($message);
-        $this->assertContains("ERROR $message", $this->readLogFile('error.log'));
+        $this->assertStringContainsString("ERROR $message", $this->readLogFile('error.log'));
     }
 
     public function testCreateLogWithPriorityValue()
@@ -563,10 +585,10 @@ class LogServiceTest extends TestCase
         $message = 'error test message';
 
         $logger->warn($message);
-        $this->assertNotContains($message, $this->readLogFile('error.log'));
+        $this->assertStringNotContainsString($message, $this->readLogFile('error.log'));
 
         $logger->err($message);
-        $this->assertContains("ERROR $message", $this->readLogFile('error.log'));
+        $this->assertStringContainsString("ERROR $message", $this->readLogFile('error.log'));
     }
 
     public function testCreateDefaultLogWithCustomFilename()
@@ -581,13 +603,11 @@ class LogServiceTest extends TestCase
 
         $content = $this->readLogFile('opus-console.log');
 
-        $this->assertContains($message, $content);
+        $this->assertStringContainsString($message, $content);
 
         $this->assertSame($logger, $logService->getDefaultLog());
     }
 
-    /**
-     */
     public function testAddLog()
     {
         $logService = $this->getLogService();
@@ -605,7 +625,7 @@ class LogServiceTest extends TestCase
 
         $object = new Config([]);
 
-        $this->expectException(Exception::class);
+        $this->expectException(OpusException::class);
         $this->expectExceptionMessage('must be of type Zend_Log');
 
         $logService->addLog('myLog', $object);
@@ -683,38 +703,32 @@ class LogServiceTest extends TestCase
     }
 
     /**
-     * @return \Opus\Log\LogService
+     * @return LogService
      */
     protected function getLogService()
     {
         return $this->logService;
     }
 
+    /**
+     * @return string
+     */
     protected function createTempFolder()
     {
-        $path = sys_get_temp_dir();
-        $path = $path . DIRECTORY_SEPARATOR . uniqid('opus4-common_test_');
+        $path  = sys_get_temp_dir();
+        $path .= DIRECTORY_SEPARATOR . uniqid('opus4-common_test_');
         mkdir($path, 0777, true);
         return $path;
     }
 
     /**
-     * TODO Move it from here for use in other tests as well.
-     * TODO fix - has a generic name, but very specific function relying on a class variable (bad feeling here)
-     * @return String path to log folder.
+     * @param string $path
      */
-    protected function createFolder($folderName)
-    {
-        $path = $this->tempFolder . DIRECTORY_SEPARATOR . $folderName;
-        mkdir($path, 0777, true);
-        return $path;
-    }
-
     protected function removeFolder($path)
     {
-        if (! is_null($path) && file_exists($path)) {
+        if ($path !== null && file_exists($path)) {
             if (is_dir($path)) {
-                $iterator = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
+                $iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
                 foreach ($iterator as $file) {
                     if ($file->isDir()) {
                         $this->removeFolder($file->getPathname());
@@ -727,13 +741,18 @@ class LogServiceTest extends TestCase
         }
     }
 
+    /**
+     * @param string $name
+     * @return false|string
+     * @throws Exception
+     */
     protected function readLogFile($name)
     {
         $path = $this->tempFolder . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . $name;
         if (file_exists($path)) {
             return file_get_contents($path);
         } else {
-            throw new \Exception("log file '$name' not found");
+            throw new Exception("log file '$name' not found");
         }
     }
 }

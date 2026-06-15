@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,26 +25,23 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2018-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2018, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest;
+namespace OpusTest\Common;
 
-use Opus\Log;
 use Laminas\Log\Logger;
-use Opus\LoggingTrait;
-use PHPUnit\Framework\TestCase;
+use Opus\Common\Log;
+use Opus\Common\LoggingTrait;
+use OpusTest\Common\TestAsset\TestCase;
 
 class LoggingTraitTest extends TestCase
 {
-
+    /** @var Logger */
     private $logger;
 
-    public function setUp()
+    public function setUp(): void
     {
         $log = new Logger();
 

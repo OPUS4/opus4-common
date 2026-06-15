@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,36 +25,31 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Validate;
+namespace Opus\Common\Validate;
 
 use Laminas\Validator\AbstractValidator;
+
+use function array_search;
 
 /**
  * Defines an validator for possible enum values. Classes based on this
  * abstract class have to define a protected variable $_valid_enums of
  * type array.
- *
- * @category    Common
- * @package     \Opus\Validate
  */
 abstract class AbstractEnum extends AbstractValidator
 {
-
+    /** @var string[] */
     protected $validEnums = [];
 
     /**
      * Validate the given value.
      *
      * @param string $value An enum string.
-     * @return boolean True if the given enum string is known.
+     * @return bool True if the given enum string is known.
      */
     public function isValid($value)
     {

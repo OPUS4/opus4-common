@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,20 +25,19 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Sascha Szott <opus-development@saschaszott.de>
- * @copyright   Copyright (c) 2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2019, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Validate;
+namespace Opus\Common\Validate;
 
 use Laminas\Validator\AbstractValidator;
 
+use function preg_match;
+use function trim;
+
 class CollectionRoleName extends AbstractValidator
 {
-
     /**
      * Returns true if and only if $value meets the validation requirements
      *
@@ -46,12 +46,12 @@ class CollectionRoleName extends AbstractValidator
      * validation failed.
      *
      * @param mixed $value
-     * @return boolean
-     * @throws \Zend_Validate_Exception If validation of $value is impossible
+     * @return bool
+     * @throws Zend_Validate_Exception If validation of $value is impossible.
      */
     public function isValid($value)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return false;
         }
 

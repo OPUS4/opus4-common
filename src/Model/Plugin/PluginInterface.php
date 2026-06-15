@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LICENCE
  * This code is free software: you can redistribute it and/or modify
@@ -11,19 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @category    Framework
- * @package     Opus
- * @subpackage  Model
- * @author      Ralf Claußnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2009-2010
  *              Saechsische Landesbibliothek - Staats- und Universitaetsbibliothek Dresden (SLUB)
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Model\Plugin;
+namespace Opus\Common\Model\Plugin;
 
-use Opus\Model\ModelInterface;
+use Opus\Common\Model\ModelInterface;
 
 /**
  * Interface for plugin mechanism of Opus_Model_AbstractDb. Defines hook
@@ -34,14 +30,9 @@ use Opus\Model\ModelInterface;
  * in the database.
  *
  * TODO Should preYYY functions be able to cancel operation like a delete for instance?
- *
- * @category    Framework
- * @package     Opus
- * @subpackage  Model
  */
 interface PluginInterface
 {
-
     /**
      * Gets called just before a store() is performed.
      *

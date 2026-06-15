@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,30 +25,26 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Validate;
+namespace Opus\Common\Validate;
 
 use Laminas\Validator\AbstractValidator;
-use Opus\Config;
+use Opus\Common\Config;
+
+use function array_key_exists;
+use function is_array;
+use function is_string;
 
 /**
  * Validator for Language field. Only accept standard Zend_Locale locale names.
- *
- * @category    Framework
- * @package     Opus_Validate
  */
 class Language extends AbstractValidator
 {
     /**
      * Error message key.
-     *
      */
     const MSG_LANGUAGE = 'language';
 
@@ -57,7 +54,7 @@ class Language extends AbstractValidator
      * @var array
      */
     protected $messageTemplates = [
-        self::MSG_LANGUAGE => "'%value%' is not a valid language shortcut."
+        self::MSG_LANGUAGE => "'%value%' is not a valid language shortcut.",
     ];
 
     /**
@@ -67,7 +64,7 @@ class Language extends AbstractValidator
      * of Zend_Locale.
      *
      * @param string $value An enum string.
-     * @return boolean True if the given enum string is known.
+     * @return bool True if the given enum string is known.
      */
     public function isValid($value)
     {
@@ -78,7 +75,7 @@ class Language extends AbstractValidator
         $translationList = Config::getInstance()->getAvailableLanguages();
 
         if ($translationList === null) {
-            $locale = new \Zend_Locale();
+            $locale          = new Zend_Locale();
             $translationList = $locale->getTranslationList('language');
         }
 

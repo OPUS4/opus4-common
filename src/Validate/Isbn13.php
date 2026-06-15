@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,36 +25,29 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @author      Maximilian Salomon <salomon@zib.de>
- * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Validate;
+namespace Opus\Common\Validate;
+
+use function count;
+use function end;
+use function preg_match;
+use function strlen;
 
 /**
  * Defines an validator for ISBN-13 numbers.
- *
- * @category    Framework
- * @package     Opus_Validate
  */
 class Isbn13 extends Isbn
 {
-
     /**
      * Error message key for invalid check digit.
-     *
      */
     const MSG_CHECK_DIGIT = 'checkdigit';
 
-
     /**
      * Error message key for malformed ISBN.
-     *
      */
     const MSG_FORM = 'form';
 
@@ -64,21 +58,21 @@ class Isbn13 extends Isbn
      */
     protected $messageTemplates = [
         self::MSG_CHECK_DIGIT => "The check digit of '%value%' is not valid",
-        self::MSG_FORM => "'%value%' is malformed"
+        self::MSG_FORM        => "'%value%' is malformed",
     ];
 
     /**
      * Validate the given ISBN-13 string.
      *
      * @param string $value An ISBN-13 number.
-     * @return boolean True if the given ISBN string is valid.
+     * @return bool True if the given ISBN string is valid.
      */
     public function isValid($value)
     {
         $this->setValue($value);
 
         // check lenght
-        if (strlen($value) !== 13 and strlen($value) !== 17) {
+        if ($value === null || strlen($value) !== 13 && strlen($value) !== 17) {
             $this->error(self::MSG_FORM);
             return false;
         }
@@ -91,7 +85,7 @@ class Isbn13 extends Isbn
         }
 
         // check for mixed separators
-        if ((preg_match('/-/', $value) > 0) and (preg_match('/\s/', $value) > 0)) {
+        if ((preg_match('/-/', $value) > 0) && (preg_match('/\s/', $value) > 0)) {
             $this->error(self::MSG_FORM);
             return false;
         }
@@ -99,7 +93,7 @@ class Isbn13 extends Isbn
         // Separate digits for checkdigit calculation
         $digits = $this->extractDigits($value);
 
-        if (count($digits) != 13) {
+        if (count($digits) !== 13) {
             $this->error(self::MSG_FORM);
             return false;
         }
@@ -122,8 +116,8 @@ class Isbn13 extends Isbn
      */
     protected function calculateCheckDigit(array $digits)
     {
-        $z = $digits;
-        $z[12] = ((10 - (($z[0] + $z[2] + $z[4] + $z[6] + $z[8] + $z[10] + (3 * ($z[1] + $z[3] + $z[5] + $z[7] + $z[9] + $z[11]))) % 10)) % 10);
+        $z     = $digits;
+        $z[12] = (10 - (($z[0] + $z[2] + $z[4] + $z[6] + $z[8] + $z[10] + (3 * ($z[1] + $z[3] + $z[5] + $z[7] + $z[9] + $z[11]))) % 10)) % 10;
         return "$z[12]";
     }
 }

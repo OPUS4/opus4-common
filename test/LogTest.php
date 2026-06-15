@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,29 +25,37 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     OpusTest
- * @author      Kaustabh Barman <barman@zib.de>
- * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest;
+namespace OpusTest\Common;
 
+use InvalidArgumentException;
 use Laminas\Log\Filter\Priority;
 use Laminas\Log\Formatter\Simple;
 use Laminas\Log\Logger;
 use Laminas\Log\Writer\Stream;
-use Opus\Config;
-use Opus\Log;
-use PHPUnit\Framework\TestCase;
+use Opus\Common\Log;
+use OpusTest\Common\TestAsset\TestCase;
+use Zend_Exception;
+use Zend_Log_Exception;
+
+use function fclose;
+use function fgets;
+use function fopen;
+use function is_resource;
+use function rewind;
+use function sys_get_temp_dir;
+
+use const PHP_EOL;
 
 class LogTest extends TestCase
 {
-
+    /** @var resource */
     private $logFile;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (is_resource($this->logFile)) {
             fclose($this->logFile);
@@ -63,7 +72,7 @@ class LogTest extends TestCase
         $debugMessage = 'Debug level message from testSetLevel';
         $opusLog->debug($debugMessage);
 
-        $this->assertContains($debugMessage, $this->readLog());
+        $this->assertStringContainsString($debugMessage, $this->readLog());
         $this->assertEquals(Logger::DEBUG, $opusLog->getLevel());
     }
 
@@ -72,20 +81,38 @@ class LogTest extends TestCase
         $opusLog = $this->getOpusLog();
 
         $debugMessage = 'Debug level message from testSetLevelWithNullLevel';
-        $infoMessage = 'Info level message';
+        $infoMessage  = 'Info level message';
 
         $opusLog->info($infoMessage);
         $opusLog->debug($debugMessage);
 
         $content = $this->readLog();
-        $this->assertContains($infoMessage, $content);
-        $this->assertNotContains($debugMessage, $content);
+        $this->assertStringContainsString($infoMessage, $content);
+        $this->assertStringNotContainsString($debugMessage, $content);
 
         $opusLog->setLevel(null);
         $opusLog->debug($debugMessage);
 
         $content = $this->readLog();
-        $this->assertContains($debugMessage, $content);
+        $this->assertStringContainsString($debugMessage, $content);
+    }
+
+    public function testCustomLevelsWithFiltersDisabled()
+    {
+        $opusLog = $this->getOpusLog();
+        $opusLog->addPriority('TEST', 8);
+        $opusLog->setLevel(null);
+        $opusLog->addPriority('TLEVEL', 9);
+
+        $testMessage = 'Test level created before filter disabled';
+        $opusLog->test($testMessage);
+        $content = $this->readLog();
+        $this->assertStringContainsString($testMessage, $content);
+
+        $tlevelMessage = 'Test level created after filter disabled';
+        $opusLog->tlevel($tlevelMessage);
+        $content = $this->readLog();
+        $this->assertStringContainsString($tlevelMessage, $content);
     }
 
     public function testSetLevelNotAffectingOtherFilters()
@@ -102,25 +129,25 @@ class LogTest extends TestCase
         // INFO message gets rejected by additional filter
         $infoMessage = 'Info level Message';
         $opusLog->info($infoMessage);
-        $this->assertNotContains($infoMessage, $this->readLog());
+        $this->assertStringNotContainsString($infoMessage, $this->readLog());
 
         // After setting level to DEBUG the additional filter still rejects DEBUG message
         $opusLog->setLevel(Logger::DEBUG);
         $debugMessage = 'Debug Level Message';
         $opusLog->debug($debugMessage);
-        $this->assertNotContains($debugMessage, $this->readLog());
+        $this->assertStringNotContainsString($debugMessage, $this->readLog());
 
         // An ERROR level message is accepted by both filters
         $errorMessage = 'Error level Message';
         $opusLog->err($errorMessage);
-        $this->assertContains($errorMessage, $this->readLog());
+        $this->assertStringContainsString($errorMessage, $this->readLog());
     }
 
     public function testSetLevelNegativeLevel()
     {
         $opusLog = $this->getOpusLog();
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Level needs to be an integer and cannot be negative');
 
         $opusLog->setLevel(-1);
@@ -130,7 +157,7 @@ class LogTest extends TestCase
     {
         $opusLog = $this->getOpusLog();
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Level needs to be an integer and cannot be negative');
 
         $opusLog->setLevel('TestLevel');
@@ -178,7 +205,8 @@ class LogTest extends TestCase
 
     /**
      * Check if the logger instance gets dropped and new logger is created.
-     * @throws \Zend_Exception
+     *
+     * @throws Zend_Exception
      */
     public function testDrop()
     {
@@ -195,13 +223,17 @@ class LogTest extends TestCase
         $this->assertNotSame($logger1, $logger2);
     }
 
+    /**
+     * @return Log
+     * @throws Zend_Log_Exception
+     */
     protected function getOpusLog()
     {
-        $format = '%priorityName%: %message%' . PHP_EOL;
+        $format    = '%priorityName%: %message%' . PHP_EOL;
         $formatter = new Simple($format);
 
         $this->logFile = fopen('php://memory', 'rw');
-        $writer = new Stream($this->logFile);
+        $writer        = new Stream($this->logFile);
         $writer->setFormatter($formatter);
 
         $logger = new Log();
@@ -213,6 +245,9 @@ class LogTest extends TestCase
         return $logger;
     }
 
+    /**
+     * @return string
+     */
     protected function readLog()
     {
         rewind($this->logFile);

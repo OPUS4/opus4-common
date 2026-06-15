@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -25,26 +26,25 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Console\Helper;
+namespace OpusTest\Common\Console\Helper;
 
-use Opus\Console\Helper\BaseProgressOutput;
-use PHPUnit\Framework\TestCase;
+use Opus\Common\Console\Helper\AbstractProgressOutput;
+use OpusTest\Common\TestAsset\TestCase;
 use Symfony\Component\Console\Output\NullOutput;
+
+use function sleep;
 
 class BaseProgressOutputTest extends TestCase
 {
-
     public function testGetRuntime()
     {
         $output = new NullOutput();
 
-        $progress = $this->getMockForAbstractClass(BaseProgressOutput::class, [$output, 100]);
+        $progress = $this->getMockForAbstractClass(AbstractProgressOutput::class, [$output, 100]);
 
         $progress->start();
         sleep(2);

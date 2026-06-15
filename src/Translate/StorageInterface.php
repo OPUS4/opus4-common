@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,14 +25,11 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Translate;
+namespace Opus\Common\Translate;
 
 /**
  * Interface StorageInterface for persisting custom translations.
@@ -54,57 +52,59 @@ namespace Opus\Translate;
  * TODO describe details of modules handling in API (expected behaviour)
  * TODO describe how to handle conflicts between modules
  * TODO cleanup interface
- *
- * @package Opus\Ţranslate
  */
 interface StorageInterface
 {
-
     /**
      * Removes a key from translation storage.
      *
      * If a module is specified only the entry for that module is removed. Otherwise all matching keys are removed.
      *
-     * @param $key
-     * @param null $module
-     * @return mixed
+     * @param string      $key
+     * @param null|string $module
+     * @return void
      */
     public function remove($key, $module = null);
 
     /**
      * Removes all custom translations.
+     *
+     * @return void
      */
     public function removeAll();
 
     /**
      * Removes all translations for a module.
-     * @param $module
-     * @return mixed
+     *
+     * @param string $module
+     * @return void
      */
     public function removeModule($module);
 
     /**
      * Sets the translation of a key for all languages.
      *
-     * @param $key
-     * @param $translation
+     * @param string $key
+     * @param array  $translation
      * @param string $module
+     * @return void
      */
     public function setTranslation($key, $translation, $module = 'default');
 
     /**
      * Returns translation value for a key.
      *
-     * @param $key
-     * @param null $locale
-     * @param null $module
-     * @return mixed
+     * @param string      $key
+     * @param null|string $locale
+     * @param null|string $module
+     * @return array
      */
     public function getTranslation($key, $locale = null, $module = null);
 
     /**
      * Finds all matching translations.
-     * @param $needle
+     *
+     * @param string $needle
      * @return array
      */
     public function findTranslation($needle);
@@ -112,8 +112,8 @@ interface StorageInterface
     /**
      * Returns all translations for all languages.
      *
-     * @param null $module
-     * @return mixed
+     * @param null|string $module
+     * @return array
      */
     public function getTranslations($module = null);
 
@@ -124,23 +124,35 @@ interface StorageInterface
      * translations stored in the database to the Zend translation mechanism. This is the only function necessary for
      * that. All the other functions are for the management user interface.
      *
-     * @param null $module
-     * @return mixed
+     * @param null|string $module
+     * @return array
      */
     public function getTranslationsByLocale($module = null);
 
+    /**
+     * @param array  $translations
+     * @param string $module
+     * @return mixed
+     */
     public function addTranslations($translations, $module = 'default');
 
     /**
      * Returns all translations.
      *
-     * @return mixed
+     * @return array
      */
     public function getAll();
 
+    /**
+     * @param string $key
+     * @param string $newKey
+     * @param string $module
+     * @return void
+     */
     public function renameKey($key, $newKey, $module = 'default');
 
     /**
+     * @param null|string[] $modules
      * @return mixed
      *
      * TODO replace getTranslations with this (interface should always provide module information)
@@ -149,7 +161,8 @@ interface StorageInterface
 
     /**
      * Returns the names of the modules with custom translations.
-     * @return mixed
+     *
+     * @return string[]
      */
     public function getModules();
 }

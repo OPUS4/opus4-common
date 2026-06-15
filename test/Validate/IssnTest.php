@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,30 +25,26 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Tests
- * @package     Opus_Validate
- * @author      Maximilian Salomon (salomom@zib.de)
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2017-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2017, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Validate;
+namespace OpusTest\Common\Validate;
 
-use Opus\Validate\Issn;
-use PHPUnit\Framework\TestCase;
+use Opus\Common\Validate\Issn;
+use OpusTest\Common\TestAsset\TestCase;
 
 /**
  * Unit tests for Opus\Validate\Issn.
- * @coversDefaultClass \Opus\Validate\Issn
+ *
+ * @coversDefaultClass Issn
  */
 class IssnTest extends TestCase
 {
-
     /**
      * @return array with valid issn's
      */
-    public function validIssnProvider()
+    public static function validIssnProvider()
     {
         return [
             ['1050-124X'],
@@ -55,13 +52,14 @@ class IssnTest extends TestCase
             ['1062-5127'],
             ['0025-5858'],
             ['0001-3218'],
+            ['1879-0690'],
         ];
     }
 
     /**
      * @return array with invalid issn's
      */
-    public function invalidIssnProvider()
+    public static function invalidIssnProvider()
     {
         return [
             [null],
@@ -78,7 +76,7 @@ class IssnTest extends TestCase
     /**
      * @return array with invalid issn's and it's error-messages and error-keys
      */
-    public function messageIssnProvider()
+    public static function messageIssnProvider()
     {
         return [
             ['12345478', 'form', "'12345478' is malformed."],
@@ -95,6 +93,8 @@ class IssnTest extends TestCase
 
     /**
      * Unittest for isValid with valid Arguments.
+     *
+     * @param string $arg
      * @covers ::isValid
      * @covers ::calculateCheckDigit
      * @dataProvider validIssnProvider
@@ -107,6 +107,8 @@ class IssnTest extends TestCase
 
     /**
      * Unittest for isValid with invalid Arguments.
+     *
+     * @param string $arg
      * @covers ::isValid
      * @covers ::calculateCheckDigit
      * @dataProvider invalidIssnProvider
@@ -119,6 +121,10 @@ class IssnTest extends TestCase
 
     /**
      * Unittest to check the error-messages for an invalid ISSN.
+     *
+     * @param string $arg
+     * @param string $err
+     * @param string $msg
      * @covers ::isValid
      * @covers ::calculateCheckDigit
      * @dataProvider MessageIssnProvider

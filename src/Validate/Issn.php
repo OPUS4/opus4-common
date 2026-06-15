@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,17 +25,17 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Maximilian Salomon <salomon@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2017-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2017, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Validate;
+namespace Opus\Common\Validate;
 
 use Laminas\Validator\AbstractValidator;
+
+use function preg_match;
+use function str_split;
+use function strlen;
 
 /**
  * Class Opus_Validate_Issn validates an ISSN-identifier.
@@ -43,13 +44,11 @@ class Issn extends AbstractValidator
 {
     /**
      * Error message key for invalid check digit.
-     *
      */
     const MSG_CHECK_DIGIT = 'checkdigit';
 
     /**
      * Error message key for malformed ISSN.
-     *
      */
     const MSG_FORM = 'form';
 
@@ -60,12 +59,13 @@ class Issn extends AbstractValidator
      */
     protected $messageTemplates = [
         self::MSG_CHECK_DIGIT => "The check digit of '%value%' is not valid.",
-        self::MSG_FORM => "'%value%' is malformed."
+        self::MSG_FORM        => "'%value%' is malformed.",
     ];
 
     /**
      * Verify the input, for formal criteria of an issn.
-     * @param $value, with input to check
+     *
+     * @param string $value Input to check
      * @return bool
      */
     public function isValid($value)
@@ -73,7 +73,7 @@ class Issn extends AbstractValidator
         $this->setValue($value);
 
         // check length
-        if (strlen($value) !== (8 + 1)) {
+        if ($value === null || strlen($value) !== 8 + 1) {
             $this->error(self::MSG_FORM);
             return false;
         }
@@ -105,11 +105,11 @@ class Issn extends AbstractValidator
      */
     protected function calculateCheckDigit(array $issn)
     {
-        $z = $issn;
-        $check = (8 * $z[0] + 7 * $z[1] + 6 * $z[2] + 5 * $z[3] + 4 * $z[5] + 3 * $z[6] + 2 * $z[7]);
+        $z     = $issn;
+        $check = 8 * $z[0] + 7 * $z[1] + 6 * $z[2] + 5 * $z[3] + 4 * $z[5] + 3 * $z[6] + 2 * $z[7];
         if ($check % 11 === 0) {
             $checkdigit = 0;
-        } elseif (11 - ($check % 11) == 10) {
+        } elseif (11 - ($check % 11) === 10) {
             $checkdigit = 'X';
         } else {
             $checkdigit = 11 - ($check % 11);

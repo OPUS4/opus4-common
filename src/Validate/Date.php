@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,33 +25,25 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus_Validate
- * @author      Henning Gerhardt (henning.gerhardt@slub-dresden.de)
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace Opus\Validate;
+namespace Opus\Common\Validate;
 
 use Laminas\Validator\Date as LaminasDate;
+use Zend_Date;
 
 /**
  * Validator for date fields.
- *
- * @category    Framework
- * @package     Opus_Validate
  */
 class Date extends LaminasDate
 {
-
     /**
      * Set necessary locale information for validating.
-     *
      */
     public function __construct()
     {
-        parent::__construct(\Zend_Date::DATE_MEDIUM, 'de'); // TODO Zend_Date::DATE_MEDIUM replacement?
+        parent::__construct(Zend_Date::DATE_MEDIUM, 'de'); // TODO Zend_Date::DATE_MEDIUM replacement?
     }
 }

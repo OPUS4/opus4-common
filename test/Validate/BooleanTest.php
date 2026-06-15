@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,42 +25,32 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Validate;
+namespace OpusTest\Common\Validate;
 
-use Opus\Validate\Boolean;
-use PHPUnit\Framework\TestCase;
+use Opus\Common\Validate\Boolean;
+use OpusTest\Common\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_Boolean.
  *
- * @category    Tests
- * @package     Opus_Validate
- *
  * @group       BooleanTest
- *
  */
 class BooleanTest extends TestCase
 {
-
     /**
      * Data provider for valid arguments.
      *
      * @return array Array of invalid arguments.
      */
-    public function validDataProvider()
+    public static function validDataProvider()
     {
         return [
             [true],
-            [false]
+            [false],
         ];
     }
 
@@ -68,35 +59,31 @@ class BooleanTest extends TestCase
      *
      * @return array Array of invalid arguments and a message.
      */
-    public function invalidDataProvider()
+    public static function invalidDataProvider()
     {
         return [
             [null, 'Null value not rejected'],
             ['',   'Empty string not rejected'],
-            [4711, 'Integer not rejected']
+            [4711, 'Integer not rejected'],
         ];
     }
-
 
     /**
      * Test validation of correct arguments.
      *
      * @param mixed $arg Value to check given by the data provider.
-     * @return void
-     *
      * @dataProvider validDataProvider
      */
     public function testValidArguments($arg)
     {
         $validator = new Boolean();
-        $result = $validator->isValid($arg);
+        $result    = $validator->isValid($arg);
 
-        $messages  = $validator->getMessages();
-        $err   = '';
+        $messages = $validator->getMessages();
+        $err      = '';
         foreach ($messages as $code => $message) {
             $err .= '(' . $message . ') ';
         }
-
 
         $this->assertTrue($result, $arg . ' should pass validation but validator says: ' . $err);
     }
@@ -106,8 +93,6 @@ class BooleanTest extends TestCase
      *
      * @param mixed  $arg Invalid value to check given by the data provider.
      * @param string $msg Error message.
-     * @return void
-     *
      * @dataProvider invalidDataProvider
      */
     public function testInvalidArguments($arg, $msg)

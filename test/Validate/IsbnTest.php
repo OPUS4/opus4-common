@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,38 +25,28 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Tests
- * @package     Opus_Validate
- * @author      Ralf Claussnitzer <ralf.claussnitzer@slub-dresden.de>
- * @author      Thoralf Klein <thoralf.klein@zib.de>
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2008-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2008, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Validate;
+namespace OpusTest\Common\Validate;
 
-use Opus\Validate\Isbn;
-use PHPUnit\Framework\TestCase;
+use Opus\Common\Validate\Isbn;
+use OpusTest\Common\TestAsset\TestCase;
 
 /**
  * Test cases for class Opus_Validate_Isbn.
  *
- * @category    Tests
- * @package     Opus_Validate
- *
  * @group       IsbnTest
- *
  */
 class IsbnTest extends TestCase
 {
-
     /**
      * Data provider for valid arguments.
      *
      * @return array Array of invalid arguments.
      */
-    public function validDataProvider()
+    public static function validDataProvider()
     {
         return [
             ['978-3-86680-192-9'],
@@ -69,7 +60,7 @@ class IsbnTest extends TestCase
             ['3 86680 192 0'],
             ['3 937602 69 0'],
             ['9789793182636'],
-            ['3866801920']
+            ['3866801920'],
         ];
     }
 
@@ -78,7 +69,7 @@ class IsbnTest extends TestCase
      *
      * @return array Array of invalid arguments and a message.
      */
-    public function invalidDataProvider()
+    public static function invalidDataProvider()
     {
         return [
             [null, 'Null value not rejected'],
@@ -90,7 +81,7 @@ class IsbnTest extends TestCase
             ['978-3-86680-192-5', 'Wrong check digit not rejected.'],
             ['978 3 86680-192-9', 'Mixed separators not rejected.'],
             ['3-86680-192-5', 'Wrong check digit not rejected.'],
-            ['3 86680 192-0', 'Mixed separators not rejected.']
+            ['3 86680 192-0', 'Mixed separators not rejected.'],
         ];
     }
 
@@ -98,17 +89,15 @@ class IsbnTest extends TestCase
      * Test validation of correct arguments.
      *
      * @param mixed $arg Value to check given by the data provider.
-     * @return void
-     *
      * @dataProvider validDataProvider
      */
     public function testValidArguments($arg)
     {
         $validator = new Isbn();
-        $result = $validator->isValid($arg);
+        $result    = $validator->isValid($arg);
 
         $messages = $validator->getMessages();
-        $err   = '';
+        $err      = '';
         foreach ($messages as $coce => $message) {
             $err .= '(' . $message . ') ';
         }
@@ -121,8 +110,6 @@ class IsbnTest extends TestCase
      *
      * @param mixed  $arg Invalid value to check given by the data provider.
      * @param string $msg Error message.
-     * @return void
-     *
      * @dataProvider invalidDataProvider
      */
     public function testInvalidArguments($arg, $msg)

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,15 +25,11 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Framework
- * @package     Opus\Translate
- * @author      Jens Schwidder <schwidder@zib.de>
  * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-
-namespace Opus\Translate;
+namespace Opus\Common\Translate;
 
 /**
  * Interface for modifying translations in OPUS 4.
@@ -47,40 +44,69 @@ namespace Opus\Translate;
  *
  * TODO convert interface for a stateless class (currently TranslationManager is not stateless)
  * TODO do we need some kind of Query and maybe a Result object?
- *
- * @package Opus\Ţranslate
  */
 interface TranslationManagerInterface
 {
-
     /**
-     * @param $sort
-     * @param $sortDirection
-     * @return mixed
+     * @param string $sort
+     * @param string $sortDirection
+     * @return array
      *
      * TODO define default values
      */
     public function getTranslations($sort, $sortDirection);
 
+    /**
+     * @param string $key
+     * @return array
+     */
     public function getTranslation($key);
 
     /**
-     * @param $key
-     * @param $newKey
+     * @param string $key
+     * @param string $newKey
      * @param string $module // TODO do we need this parameter?
-     * @return mixed
+     * @return void
      */
     public function renameKey($key, $newKey, $module = 'default');
 
+    /**
+     * @param string      $key
+     * @param array       $translations
+     * @param null|string $module
+     * @param null|string $oldKey
+     * @return void
+     */
     public function updateTranslation($key, $translations, $module = null, $oldKey = null);
 
+    /**
+     * @param string      $key
+     * @param array       $values
+     * @param null|string $module
+     * @return void
+     */
     public function setTranslation($key, $values, $module = null);
 
+    /**
+     * @param string      $key
+     * @param null|string $module
+     * @return void
+     */
     public function delete($key, $module = null);
 
+    /**
+     * @return void
+     */
     public function deleteAll();
 
+    /**
+     * @return void
+     */
     public function deleteMatches();
 
+    /**
+     * @param string $key
+     * @return bool
+     */
     public function keyExists($key);
 }

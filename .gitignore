@@ -1,7 +1,9 @@
 # ignore any third-party library
 vendor
+.vagrant
 
 # ignore composer runtime
+bin/composer
 composer.phar
 composer.lock
 
@@ -15,3 +17,4 @@ build
 
 # Other
 **/.DS_Store
+/.phpunit.result.cache

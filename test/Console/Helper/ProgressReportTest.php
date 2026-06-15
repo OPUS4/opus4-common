@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -25,29 +26,34 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Application
- * @author      Jens Schwidder <schwidder@zib.de>
- * @copyright   Copyright (c) 2020-2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Console\Helper;
+namespace OpusTest\Common\Console\Helper;
 
-use Opus\Console\Helper\ProgressReport;
-use Opus\Console\Helper\ProgressReportEntry;
-use PHPUnit\Framework\TestCase;
+use Exception;
+use Opus\Common\Console\Helper\ProgressReport;
+use Opus\Common\Console\Helper\ProgressReportEntry;
+use OpusTest\Common\TestAsset\TestCase;
 use Symfony\Component\Console\Output\StreamOutput;
+
+use function fopen;
+use function rewind;
+use function stream_get_contents;
+use function strlen;
+
+use const PHP_EOL;
 
 class ProgressReportTest extends TestCase
 {
-
     public function testAddExceptionCreatesEntry()
     {
         $report = new ProgressReport();
 
         $this->assertNull($report->getCurrentEntry());
 
-        $ex = new \Exception('test');
+        $ex = new Exception('test');
 
         $report->addException($ex);
 
@@ -65,7 +71,7 @@ class ProgressReportTest extends TestCase
     {
         $report = new ProgressReport();
 
-        $ex = new \Exception('TestException');
+        $ex = new Exception('TestException');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle', 'Test');
@@ -83,7 +89,7 @@ class ProgressReportTest extends TestCase
 
         $report = new ProgressReport();
 
-        $ex = new \Exception('TestException');
+        $ex = new Exception('TestException');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle', 'Test');
@@ -93,9 +99,9 @@ class ProgressReportTest extends TestCase
         rewind($outputInterface->getStream());
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('There was 1 document with problems:', $output);
-        $this->assertContains('1) TestTitle' . PHP_EOL, $output);
-        $this->assertContains('TestException' . PHP_EOL, $output);
+        $this->assertStringContainsString('There was 1 document with problems:', $output);
+        $this->assertStringContainsString('1) TestTitle' . PHP_EOL, $output);
+        $this->assertStringContainsString('TestException' . PHP_EOL, $output);
     }
 
     public function testWriteMultipleStepsWithException()
@@ -104,13 +110,13 @@ class ProgressReportTest extends TestCase
 
         $report = new ProgressReport();
 
-        $ex = new \Exception('TestException');
+        $ex = new Exception('TestException');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle', 'Test');
         $report->finishEntry();
 
-        $ex = new \Exception('TestException2');
+        $ex = new Exception('TestException2');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle2', 'Test');
@@ -121,11 +127,11 @@ class ProgressReportTest extends TestCase
         rewind($outputInterface->getStream());
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('There were 2 documents with problems:', $output);
-        $this->assertContains('1) TestTitle' . PHP_EOL, $output);
-        $this->assertContains('TestException' . PHP_EOL, $output);
-        $this->assertContains('2) TestTitle2' . PHP_EOL, $output);
-        $this->assertContains('TestException2' . PHP_EOL, $output);
+        $this->assertStringContainsString('There were 2 documents with problems:', $output);
+        $this->assertStringContainsString('1) TestTitle' . PHP_EOL, $output);
+        $this->assertStringContainsString('TestException' . PHP_EOL, $output);
+        $this->assertStringContainsString('2) TestTitle2' . PHP_EOL, $output);
+        $this->assertStringContainsString('TestException2' . PHP_EOL, $output);
     }
 
     public function testWriteNothingIfNotEntries()
@@ -148,8 +154,8 @@ class ProgressReportTest extends TestCase
 
         $report = new ProgressReport();
 
-        $report->addException(new \Exception('TestException'));
-        $report->addException(new \Exception('TestException2'));
+        $report->addException(new Exception('TestException'));
+        $report->addException(new Exception('TestException2'));
         $report->setEntryInfo('TestTitle', 'Test');
 
         $report->write($outputInterface);
@@ -157,9 +163,9 @@ class ProgressReportTest extends TestCase
         rewind($outputInterface->getStream());
         $output = stream_get_contents($outputInterface->getStream());
 
-        $this->assertContains('There was 1 document with problems:', $output);
-        $this->assertContains('1) TestTitle' . PHP_EOL, $output);
-        $this->assertContains('TestException' . PHP_EOL . 'TestException2' . PHP_EOL, $output);
+        $this->assertStringContainsString('There was 1 document with problems:', $output);
+        $this->assertStringContainsString('1) TestTitle' . PHP_EOL, $output);
+        $this->assertStringContainsString('TestException' . PHP_EOL . 'TestException2' . PHP_EOL, $output);
     }
 
     public function testClear()
@@ -168,7 +174,7 @@ class ProgressReportTest extends TestCase
 
         $report = new ProgressReport();
 
-        $ex = new \Exception('TestException');
+        $ex = new Exception('TestException');
 
         $report->addException($ex);
         $report->setEntryInfo('TestTitle', 'Test');

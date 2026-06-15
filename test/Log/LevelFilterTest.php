@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OPUS. The software OPUS has been originally developed
  * at the University of Stuttgart with funding from the German Research Net,
@@ -24,18 +25,16 @@
  * along with OPUS; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * @category    Test
- * @package     OpusTest\Log
- * @author      Kaustabh Barman <barman@zib.de>
- * @copyright   Copyright (c) 2021, OPUS 4 development team
+ * @copyright   Copyright (c) 2020, OPUS 4 development team
  * @license     http://www.gnu.org/licenses/gpl.html General Public License
  */
 
-namespace OpusTest\Log;
+namespace OpusTest\Common\Log;
 
+use InvalidArgumentException;
 use Laminas\Log\Logger;
-use Opus\Log\LevelFilter;
-use PHPUnit\Framework\TestCase;
+use Opus\Common\Log\LevelFilter;
+use OpusTest\Common\TestAssert\TestCase;
 
 class LevelFilterTest extends TestCase
 {
@@ -43,9 +42,9 @@ class LevelFilterTest extends TestCase
     {
         $filter = new LevelFilter(Logger::WARN);
 
-        $warnEvent = ['priority' => Logger::WARN];
+        $warnEvent  = ['priority' => Logger::WARN];
         $emergEvent = ['priority' => Logger::EMERG];
-        $infoEvent = ['priority' => Logger::INFO];
+        $infoEvent  = ['priority' => Logger::INFO];
 
         $this->assertTrue($filter->filter($warnEvent));
         $this->assertTrue($filter->filter($emergEvent));
@@ -57,7 +56,7 @@ class LevelFilterTest extends TestCase
         $filter = new LevelFilter(Logger::WARN);
         $filter->setLevel(Logger::INFO);
 
-        $infoEvent = ['priority' => Logger::INFO];
+        $infoEvent  = ['priority' => Logger::INFO];
         $debugEvent = ['priority' => Logger::DEBUG];
 
         $this->assertTrue($filter->filter($infoEvent));
@@ -115,7 +114,7 @@ class LevelFilterTest extends TestCase
 
         $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $filter->setLevel(-1);
@@ -127,7 +126,7 @@ class LevelFilterTest extends TestCase
 
         $exceptionMessage = 'Level needs to be an integer and cannot be negative';
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         $filter->setLevel('TestLevel');
