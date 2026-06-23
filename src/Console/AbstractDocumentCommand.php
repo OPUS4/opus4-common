@@ -40,8 +40,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use function count;
 use function ctype_digit;
-use function is_int;
+use function is_string;
 use function mb_split;
+use function trim;
 
 /**
  * Base class for all commands using StartID and EndID as arguments.
@@ -84,63 +85,87 @@ abstract class AbstractDocumentCommand extends Command
         );
     }
 
-    /**
-     * @return int
-     */
-    protected function processArguments(InputInterface $input)
+    protected function processArguments(InputInterface $input): int
     {
         $startId = $input->getArgument(self::ARGUMENT_START_ID);
         $endId   = $input->getArgument(self::ARGUMENT_END_ID);
 
-        // handle accidental inputs like '20-' or '20-30' instead of '20 -' or '20 30'
-        if ($startId !== '-' && $startId !== null) {
-            $parts = mb_split('-', $startId);
-            if (count($parts) === 2) {
-                $startId = $parts[0];
-                $endId   = $parts[1];
+        $startId = $startId ?? 0;
+        $endId   = $endId ?? 0;
 
-                if ($endId === '') {
-                    $endId = '-'; // otherwise only a single document will be indexed
+        $singleDocument = true;
+        $allDocuments   = false;
+
+        // process first document ID
+        if (is_string($startId)) {
+            $startId = trim($startId);
+            if ($startId === '-' || $startId === '') {
+                $startId = 0;
+            } else {
+                if (ctype_digit($startId)) {
+                    $startId = (int) $startId;
+                } else {
+                    $parts = mb_split('-', $startId);
+                    if (count($parts) === 2) {
+                        $singleDocument = false;
+
+                        $startId   = trim($parts[0]);
+                        $endIdPart = trim($parts[1]);
+
+                        if ($endId === 0) {
+                            if ($endIdPart === '') {
+                                $endId = 0; // otherwise only a single document will be indexed
+                            } else {
+                                $endId = (int) $endIdPart;
+                            }
+                        }
+
+                        $startId = (int) $startId;
+                    } else {
+                        throw new InvalidArgumentException('StartID needs to be an integer or \'-\'.');
+                    }
                 }
             }
         }
 
-        if ($startId === '-' || $startId === '' || $startId === null) {
-            $startId = null;
-        } else {
-            // only activate single document indexing if startId is present and no endId
-            if ($endId === '' || $endId === null) {
-                $this->singleDocument = true;
-                $endId                = null;
+        // process last document ID
+        if (is_string($endId)) {
+            $endId = trim($endId);
+            if ($endId === '-') {
+                $endId          = 0;
+                $singleDocument = false;
+            } elseif ($endId === '') {
+                $endId = 0;
+            } else {
+                if (ctype_digit($endId)) {
+                    $endId = (int) $endId;
+                } else {
+                    throw new InvalidArgumentException('EndID needs to be an integer or \'-\'.');
+                }
             }
         }
 
-        if ($endId === '-') {
-            $endId = null;
-        }
-
-        if (! is_int($startId) && $startId !== null && ! ctype_digit($startId)) {
-            throw new InvalidArgumentException('StartID needs to be an integer.');
-        }
-
-        if (! is_int($endId) && $endId !== null && ! ctype_digit($endId)) {
-            throw new InvalidArgumentException('EndID needs to be an integer.');
-        }
-
-        if ($startId === null && $endId === null) {
-            $this->allDocuments = true;
-        } else {
-            $this->allDocuments = false;
-
-            if ($startId !== null && $endId !== null && $startId > $endId) {
-                $tmp     = $startId;
-                $startId = $endId;
-                $endId   = $tmp;
+        if ($startId === 0 && $endId === 0) {
+            $allDocuments   = true;
+            $singleDocument = false;
+        } elseif ($startId === $endId) {
+            $singleDocument = true;
+            $allDocuments   = false;
+            $endId          = null;
+        } elseif ($startId >= 0) {
+            if ($endId > $startId) {
+                $allDocuments   = false;
+                $singleDocument = false;
+            } elseif ($endId !== 0) {
+                $endId        = null;
+                $allDocuments = false;
             }
         }
 
-        $this->startId = (int) $startId;
-        $this->endId   = (int) $endId;
+        $this->startId        = $startId;
+        $this->endId          = $endId;
+        $this->singleDocument = $singleDocument;
+        $this->allDocuments   = $allDocuments;
 
         return 0;
     }
@@ -150,18 +175,12 @@ abstract class AbstractDocumentCommand extends Command
         return $this->processArguments($input);
     }
 
-    /**
-     * @return bool
-     */
-    protected function isSingleDocument()
+    protected function isSingleDocument(): bool
     {
         return $this->singleDocument;
     }
 
-    /**
-     * @return bool
-     */
-    protected function isAllDocuments()
+    protected function isAllDocuments(): bool
     {
         return $this->allDocuments;
     }

@@ -41,38 +41,48 @@ use Symfony\Component\Console\Tester\CommandTester;
 class AbstractDocumentCommandTest extends TestCase
 {
     /**
-     * @return array Columns: argStartId, argEndId, startId, endId, singleDocument
+     * @return array Columns: argStartId, argEndId, startId, endId, singleDocument, allDocuments
      */
     public static function argumentsProvider()
     {
         return [
-            [null,    null, null, null, false],
-            ['10',    null,   10, null,  true],
-            [10,      null,   10, null,  true],
-            ['10',    '20',   10,   20, false],
-            [10,        20,   10,   20, false],
-            ['-10',   null, null,   10, false],
-            ['10-',   null,   10, null, false],
-            ['10-25', null,   10,   25, false],
-            ['45',     '-',   45, null, false],
-            [45,       '-',   45, null, false],
-            ['-',     '80', null,   80, false],
-            ['-',       80, null,   80, false],
-            ['-',     null, null, null, false],
-            ['-',      '-', null, null, false],
+            [null,    null, null, null, false,  true],
+            ['',        '', null, null, false,  true],
+            ['10',    null,   10, null,  true, false],
+            [10,      null,   10, null,  true, false],
+            ['10',    '20',   10,   20, false, false],
+            [10,        20,   10,   20, false, false],
+            ['-10',   null, null,   10, false, false],
+            ['10-',   null,   10, null, false, false],
+            ['10- ',  null,   10, null, false, false],
+            ['10-25', null,   10,   25, false, false],
+            ['45',     '-',   45, null, false, false], // #10
+            [45,       '-',   45, null, false, false],
+            ['-',     '80', null,   80, false, false],
+            ['-',       80, null,   80, false, false],
+            ['-',     null, null, null, false,  true],
+            ['-',      '-', null, null, false,  true],
+            [null,     '-', null, null, false,  true],
+            ['10',    '10',   10, null,  true, false],
+            [10,        10,   10, null,  true, false], // single document 10
+            ['10',       0,   10, null,  true, false], // single document 10
+            ['10-',     20,   10,   20, false, false],
+            ['10',       5,   10, null,  true, false],
+            ['10-',      5,   10, null, false, false],
         ];
     }
 
     /**
-     * @param mixed    $argStartId
-     * @param mixed    $argEndId
-     * @param null|int $startId
-     * @param null|int $endId
-     * @param bool     $singleDocument
      * @dataProvider argumentsProvider
      */
-    public function testDocumentRangeArguments($argStartId, $argEndId, $startId, $endId, $singleDocument)
-    {
+    public function testDocumentRangeArguments(
+        mixed $argStartId,
+        mixed $argEndId,
+        int|null $startId,
+        int|null $endId,
+        bool $singleDocument,
+        bool $allDocuments
+    ) {
         $commandClass = AbstractDocumentCommand::class;
 
         $stub = $this->getMockForAbstractClass($commandClass);
@@ -95,9 +105,13 @@ class AbstractDocumentCommandTest extends TestCase
         $refSingleDocument = $ref->getProperty('singleDocument');
         $refSingleDocument->setAccessible(true);
 
+        $refAllDocuments = $ref->getProperty('allDocuments');
+        $refAllDocuments->setAccessible(true);
+
         $this->assertEquals($startId, $refStartId->getValue($stub));
         $this->assertEquals($endId, $refEndId->getValue($stub));
         $this->assertEquals($singleDocument, $refSingleDocument->getValue($stub));
+        $this->assertEquals($allDocuments, $refAllDocuments->getValue($stub));
     }
 
     /**
