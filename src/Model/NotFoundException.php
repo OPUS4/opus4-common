@@ -36,4 +36,21 @@ namespace Opus\Common\Model;
  */
 class NotFoundException extends ModelException
 {
+    private mixed $modelId = null;
+
+    public function __construct(string $msg, mixed $modelId = null)
+    {
+        parent::__construct($msg);
+        if (null !== $modelId) {
+            $this->modelId = $modelId;
+        }
+    }
+
+    public function getModelId(): mixed
+    {
+        if (null !== $this->modelId) {
+            return $this->modelId;
+        }
+        return false;
+    }
 }
