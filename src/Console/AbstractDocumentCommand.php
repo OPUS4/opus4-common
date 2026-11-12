@@ -71,7 +71,7 @@ abstract class AbstractDocumentCommand extends Command
     /** @var string */
     protected $endIdDescription = 'ID of document where processing should stop (or \'-\')';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument(
             self::ARGUMENT_START_ID,
